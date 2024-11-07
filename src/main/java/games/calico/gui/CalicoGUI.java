@@ -3,6 +3,19 @@ package games.calico.gui;
 import core.*;
 import core.actions.AbstractAction;
 import core.components.Deck;
+import games.terraformingmars.TMForwardModel;
+import games.terraformingmars.TMGameState;
+import games.terraformingmars.TMTurnOrder;
+import games.terraformingmars.TMTypes;
+import games.terraformingmars.actions.PayForAction;
+import games.terraformingmars.actions.PlaceTile;
+import games.terraformingmars.actions.TMAction;
+import games.terraformingmars.components.TMCard;
+import games.terraformingmars.components.TMMapTile;
+import games.terraformingmars.gui.TMBoardView;
+import games.terraformingmars.gui.TMCardView;
+import games.terraformingmars.gui.TMDeckDisplay;
+import games.terraformingmars.gui.TMPlayerView;
 // import games.terraformingmars.TMForwardModel;
 // import games.terraformingmars.TMGameState;
 // import games.terraformingmars.TMTurnOrder;
@@ -33,6 +46,9 @@ import java.util.List;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
 
+/*
+ * https://tabletopgames.ai/wiki/games/creating/gui
+ */
 public class CalicoGUI extends AbstractGUIManager {
 
     TMBoardView view;
@@ -506,6 +522,9 @@ public class CalicoGUI extends AbstractGUIManager {
 
     boolean stateChange;
 
+    /*
+     * Important function!
+     */
     @Override
     protected void _update(AbstractPlayer player, AbstractGameState gameState) {
         if (gameState != null) {

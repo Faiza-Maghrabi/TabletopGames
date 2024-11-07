@@ -1,11 +1,24 @@
 package games.calico;
 
+import core.AbstractGameState;
 import core.AbstractGameStateWithTurnOrder;
 import core.AbstractParameters;
 import core.components.*;
 import core.interfaces.IGamePhase;
 import core.turnorders.TurnOrder;
 import games.GameType;
+import games.terraformingmars.TMTurnOrder;
+import games.terraformingmars.TMTypes;
+import games.terraformingmars.actions.PlaceTile;
+import games.terraformingmars.actions.TMAction;
+import games.terraformingmars.components.Award;
+import games.terraformingmars.components.Milestone;
+import games.terraformingmars.components.TMCard;
+import games.terraformingmars.components.TMMapTile;
+import games.terraformingmars.rules.Discount;
+import games.terraformingmars.rules.effects.Bonus;
+import games.terraformingmars.rules.requirements.ActionTypeRequirement;
+import games.terraformingmars.rules.requirements.TagsPlayedRequirement;
 // import games.terraformingmars.actions.PlaceTile;
 // import games.terraformingmars.actions.TMAction;
 // import games.terraformingmars.components.*;
@@ -23,7 +36,8 @@ import java.util.*;
 
 import static games.calico.CalicoGameState.TMPhase.CorporationSelect;
 
-public class CalicoGameState extends AbstractGameStateWithTurnOrder {
+//changed from AbstractGameStateWithTurnOrder due to deprecation
+public class CalicoGameState extends AbstractGameState {
 
     enum TMPhase implements IGamePhase {
         CorporationSelect,
@@ -86,6 +100,10 @@ public class CalicoGameState extends AbstractGameStateWithTurnOrder {
         return GameType.TerraformingMars;
     }
 
+    /* Return all components in game incl nested
+     * Decks and Areas have all of their nested components automatically added
+     * called after game setup
+     */ 
     @Override
     protected List<Component> _getAllComponents() {
         return new ArrayList<Component>() {{
@@ -117,8 +135,13 @@ public class CalicoGameState extends AbstractGameStateWithTurnOrder {
         }};
     }
 
+    /*
+     * player-specific version of game, only stuff the player can see
+     * https://tabletopgames.ai/wiki/conventions/info_hiding
+     * All of the components in the observation should be copies of those in the game state
+     */
     @Override
-    protected AbstractGameStateWithTurnOrder __copy(int playerId) {
+    protected AbstractGameState _copy(int playerId) {
         CalicoGameState copy = new CalicoGameState(gameParameters.copy(), getNPlayers());
 
         // General public info
@@ -273,6 +296,11 @@ public class CalicoGameState extends AbstractGameStateWithTurnOrder {
         return projectCards.draw();
     }
 
+    /*
+     * return estimate of how well a player is doing in range [-1, +1]
+     * How can I do this for calico?
+     * Not part of implementation - is for rule based player
+     */
     @Override
     protected double _getHeuristicScore(int playerId) {
 //        return new TMHeuristic().evaluateState(this, playerId);
@@ -280,12 +308,18 @@ public class CalicoGameState extends AbstractGameStateWithTurnOrder {
         return countPoints(playerId);
     }
 
+    /*
+     * return player's scare for current game state
+     */
     @Override
     public double getGameScore(int playerId) {
         return playerResources[playerId].get(TMTypes.Resource.TR).getValue();
 //        return countPoints(playerId);
     }
 
+    /*
+     * includes all the data in the GameState.
+     */
     @Override
     public boolean _equals(Object o) {
         if (this == o) return true;
@@ -320,6 +354,9 @@ public class CalicoGameState extends AbstractGameStateWithTurnOrder {
                 && Objects.equals(nAwardsFunded, that.nAwardsFunded);
     }
 
+    /*
+     * Look into this - not sure what its used for
+     */
     @Override
     public int hashCode() {
         int result = Objects.hash(super.hashCode(), generation, board, extraTiles, globalParameters, bonuses,
@@ -920,4 +957,5 @@ public class CalicoGameState extends AbstractGameStateWithTurnOrder {
             return rm;
         }
     }
+
 }

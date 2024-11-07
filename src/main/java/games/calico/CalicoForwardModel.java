@@ -2,11 +2,43 @@ package games.calico;
 
 import core.AbstractGameState;
 import core.CoreConstants;
-import core.StandardForwardModelWithTurnOrder;
+import core.StandardForwardModel;
 import core.actions.AbstractAction;
 import core.components.Counter;
 import core.components.Deck;
 import core.components.GridBoard;
+import games.terraformingmars.TMGameState;
+import games.terraformingmars.TMTurnOrder;
+import games.terraformingmars.TMTypes;
+import games.terraformingmars.actions.ClaimAwardMilestone;
+import games.terraformingmars.actions.CompoundAction;
+import games.terraformingmars.actions.ModifyGlobalParameter;
+import games.terraformingmars.actions.ModifyPlayerResource;
+import games.terraformingmars.actions.PayForAction;
+import games.terraformingmars.actions.PlaceTile;
+import games.terraformingmars.actions.SellProjects;
+import games.terraformingmars.actions.TMAction;
+import games.terraformingmars.components.Award;
+import games.terraformingmars.components.Milestone;
+import games.terraformingmars.components.TMCard;
+import games.terraformingmars.components.TMMapTile;
+import games.terraformingmars.rules.requirements.TagOnCardRequirement;
+// import games.terraformingmars.TMGameState;
+// import games.terraformingmars.TMTurnOrder;
+// import games.terraformingmars.TMTypes;
+// import games.terraformingmars.actions.ClaimAwardMilestone;
+// import games.terraformingmars.actions.CompoundAction;
+// import games.terraformingmars.actions.ModifyGlobalParameter;
+// import games.terraformingmars.actions.ModifyPlayerResource;
+// import games.terraformingmars.actions.PayForAction;
+// import games.terraformingmars.actions.PlaceTile;
+// import games.terraformingmars.actions.SellProjects;
+// import games.terraformingmars.actions.TMAction;
+// import games.terraformingmars.components.Award;
+// import games.terraformingmars.components.Milestone;
+// import games.terraformingmars.components.TMCard;
+// import games.terraformingmars.components.TMMapTile;
+// import games.terraformingmars.rules.requirements.TagOnCardRequirement;
 // import games.terraformingmars.actions.*;
 // import games.terraformingmars.components.Award;
 // import games.terraformingmars.components.Milestone;
@@ -23,8 +55,10 @@ import java.util.*;
 // import static games.terraformingmars.TMTypes.StandardProject.*;
 // import static games.terraformingmars.TMTypes.ActionType.*;
 
-public class CalicoForwardModel extends StandardForwardModelWithTurnOrder {
+//changed from StandardForwardModelWithTurnOrder due to deprecated?
+public class CalicoForwardModel extends StandardForwardModel {
 
+    //set up begining game state
     @Override
     protected void _setup(AbstractGameState firstState) {
         TMGameState gs = (TMGameState) firstState;
@@ -224,6 +258,9 @@ public class CalicoForwardModel extends StandardForwardModelWithTurnOrder {
         gs.generation = 1;
     }
 
+    //This is called every time an action is taken by one of the players, human or AI.
+    //called after action is applied to state
+    //use _beforeAction if needed to add logic before this
     @Override
     protected void _afterAction(AbstractGameState currentState, AbstractAction action) {
         TMGameState gs = (TMGameState) currentState;
@@ -332,6 +369,7 @@ public class CalicoForwardModel extends StandardForwardModelWithTurnOrder {
         }
     }
 
+    //return a list with all actions available for the current player, in the context of the game state object
     @Override
     protected List<AbstractAction> _computeAvailableActions(AbstractGameState gameState) {
         // play a card (if valid), standard projects, claim milestone, fund award, card actions, 8 plants -> greenery, 8 heat -> temperature, pass
