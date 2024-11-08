@@ -7,22 +7,22 @@ import core.actions.AbstractAction;
 import core.components.Counter;
 import core.components.Deck;
 import core.components.GridBoard;
-import games.terraformingmars.TMGameState;
-import games.terraformingmars.TMTurnOrder;
-import games.terraformingmars.TMTypes;
-import games.terraformingmars.actions.ClaimAwardMilestone;
-import games.terraformingmars.actions.CompoundAction;
-import games.terraformingmars.actions.ModifyGlobalParameter;
-import games.terraformingmars.actions.ModifyPlayerResource;
-import games.terraformingmars.actions.PayForAction;
-import games.terraformingmars.actions.PlaceTile;
-import games.terraformingmars.actions.SellProjects;
-import games.terraformingmars.actions.TMAction;
-import games.terraformingmars.components.Award;
-import games.terraformingmars.components.Milestone;
-import games.terraformingmars.components.TMCard;
-import games.terraformingmars.components.TMMapTile;
-import games.terraformingmars.rules.requirements.TagOnCardRequirement;
+// import games.terraformingmars.TMGameState;
+// import games.terraformingmars.TMTurnOrder;
+// import games.terraformingmars.TMTypes;
+// import games.terraformingmars.actions.ClaimAwardMilestone;
+// import games.terraformingmars.actions.CompoundAction;
+// import games.terraformingmars.actions.ModifyGlobalParameter;
+// import games.terraformingmars.actions.ModifyPlayerResource;
+// import games.terraformingmars.actions.PayForAction;
+// import games.terraformingmars.actions.PlaceTile;
+// import games.terraformingmars.actions.SellProjects;
+// import games.terraformingmars.actions.TMAction;
+// import games.terraformingmars.components.Award;
+// import games.terraformingmars.components.Milestone;
+// import games.terraformingmars.components.TMCard;
+// import games.terraformingmars.components.TMMapTile;
+// import games.terraformingmars.rules.requirements.TagOnCardRequirement;
 // import games.terraformingmars.TMGameState;
 // import games.terraformingmars.TMTurnOrder;
 // import games.terraformingmars.TMTypes;
@@ -74,7 +74,7 @@ public class CalicoForwardModel extends StandardForwardModel {
             gs.playerResources[i] = new HashMap<>();
             gs.playerProduction[i] = new HashMap<>();
             gs.playerResourceIncreaseGen[i] = new HashMap<>();
-            for (TMTypes.Resource res : TMTypes.Resource.values()) {
+            for (CalicoTypes.Resource res : CalicoTypes.Resource.values()) {
                 int startingRes = params.startingResources.get(res);
                 if (res == TR && gs.getNPlayers() == 1) {
                     startingRes = params.soloTR;
@@ -82,7 +82,7 @@ public class CalicoForwardModel extends StandardForwardModel {
                 gs.playerResources[i].put(res, new Counter(startingRes, 0, params.maxPoints, res.toString() + "-" + i));
                 if (params.startingProduction.containsKey(res)) {
                     int startingProduction = params.startingProduction.get(res);
-                    if (params.expansions.contains(TMTypes.Expansion.CorporateEra))
+                    if (params.expansions.contains(CalicoTypes.Expansion.CorporateEra))
                         startingProduction = 0;  // No production in corporate era
                     gs.playerProduction[i].put(res, new Counter(startingProduction, params.minimumProduction.get(res), params.maxPoints, res + "-prod-" + i));
                 }
@@ -90,8 +90,8 @@ public class CalicoForwardModel extends StandardForwardModel {
             }
             gs.playerResourceMap[i] = new HashSet<>();
             // By default, players can exchange steel for X MC and titanium for X MC. More may be added
-            gs.playerResourceMap[i].add(new TMGameState.ResourceMapping(TMTypes.Resource.Steel, TMTypes.Resource.MegaCredit, params.nSteelMC, new TagOnCardRequirement(new TMTypes.Tag[]{TMTypes.Tag.Building})));
-            gs.playerResourceMap[i].add(new TMGameState.ResourceMapping(TMTypes.Resource.Titanium, TMTypes.Resource.MegaCredit, params.nTitaniumMC, new TagOnCardRequirement(new TMTypes.Tag[]{TMTypes.Tag.Space})));
+            gs.playerResourceMap[i].add(new TMGameState.ResourceMapping(CalicoTypes.Resource.Steel, CalicoTypes.Resource.MegaCredit, params.nSteelMC, new TagOnCardRequirement(new CalicoTypes.Tag[]{CalicoTypes.Tag.Building})));
+            gs.playerResourceMap[i].add(new TMGameState.ResourceMapping(CalicoTypes.Resource.Titanium, CalicoTypes.Resource.MegaCredit, params.nTitaniumMC, new TagOnCardRequirement(new CalicoTypes.Tag[]{CalicoTypes.Tag.Space})));
 
             // Set up player discount maps
             gs.playerDiscountEffects[i] = new HashMap<>();
@@ -110,18 +110,18 @@ public class CalicoForwardModel extends StandardForwardModel {
         gs.globalParameters = new HashMap<>();
 
         // Load base
-        TMTypes.Expansion.Base.loadProjectCards(gs.projectCards);
-        TMTypes.Expansion.Base.loadCorpCards(gs.corpCards);
-        TMTypes.Expansion.Base.loadBoard(gs.board, gs.extraTiles, gs.bonuses, gs.milestones, gs.awards, gs.globalParameters);
+        CalicoTypes.Expansion.Base.loadProjectCards(gs.projectCards);
+        CalicoTypes.Expansion.Base.loadCorpCards(gs.corpCards);
+        CalicoTypes.Expansion.Base.loadBoard(gs.board, gs.extraTiles, gs.bonuses, gs.milestones, gs.awards, gs.globalParameters);
 
-        if (params.expansions.contains(TMTypes.Expansion.Hellas) || params.expansions.contains(TMTypes.Expansion.Elysium)) {
+        if (params.expansions.contains(CalicoTypes.Expansion.Hellas) || params.expansions.contains(CalicoTypes.Expansion.Elysium)) {
             // Clear milestones and awards, they'll be replaced by these expansions
             gs.milestones.clear();
             gs.awards.clear();
         }
 
-        for (TMTypes.Expansion e : params.expansions) {
-            if (e != TMTypes.Expansion.Hellas && e != TMTypes.Expansion.Elysium) {
+        for (CalicoTypes.Expansion e : params.expansions) {
+            if (e != CalicoTypes.Expansion.Hellas && e != CalicoTypes.Expansion.Elysium) {
                 // Hellas and Elysium don't have project or corporation cards
                 e.loadProjectCards(gs.projectCards);
                 e.loadCorpCards(gs.corpCards);
@@ -169,11 +169,11 @@ public class CalicoForwardModel extends StandardForwardModel {
         gs.projectCards.shuffle(gs.getRnd());
         gs.corpCards.shuffle(gs.getRnd());
 
-        HashMap<TMTypes.Tag, Counter>[] playerCardsPlayedTags;
+        HashMap<CalicoTypes.Tag, Counter>[] playerCardsPlayedTags;
         HashSet<AbstractAction>[] playerCardsPlayedEffects;
         HashSet<AbstractAction>[] playerCardsPlayedActions;
-        HashMap<TMTypes.CardType, Counter>[] playerCardsPlayedTypes;
-        HashMap<TMTypes.Tile, Counter>[] tilesPlaced;
+        HashMap<CalicoTypes.CardType, Counter>[] playerCardsPlayedTypes;
+        HashMap<CalicoTypes.Tile, Counter>[] tilesPlaced;
 
         gs.playerCorporations = new TMCard[gs.getNPlayers()];
         gs.playerCardChoice = new Deck[gs.getNPlayers()];
@@ -196,15 +196,15 @@ public class CalicoForwardModel extends StandardForwardModel {
         gs.playerPersistingEffects = new HashSet[gs.getNPlayers()];
         for (int i = 0; i < gs.getNPlayers(); i++) {
             gs.playerTilesPlaced[i] = new HashMap<>();
-            for (TMTypes.Tile t : TMTypes.Tile.values()) {
+            for (CalicoTypes.Tile t : CalicoTypes.Tile.values()) {
                 gs.playerTilesPlaced[i].put(t, new Counter(0, 0, params.maxPoints, t.name() + " tiles placed player " + i));
             }
             gs.playerCardsPlayedTypes[i] = new HashMap<>();
-            for (TMTypes.CardType t : TMTypes.CardType.values()) {
+            for (CalicoTypes.CardType t : CalicoTypes.CardType.values()) {
                 gs.playerCardsPlayedTypes[i].put(t, new Counter(0, 0, params.maxPoints, t.name() + " cards played player " + i));
             }
             gs.playerCardsPlayedTags[i] = new HashMap<>();
-            for (TMTypes.Tag t : TMTypes.Tag.values()) {
+            for (CalicoTypes.Tag t : CalicoTypes.Tag.values()) {
                 gs.playerCardsPlayedTags[i].put(t, new Counter(0, 0, params.maxPoints, t.name() + " cards played player " + i));
             }
             gs.playerExtraActions[i] = new HashSet<>();
@@ -235,24 +235,24 @@ public class CalicoForwardModel extends StandardForwardModel {
             gs.getTurnOrder().setTurnOwner(1);
             for (int i = 0; i < params.soloCities; i++) {
                 // Place city + greenery adjacent
-                PlaceTile pt = new PlaceTile(1, TMTypes.Tile.City, TMTypes.MapTileType.Ground, true);
+                PlaceTile pt = new PlaceTile(1, CalicoTypes.Tile.City, CalicoTypes.MapTileType.Ground, true);
                 List<AbstractAction> actions = pt._computeAvailableActions(gs);
                 PlaceTile action = (PlaceTile) actions.get(gs.getRnd().nextInt(actions.size()));
                 action.execute(gs);
-                TMMapTile mt = (TMMapTile) gs.getComponentById(action.mapTileID);
+                CalicoMapTile mt = (CalicoMapTile) gs.getComponentById(action.mapTileID);
                 List<Vector2D> neighbours = PlaceTile.getNeighbours(new Vector2D(mt.getX(), mt.getY()));
                 boolean placed = false;
                 while (!placed) {
                     Vector2D v = neighbours.get(gs.getRnd().nextInt(neighbours.size()));
-                    TMMapTile mtn = gs.board.getElement(v.getX(), v.getY());
-                    if (mtn != null && mtn.getOwnerId() == -1 && mtn.getTileType() == TMTypes.MapTileType.Ground) {
-                        mtn.setTilePlaced(TMTypes.Tile.Greenery, gs);
+                    CalicoMapTile mtn = gs.board.getElement(v.getX(), v.getY());
+                    if (mtn != null && mtn.getOwnerId() == -1 && mtn.getTileType() == CalicoTypes.MapTileType.Ground) {
+                        mtn.setTilePlaced(CalicoTypes.Tile.Greenery, gs);
                         placed = true;
                     }
                 }
             }
             gs.getTurnOrder().setTurnOwner(0);
-            gs.globalParameters.get(TMTypes.GlobalParameter.Oxygen).setValue(0);
+            gs.globalParameters.get(CalicoTypes.GlobalParameter.Oxygen).setValue(0);
         }
 
         gs.generation = 1;
@@ -308,16 +308,16 @@ public class CalicoForwardModel extends StandardForwardModel {
                 // Production
                 for (int i = 0; i < gs.getNPlayers(); i++) {
                     // First, energy turns to heat
-                    gs.getPlayerResources()[i].get(TMTypes.Resource.Heat).increment(gs.getPlayerResources()[i].get(TMTypes.Resource.Energy).getValue());
-                    gs.getPlayerResources()[i].get(TMTypes.Resource.Energy).setValue(0);
+                    gs.getPlayerResources()[i].get(CalicoTypes.Resource.Heat).increment(gs.getPlayerResources()[i].get(CalicoTypes.Resource.Energy).getValue());
+                    gs.getPlayerResources()[i].get(CalicoTypes.Resource.Energy).setValue(0);
                     // Then, all production values are added to resources
-                    for (TMTypes.Resource res : TMTypes.Resource.values()) {
+                    for (CalicoTypes.Resource res : CalicoTypes.Resource.values()) {
                         if (res.isPlayerBoardRes()) {
                             gs.getPlayerResources()[i].get(res).increment(gs.getPlayerProduction()[i].get(res).getValue());
                         }
                     }
                     // TR also adds to mega credits
-                    gs.getPlayerResources()[i].get(TMTypes.Resource.MegaCredit).increment(gs.playerResources[i].get(TR).getValue());
+                    gs.getPlayerResources()[i].get(CalicoTypes.Resource.MegaCredit).increment(gs.playerResources[i].get(TR).getValue());
                 }
 
                 // Check game end before next research phase
@@ -326,7 +326,7 @@ public class CalicoForwardModel extends StandardForwardModel {
                     if (gs.getNPlayers() == 1) {
                         // If solo, game goes for 14 generations regardless of global parameters
                         CoreConstants.GameResult won = CoreConstants.GameResult.WIN_GAME;
-                        for (TMTypes.GlobalParameter p : gs.globalParameters.keySet()) {
+                        for (CalicoTypes.GlobalParameter p : gs.globalParameters.keySet()) {
                             if (p != null && p.countsForEndGame() && !gs.globalParameters.get(p).isMaximum())
                                 won = CoreConstants.GameResult.LOSE_GAME;
                         }
@@ -358,7 +358,7 @@ public class CalicoForwardModel extends StandardForwardModel {
                         c.actionPlayed = false;
                     }
                     // Reset resource increase
-                    for (TMTypes.Resource res : TMTypes.Resource.values()) {
+                    for (CalicoTypes.Resource res : CalicoTypes.Resource.values()) {
                         gs.playerResourceIncreaseGen[i].put(res, false);
                     }
                 }
@@ -465,25 +465,25 @@ public class CalicoForwardModel extends StandardForwardModel {
             }
 
             // - Increase energy production 1 step for 11 MC
-            possibleActions.add(new ModifyPlayerResource(PowerPlant, params.getnCostSPEnergy(), player, 1, TMTypes.Resource.Energy));
+            possibleActions.add(new ModifyPlayerResource(PowerPlant, params.getnCostSPEnergy(), player, 1, CalicoTypes.Resource.Energy));
 
             // - Increase temperature 1 step for 14 MC
-            possibleActions.add(new ModifyGlobalParameter(StandardProject, TMTypes.Resource.MegaCredit, params.getnCostSPTemp(), TMTypes.GlobalParameter.Temperature, 1, false));
+            possibleActions.add(new ModifyGlobalParameter(StandardProject, CalicoTypes.Resource.MegaCredit, params.getnCostSPTemp(), CalicoTypes.GlobalParameter.Temperature, 1, false));
 
             // - Place ocean tile for 18 MC
-            possibleActions.add(new PlaceTile(Aquifer, params.getnCostSPOcean(), player, TMTypes.Tile.Ocean, TMTypes.MapTileType.Ocean));
+            possibleActions.add(new PlaceTile(Aquifer, params.getnCostSPOcean(), player, CalicoTypes.Tile.Ocean, CalicoTypes.MapTileType.Ocean));
 
             // - Place greenery tile for 23 MC
-            possibleActions.add(new PlaceTile(Greenery, params.getnCostSPGreenery(), player, TMTypes.Tile.Greenery, TMTypes.MapTileType.Ground));
+            possibleActions.add(new PlaceTile(Greenery, params.getnCostSPGreenery(), player, CalicoTypes.Tile.Greenery, CalicoTypes.MapTileType.Ground));
 
             // - Place city tile and increase MC prod by 1 for 25 MC
-            TMAction a1 = new PlaceTile(player, TMTypes.Tile.City, TMTypes.MapTileType.Ground, true);
-            TMAction a2 = new ModifyPlayerResource(player, params.nSPCityMCGain, TMTypes.Resource.MegaCredit, true);
+            TMAction a1 = new PlaceTile(player, CalicoTypes.Tile.City, CalicoTypes.MapTileType.Ground, true);
+            TMAction a2 = new ModifyPlayerResource(player, params.nSPCityMCGain, CalicoTypes.Resource.MegaCredit, true);
             possibleActions.add(new CompoundAction(StandardProject, player, new TMAction[]{a1, a2}, params.nCostSPCity));
 
             // - Air Scraping, increase Venus parameter for 15MC, if Venus expansion enabled
-            if (params.expansions.contains(TMTypes.Expansion.Venus)) {
-                possibleActions.add(new ModifyGlobalParameter(StandardProject, MegaCredit, params.nCostVenus, TMTypes.GlobalParameter.Venus, 1, false));
+            if (params.expansions.contains(CalicoTypes.Expansion.Venus)) {
+                possibleActions.add(new ModifyGlobalParameter(StandardProject, MegaCredit, params.nCostVenus, CalicoTypes.GlobalParameter.Venus, 1, false));
             }
 
             // Claim a milestone
@@ -505,9 +505,9 @@ public class CalicoForwardModel extends StandardForwardModel {
             possibleActions.addAll(gs.playerExtraActions[player]);
 
             // 8 plants into greenery tile
-            possibleActions.add(new PlaceTile(TMTypes.BasicResourceAction.PlantToGreenery, params.getnCostGreeneryPlant(), player, TMTypes.Tile.Greenery, TMTypes.MapTileType.Ground));
+            possibleActions.add(new PlaceTile(CalicoTypes.BasicResourceAction.PlantToGreenery, params.getnCostGreeneryPlant(), player, CalicoTypes.Tile.Greenery, CalicoTypes.MapTileType.Ground));
             // 8 heat into temperature increase
-            possibleActions.add(new ModifyGlobalParameter(BasicResourceAction, TMTypes.Resource.Heat, params.getnCostTempHeat(), TMTypes.GlobalParameter.Temperature, 1, false));
+            possibleActions.add(new ModifyGlobalParameter(BasicResourceAction, CalicoTypes.Resource.Heat, params.getnCostTempHeat(), CalicoTypes.GlobalParameter.Temperature, 1, false));
         }
 
         return possibleActions;
@@ -524,7 +524,7 @@ public class CalicoForwardModel extends StandardForwardModel {
             // If solo, game goes for 14 generations regardless of global parameters
             if (gs.generation < ((CalicoGameParameters) gs.getGameParameters()).soloMaxGen) ended = false;
         } else {
-            for (TMTypes.GlobalParameter p : gs.globalParameters.keySet()) {
+            for (CalicoTypes.GlobalParameter p : gs.globalParameters.keySet()) {
                 if (p != null && p.countsForEndGame() && !gs.globalParameters.get(p).isMaximum()) ended = false;
             }
         }

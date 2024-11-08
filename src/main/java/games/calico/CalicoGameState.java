@@ -7,18 +7,18 @@ import core.components.*;
 import core.interfaces.IGamePhase;
 import core.turnorders.TurnOrder;
 import games.GameType;
-import games.terraformingmars.TMTurnOrder;
-import games.terraformingmars.TMTypes;
-import games.terraformingmars.actions.PlaceTile;
-import games.terraformingmars.actions.TMAction;
-import games.terraformingmars.components.Award;
-import games.terraformingmars.components.Milestone;
-import games.terraformingmars.components.TMCard;
-import games.terraformingmars.components.TMMapTile;
-import games.terraformingmars.rules.Discount;
-import games.terraformingmars.rules.effects.Bonus;
-import games.terraformingmars.rules.requirements.ActionTypeRequirement;
-import games.terraformingmars.rules.requirements.TagsPlayedRequirement;
+// import games.terraformingmars.TMTurnOrder;
+// import games.terraformingmars.TMTypes;
+// import games.terraformingmars.actions.PlaceTile;
+// import games.terraformingmars.actions.TMAction;
+// import games.terraformingmars.components.Award;
+// import games.terraformingmars.components.Milestone;
+// import games.terraformingmars.components.TMCard;
+// import games.terraformingmars.components.TMMapTile;
+// import games.terraformingmars.rules.Discount;
+// import games.terraformingmars.rules.effects.Bonus;
+// import games.terraformingmars.rules.requirements.ActionTypeRequirement;
+// import games.terraformingmars.rules.requirements.TagsPlayedRequirement;
 // import games.terraformingmars.actions.PlaceTile;
 // import games.terraformingmars.actions.TMAction;
 // import games.terraformingmars.components.*;
@@ -34,22 +34,15 @@ import utilities.Vector2D;
 
 import java.util.*;
 
-import static games.calico.CalicoGameState.TMPhase.CorporationSelect;
+// import static games.calico.CalicoGameState.TMPhase.CorporationSelect;
 
 //changed from AbstractGameStateWithTurnOrder due to deprecation
 public class CalicoGameState extends AbstractGameState {
 
-    enum TMPhase implements IGamePhase {
-        CorporationSelect,
-        Research,
-        Actions,
-        Production
-    }
-
     // General state info
     int generation;
-    GridBoard<TMMapTile> board;
-    HashSet<TMMapTile> extraTiles;
+    GridBoard<CalicoMapTile> board;
+    HashSet<CalicoMapTile> extraTiles;
     HashMap<TMTypes.GlobalParameter, GlobalParameter> globalParameters;
     HashSet<Bonus> bonuses;
     Deck<TMCard> projectCards, corpCards, discardCards;  // Face-down decks
@@ -157,7 +150,7 @@ public class CalicoGameState extends AbstractGameState {
             }
         }
         copy.extraTiles = new HashSet<>();
-        for (TMMapTile mt : extraTiles) {
+        for (CalicoMapTile mt : extraTiles) {
             copy.extraTiles.add(mt.copy());
         }
         copy.globalParameters = new HashMap<>();
@@ -228,20 +221,20 @@ public class CalicoGameState extends AbstractGameState {
             for (Effect e : playerPersistingEffects[i]) {
                 copy.playerPersistingEffects[i].add(e.copy());
             }
-            for (TMTypes.Resource r : playerResources[i].keySet()) {
+            for (CalicoTypes.Resource r : playerResources[i].keySet()) {
                 copy.playerResources[i].put(r, playerResources[i].get(r).copy());
                 copy.playerResourceIncreaseGen[i].put(r, playerResourceIncreaseGen[i].get(r));
             }
-            for (TMTypes.Resource r : playerProduction[i].keySet()) {
+            for (CalicoTypes.Resource r : playerProduction[i].keySet()) {
                 copy.playerProduction[i].put(r, playerProduction[i].get(r).copy());
             }
-            for (TMTypes.Tag t : playerCardsPlayedTags[i].keySet()) {
+            for (CalicoTypes.Tag t : playerCardsPlayedTags[i].keySet()) {
                 copy.playerCardsPlayedTags[i].put(t, playerCardsPlayedTags[i].get(t).copy());
             }
-            for (TMTypes.CardType t : playerCardsPlayedTypes[i].keySet()) {
+            for (CalicoTypes.CardType t : playerCardsPlayedTypes[i].keySet()) {
                 copy.playerCardsPlayedTypes[i].put(t, playerCardsPlayedTypes[i].get(t).copy());
             }
-            for (TMTypes.Tile t : playerTilesPlaced[i].keySet()) {
+            for (CalicoTypes.Tile t : playerTilesPlaced[i].keySet()) {
                 copy.playerTilesPlaced[i].put(t, playerTilesPlaced[i].get(t).copy());
             }
         }
@@ -456,7 +449,7 @@ public class CalicoGameState extends AbstractGameState {
         return playerResources;
     }
 
-    public GridBoard<TMMapTile> getBoard() {
+    public GridBoard<CalicoMapTile> getBoard() {
         return board;
     }
 
@@ -468,7 +461,7 @@ public class CalicoGameState extends AbstractGameState {
         return globalParameters;
     }
 
-    public HashSet<TMMapTile> getExtraTiles() {
+    public HashSet<CalicoMapTile> getExtraTiles() {
         return extraTiles;
     }
 
@@ -589,7 +582,7 @@ public class CalicoGameState extends AbstractGameState {
             for (Map.Entry<Requirement, Integer> e : playerDiscountEffects[player].entrySet()) {
                 if (e.getKey() instanceof TagsPlayedRequirement) {
                     boolean found = false;
-                    for (TMTypes.Tag tt : ((TagsPlayedRequirement) e.getKey()).tags) {
+                    for (CalicoTypes.Tag tt : ((TagsPlayedRequirement) e.getKey()).tags) {
                         if (tt == t) {
                             found = true;
                             break;
@@ -865,7 +858,7 @@ public class CalicoGameState extends AbstractGameState {
         // Add cities on board
         for (int i = 0; i < board.getHeight(); i++) {
             for (int j = 0; j < board.getWidth(); j++) {
-                TMMapTile mt = board.getElement(j, i);
+                CalicoMapTile mt = board.getElement(j, i);
                 if (mt != null && mt.getTilePlaced() == TMTypes.Tile.City) {
                     // Count adjacent greeneries
                     points += PlaceTile.nAdjacentTiles(this, mt, TMTypes.Tile.Greenery);
@@ -899,10 +892,10 @@ public class CalicoGameState extends AbstractGameState {
                 } else if (card.pointsTile != null) {
                     if (card.pointsTileAdjacent && card.mapTileIDTilePlaced >= 0) {  // TODO: mapTileIDPlaced should have been set in this case, bug
                         // only adjacent tiles count
-                        TMMapTile mt = (TMMapTile) getComponentById(card.mapTileIDTilePlaced);
+                        CalicoMapTile mt = (CalicoMapTile) getComponentById(card.mapTileIDTilePlaced);
                         List<Vector2D> neighbours = PlaceTile.getNeighbours(new Vector2D(mt.getX(), mt.getY()));
                         for (Vector2D n : neighbours) {
-                            TMMapTile e = board.getElement(n.getX(), n.getY());
+                            CalicoMapTile e = board.getElement(n.getX(), n.getY());
                             if (e != null && e.getTilePlaced() == card.pointsTile) {
                                 points += card.nPoints;
                             }
@@ -913,7 +906,7 @@ public class CalicoGameState extends AbstractGameState {
                 } else if (card.getComponentName().equalsIgnoreCase("capital")) {
                     // x VP per Ocean adjacent
                     int position = card.mapTileIDTilePlaced;
-                    TMMapTile mt = (TMMapTile) getComponentById(position);
+                    CalicoMapTile mt = (CalicoMapTile) getComponentById(position);
                     points += card.nPoints * PlaceTile.nAdjacentTiles(this, mt, TMTypes.Tile.Ocean);
                 }
             }
