@@ -11,18 +11,21 @@ import static core.CoreConstants.ComponentType.BOARD_NODE;
 
 public class CalicoBoardTile extends Component {
     int x, y, playerBoard;
-    CalicoBoardTileImage tilePlaced;
+    CalicoTile tilePlaced;
     boolean isEmpty = true;
 
     boolean isDesignTile = false;
     CalicoTypes.DesignGoalTile designGoalTile;
+
+    boolean hasButton = false;
+    boolean hasCat = false;
 
     public CalicoBoardTile(int x, int y, int playerBoard) {
         super(BOARD_NODE, "Tile");
         this.x = x;
         this.y = y;
         this.playerBoard = playerBoard;
-        this.tilePlaced = new CalicoBoardTileImage(TileColour.Null, TilePattern.Null);
+        this.tilePlaced = new CalicoTile(TileColour.Null, TilePattern.Null);
     }
 
     public CalicoBoardTile(int x, int y, int playerBoard, CalicoTypes.DesignGoalTile designGoalTile) {
@@ -40,7 +43,7 @@ public class CalicoBoardTile extends Component {
         this.x = x;
         this.y = y;
         this.playerBoard = playerBoard;
-        this.tilePlaced = new CalicoBoardTileImage(colour, pattern);
+        this.tilePlaced = new CalicoTile(colour, pattern);
         this.isEmpty = false;
     }
 
@@ -58,11 +61,27 @@ public class CalicoBoardTile extends Component {
         return isDesignTile;
     }
 
+    public boolean hasButton() {
+        return hasButton;
+    }
+
+    public boolean hasCat() {
+        return hasCat;
+    }
+
     public void addTile(TileColour colour, TilePattern pattern) {
         if (!isDesignTile && isEmpty) {
-            this.tilePlaced = new CalicoBoardTileImage(colour, pattern);
+            this.tilePlaced = new CalicoTile(colour, pattern);
             this.isEmpty = false;
         }
+    }
+
+    public void addButton(){
+        this.hasButton = true;
+    }
+
+    public void addCat(){
+        this.hasCat = true;
     }
 
     public TileColour getTileColour() {
@@ -139,7 +158,6 @@ public class CalicoBoardTile extends Component {
     //         if (res != null) {
     //             resources[i - 1] = res;
     //         } else {
-    //             // TODO: Ocean (place tile), MegaCredit/-6 (reduce MC by 6)
     //         }
     //     }
     //     mt.setResources(resources);
@@ -153,12 +171,12 @@ public class CalicoBoardTile extends Component {
         if (!(o instanceof CalicoBoardTile)) return false;
         if (!super.equals(o)) return false;
         CalicoBoardTile calicoMapTile = (CalicoBoardTile) o;
-        return playerBoard == calicoMapTile.playerBoard && x == calicoMapTile.x && y == calicoMapTile.y && tilePlaced == calicoMapTile.tilePlaced && isEmpty == calicoMapTile.isEmpty && isDesignTile == calicoMapTile.isDesignTile && designGoalTile == calicoMapTile.designGoalTile;
+        return playerBoard == calicoMapTile.playerBoard && x == calicoMapTile.x && y == calicoMapTile.y && tilePlaced == calicoMapTile.tilePlaced && isEmpty == calicoMapTile.isEmpty && isDesignTile == calicoMapTile.isDesignTile && designGoalTile == calicoMapTile.designGoalTile && hasButton == calicoMapTile.hasButton && hasCat == calicoMapTile.hasCat;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(super.hashCode(), ownerId, x, y, tilePlaced, type, isEmpty, isDesignTile, designGoalTile);
+        int result = Objects.hash(super.hashCode(), ownerId, x, y, tilePlaced, type, isEmpty, isDesignTile, designGoalTile, hasButton, hasCat);
         result = 31 * result;
         return result;
     }

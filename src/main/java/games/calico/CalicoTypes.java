@@ -3,7 +3,7 @@ package games.calico;
 import core.components.Counter;
 import core.components.Deck;
 import core.components.GridBoard;
-import games.calico.components.CalicoMapTile;
+import games.calico.components.CalicoBoardTile;
 import games.terraformingmars.TMGameParameters;
 import games.terraformingmars.actions.TMAction;
 import games.terraformingmars.components.Award;
@@ -42,6 +42,7 @@ public class CalicoTypes {
 
     // Enums
 
+    //update with appropriate actions when made
     public enum ActionType {
         PlayCard,
         StandardProject,
@@ -50,21 +51,6 @@ public class CalicoTypes {
         ActiveAction,
         BasicResourceAction,
         BuyProject  // TODO ignore in GUI
-    }
-
-    public enum BasicResourceAction {
-        HeatToTemp,
-        PlantToGreenery
-    }
-
-    public enum StandardProject {
-        SellPatents,
-        PowerPlant,
-        Asteroid,
-        Aquifer,
-        Greenery,
-        City,
-        AirScraping
     }
 
     public enum  DesignGoalTile{
@@ -79,12 +65,16 @@ public class CalicoTypes {
         DesignGoalTile(String imagePath) {
             this.imagePath = imagePath;
         }
+
+        public String getImagePath() {
+            return imagePath;
+        }
     }
 
     public enum TileColour{
         DBlue,
         Green,
-        LightBlue,
+        LBlue,
         Yellow,
         Magenta,
         Purple,
@@ -92,13 +82,72 @@ public class CalicoTypes {
     }
 
     public enum TilePattern{
-        Flowers,
-        Dots,
-        Vines,
-        Stripes,
-        Quatrefoil,
-        Ferns,
-        Null
+        Flowers ("data/calico/images/patches/flowers.png"),
+        Dots ("data/calico/images/patches/dots.png"),
+        Vines ("data/calico/images/patches/vines.png"),
+        Stripes ("data/calico/images/patches/stripes.png"),
+        Quatrefoil ("data/calico/images/patches/quatrefoil.png"),
+        Ferns ("data/calico/images/patches/ferns.png"),
+        Null ("null"); //no patch tile for null
+
+        String imagePath;
+
+        TilePattern(String imagePath){
+            this.imagePath = imagePath;
+        }
+
+        public String getImagePath() {
+            return imagePath;
+        }
+    }
+
+    public enum Button{
+        Blueberry,
+        Drop,
+        Leaf,
+        Flower,
+        Moon,
+        Mushroom,
+        Rainbow
+    }
+
+    public enum Cat{
+        Millie ("data/calico/images/cats/millie.png", 3, 3),
+        Tibbit ("data/calico/images/cats/tibbit.png", 5, 4),
+        Coconut ("data/calico/images/cats/coconut.png", 7, 5),
+        Tecolote ("data/calico/images/cats/tecolote.png", 7, 4), //in a straightline
+        Callie ("data/calico/images/cats/callie.png", 3, 3), //in a T shape
+        Rumi ("data/calico/images/cats/rumi.png", 5, 3), //in a stright line
+        Gwen ("data/calico/images/cats/gwen.png", 11, 7),
+        Cira ("data/calico/images/cats/cira.png", 9, 6),
+        Leo ("data/calico/images/cats/leo.png", 11, 5), //in a stright line
+        Almond ("data/calico/images/cats/almond.png", 9, 5); //pyramid
+
+        String imagePath;
+        int points;
+        int arrangement; //TODO: figure out how the more unique arrangements are going to work
+
+        Cat(String imagePath, int points, int arrangement) {
+            this.imagePath = imagePath;
+            this.points = points;
+            this.arrangement = arrangement;
+        }
+
+        public String getImagePath() {
+            return imagePath;
+        }
+
+        public String getName() {
+            return this.toString();
+        }
+
+        public int getPoints(){
+            return points;
+        }
+
+        public int getArrangement() {
+            return arrangement;
+        }
     }
 
 

@@ -7,27 +7,11 @@ import core.components.*;
 import core.interfaces.IGamePhase;
 import core.turnorders.TurnOrder;
 import games.GameType;
-// import games.terraformingmars.TMTurnOrder;
-// import games.terraformingmars.TMTypes;
-// import games.terraformingmars.actions.PlaceTile;
-// import games.terraformingmars.actions.TMAction;
-// import games.terraformingmars.components.Award;
-// import games.terraformingmars.components.Milestone;
-// import games.terraformingmars.components.TMCard;
-// import games.terraformingmars.components.TMMapTile;
-// import games.terraformingmars.rules.Discount;
-// import games.terraformingmars.rules.effects.Bonus;
-// import games.terraformingmars.rules.requirements.ActionTypeRequirement;
-// import games.terraformingmars.rules.requirements.TagsPlayedRequirement;
-// import games.terraformingmars.actions.PlaceTile;
-// import games.terraformingmars.actions.TMAction;
-// import games.terraformingmars.components.*;
-// import games.terraformingmars.rules.Discount;
-// import games.terraformingmars.rules.effects.Bonus;
-// import games.terraformingmars.rules.effects.Effect;
-// import games.terraformingmars.rules.requirements.ActionTypeRequirement;
-// import games.terraformingmars.rules.requirements.Requirement;
-// import games.terraformingmars.rules.requirements.TagsPlayedRequirement;
+import games.calico.CalicoTypes.Button;
+import games.calico.CalicoTypes.Cat;
+import games.calico.components.CalicoBoardTile;
+import games.calico.components.CalicoCatCard;
+import games.calico.components.CalicoTile;
 import utilities.Pair;
 import utilities.Utils;
 import utilities.Vector2D;
@@ -39,42 +23,31 @@ import java.util.*;
 //changed from AbstractGameStateWithTurnOrder due to deprecation
 public class CalicoGameState extends AbstractGameState {
 
+    //are all these states for one player only? do these all get copied over for each player?
+
     // General state info
     int generation;
-    GridBoard<CalicoMapTile> board;
-    HashSet<CalicoMapTile> extraTiles;
-    HashMap<TMTypes.GlobalParameter, GlobalParameter> globalParameters;
-    HashSet<Bonus> bonuses;
-    Deck<TMCard> projectCards, corpCards, discardCards;  // Face-down decks
+    // HashMap<TMTypes.GlobalParameter, GlobalParameter> globalParameters;
+    Deck<CalicoCatCard> activeCats;
+    Deck<CalicoTile> tileBag, tileMarket;
 
-    // Effects and actions played
-    HashSet<TMAction>[] playerExtraActions;
-    HashSet<ResourceMapping>[] playerResourceMap;  // Effects for turning one resource into another
-    HashMap<Requirement, Integer>[] playerDiscountEffects;
-    HashSet<Effect>[] playerPersistingEffects;
+    // Effects and actions played - to be updated when actions are added
+    // HashSet<TMAction>[] playerExtraActions;
+    // HashSet<ResourceMapping>[] playerResourceMap;  // Effects for turning one resource into another
+    // HashMap<Requirement, Integer>[] playerDiscountEffects;
+    // HashSet<Effect>[] playerPersistingEffects;
 
-    // Player-specific counters
-    HashMap<TMTypes.Resource, Counter>[] playerResources;
-    HashMap<TMTypes.Resource, Boolean>[] playerResourceIncreaseGen;  // True if this resource was increased this gen
-    HashMap<TMTypes.Resource, Counter>[] playerProduction;
-    HashMap<TMTypes.Tag, Counter>[] playerCardsPlayedTags;
-    HashMap<TMTypes.CardType, Counter>[] playerCardsPlayedTypes;
-    HashMap<TMTypes.Tile, Counter>[] playerTilesPlaced;
-    Counter[] playerCardPoints;  // Points gathered by playing cards
+    // Player-specific values
+    GridBoard<CalicoBoardTile>[] playerBoards;  //are design token points going to be stored here?
+    HashMap<Cat, Counter>[] playerCats;
+    HashMap<Button, Counter>[] playerButtons;
+    Counter[] playerFinalPoints;  // Points calculated at the end of the game
+
+    // HashMap<TMTypes.Tile, Counter>[] playerTilesPlaced; // why is there a counter for this?
 
     // Player cards
-    Deck<TMCard>[] playerHands;
-    Deck<TMCard>[] playerComplicatedPointCards;  // Cards played that can gather resources
-    Deck<TMCard>[] playedCards;  // Cards played that can gather resources
-    Deck<TMCard>[] playerCardChoice;
-    TMCard[] playerCorporations;
-
-    // Milestones and awards
-    HashSet<Milestone> milestones;
-    HashSet<Award> awards;
-    Counter nMilestonesClaimed;
-    Counter nAwardsFunded;
-
+    Deck<CalicoTile>[] playerTiles;
+    //TODO: Add in button colour hashmap
     /**
      * Constructor. Initialises some generic game state variables.
      *
@@ -83,14 +56,14 @@ public class CalicoGameState extends AbstractGameState {
     public CalicoGameState(AbstractParameters gameParameters, int nPlayers) {
         super(gameParameters, nPlayers);
     }
-    @Override
-    protected TurnOrder _createTurnOrder(int nPlayers) {
-        return new TMTurnOrder(nPlayers, ((CalicoGameParameters) gameParameters).nActionsPerPlayer);
-    }
+    // @Override
+    // protected TurnOrder _createTurnOrder(int nPlayers) {
+    //     return new TMTurnOrder(nPlayers, ((CalicoGameParameters) gameParameters).nActionsPerPlayer);
+    // }
 
     @Override
     protected GameType _getGameType() {
-        return GameType.TerraformingMars;
+        return GameType.Calico;
     }
 
     /* Return all components in game incl nested

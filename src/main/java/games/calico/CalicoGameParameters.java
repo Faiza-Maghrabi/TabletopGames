@@ -1,6 +1,8 @@
 package games.calico;
 
 import core.AbstractParameters;
+import games.calico.CalicoTypes.Button;
+import games.calico.CalicoTypes.TileColour;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,27 +11,42 @@ import static games.terraformingmars.TMTypes.Expansion.*;
 
 public class CalicoGameParameters extends AbstractParameters {
 
+    //should this be here?
+    public HashMap<TileColour, Button> colourButtonMap = new HashMap<TileColour, Button>() {{
+        put(TileColour.DBlue, Button.Blueberry);
+        put(TileColour.Green, Button.Leaf);
+        put(TileColour.LBlue, Button.Drop);
+        put(TileColour.Yellow, Button.Moon);
+        put(TileColour.Magenta, Button.Flower);
+        put(TileColour.Purple, Button.Mushroom);
+    }};
+
+    public HashMap<TileColour, Button> getColourButtonMap() {
+        return colourButtonMap;
+    }
+    
+
     int boardSize = 9;
-    HashSet<TMTypes.Expansion> expansions = new HashSet<TMTypes.Expansion>() {{ add(CorporateEra); }};  // Elysium, Hellas and Venus compiling, but not fully parsed yet
+    HashSet<CalicoTypes.Expansion> expansions = new HashSet<CalicoTypes.Expansion>() {{ add(CorporateEra); }};  // Elysium, Hellas and Venus compiling, but not fully parsed yet
     int soloTR = 14;
     int soloMaxGen = 14;
     int soloCities = 2;
 
-    HashMap<TMTypes.Resource, Integer> minimumProduction = new HashMap<TMTypes.Resource, Integer>() {{
-        for (TMTypes.Resource res: TMTypes.Resource.values()) {
-            if (res == TMTypes.Resource.MegaCredit) put(res, -5);
+    HashMap<CalicoTypes.Resource, Integer> minimumProduction = new HashMap<CalicoTypes.Resource, Integer>() {{
+        for (CalicoTypes.Resource res: CalicoTypes.Resource.values()) {
+            if (res == CalicoTypes.Resource.MegaCredit) put(res, -5);
             else put(res, 0);
         }
     }};
-    HashMap<TMTypes.Resource, Integer> startingResources = new HashMap<TMTypes.Resource, Integer>() {{
-        for (TMTypes.Resource res: TMTypes.Resource.values()) {
+    HashMap<CalicoTypes.Resource, Integer> startingResources = new HashMap<CalicoTypes.Resource, Integer>() {{
+        for (CalicoTypes.Resource res: CalicoTypes.Resource.values()) {
             put(res, 0);
         }
-        put(TMTypes.Resource.TR, 20);
+        put(CalicoTypes.Resource.TR, 20);
 //        put(TMTypes.Resource.MegaCredit, 500);  // TODO Test
     }};
-    HashMap<TMTypes.Resource, Integer> startingProduction = new HashMap<TMTypes.Resource, Integer>() {{
-        for (TMTypes.Resource res: TMTypes.Resource.values()) {
+    HashMap<CalicoTypes.Resource, Integer> startingProduction = new HashMap<CalicoTypes.Resource, Integer>() {{
+        for (CalicoTypes.Resource res: CalicoTypes.Resource.values()) {
             if (res.isPlayerBoardRes()) {
                 put(res, 1);
             }
@@ -80,15 +97,15 @@ public class CalicoGameParameters extends AbstractParameters {
         return false;
     }
 
-    public HashMap<TMTypes.Resource, Integer> getMinimumProduction() {
+    public HashMap<CalicoTypes.Resource, Integer> getMinimumProduction() {
         return minimumProduction;
     }
 
-    public HashMap<TMTypes.Resource, Integer> getStartingProduction() {
+    public HashMap<CalicoTypes.Resource, Integer> getStartingProduction() {
         return startingProduction;
     }
 
-    public HashMap<TMTypes.Resource, Integer> getStartingResources() {
+    public HashMap<CalicoTypes.Resource, Integer> getStartingResources() {
         return startingResources;
     }
 
@@ -116,7 +133,7 @@ public class CalicoGameParameters extends AbstractParameters {
         return nProjectsStart;
     }
 
-    public HashSet<TMTypes.Expansion> getExpansions() {
+    public HashSet<CalicoTypes.Expansion> getExpansions() {
         return expansions;
     }
 
