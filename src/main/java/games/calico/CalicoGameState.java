@@ -42,11 +42,12 @@ public class CalicoGameState extends AbstractGameState {
     HashMap<Cat, Counter>[] playerCats;
     HashMap<Button, Counter>[] playerButtons;
     Counter[] playerFinalPoints;  // Points calculated at the end of the game
+    // Player tiles on hand
+    Deck<CalicoTile>[] playerTiles;
 
     // HashMap<TMTypes.Tile, Counter>[] playerTilesPlaced; // why is there a counter for this?
 
-    // Player cards
-    Deck<CalicoTile>[] playerTiles;
+
     //TODO: Add in button colour hashmap
     /**
      * Constructor. Initialises some generic game state variables.
