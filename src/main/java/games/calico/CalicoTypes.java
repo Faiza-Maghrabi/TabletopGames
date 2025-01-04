@@ -27,18 +27,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.HexFormat;
 
 // import static games.terraformingmars.components.TMMapTile.parseMapTile;
 
 public class CalicoTypes {
 
     // Odd r: (odd rows offset to the right)
-    public static Vector2D[][] neighbor_directions = new Vector2D[][] {{new Vector2D(1, 0), new Vector2D(0, -1),
-            new Vector2D(-1, -1), new Vector2D(-1, 0),
-            new Vector2D(-1, 1), new Vector2D(0, 1)},
-            {new Vector2D(1, 0), new Vector2D(1, -1),
-                    new Vector2D(0, -1), new Vector2D(-1, 0),
-                    new Vector2D(0, 1), new Vector2D(1, 1)}};
+    public static Vector2D[][] neighbor_directions = new Vector2D[][] {
+        {
+            new Vector2D(1, 0),
+            new Vector2D(0, -1),
+            new Vector2D(-1, -1),
+            new Vector2D(-1, 0),
+            new Vector2D(-1, 1),
+            new Vector2D(0, 1)
+        },
+        {
+            new Vector2D(1, 0),
+            new Vector2D(1, -1),
+            new Vector2D(0, -1),
+            new Vector2D(-1, 0),
+            new Vector2D(0, 1),
+            new Vector2D(1, 1)
+        }
+    };
 
     // Enums
 

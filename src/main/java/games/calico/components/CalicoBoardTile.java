@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import static core.CoreConstants.ComponentType.BOARD_NODE;
 
+//Odd-r grid for GridBoard
 public class CalicoBoardTile extends Component {
     int x, y, playerBoard;
     CalicoTile tilePlaced;
