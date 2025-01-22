@@ -7,6 +7,35 @@ import core.actions.AbstractAction;
 import core.components.Counter;
 import core.components.Deck;
 import core.components.GridBoard;
+import games.calico.components.CalicoBoard;
+import games.calico.components.CalicoTile;
+import games.terraformingmars.TMGameState;
+import games.terraformingmars.TMTurnOrder;
+import games.terraformingmars.actions.ClaimAwardMilestone;
+import games.terraformingmars.actions.CompoundAction;
+import games.terraformingmars.actions.ModifyGlobalParameter;
+import games.terraformingmars.actions.ModifyPlayerResource;
+import games.terraformingmars.actions.PayForAction;
+import games.terraformingmars.actions.PlaceTile;
+import games.terraformingmars.actions.SellProjects;
+import games.terraformingmars.actions.TMAction;
+import games.terraformingmars.components.Award;
+import games.terraformingmars.components.Milestone;
+import games.terraformingmars.components.TMCard;
+import games.terraformingmars.rules.requirements.TagOnCardRequirement;
+// import games.terraformingmars.TMTurnOrder;
+// import games.terraformingmars.actions.ClaimAwardMilestone;
+// import games.terraformingmars.actions.CompoundAction;
+// import games.terraformingmars.actions.ModifyGlobalParameter;
+// import games.terraformingmars.actions.ModifyPlayerResource;
+// import games.terraformingmars.actions.PayForAction;
+// import games.terraformingmars.actions.PlaceTile;
+// import games.terraformingmars.actions.SellProjects;
+// import games.terraformingmars.actions.TMAction;
+// import games.terraformingmars.components.Award;
+// import games.terraformingmars.components.Milestone;
+// import games.terraformingmars.components.TMCard;
+// import games.terraformingmars.rules.requirements.TagOnCardRequirement;
 // import games.terraformingmars.TMGameState;
 // import games.terraformingmars.TMTurnOrder;
 // import games.terraformingmars.TMTypes;
@@ -61,9 +90,18 @@ public class CalicoForwardModel extends StandardForwardModel {
     //set up begining game state
     @Override
     protected void _setup(AbstractGameState firstState) {
-        TMGameState gs = (TMGameState) firstState;
+        CalicoGameState gs = (CalicoGameState) firstState;
         CalicoGameParameters params = (CalicoGameParameters) firstState.getGameParameters();
 
+        gs.playerBoards = new CalicoBoard[gs.getNPlayers()];
+        for (int i = 0; i< gs.getNPlayers(); i++){
+            gs.playerBoards[i] = new CalicoBoard(params.boardSize);
+            // TODO assign a board to each player and fill up board
+        }
+
+        gs.tileBag = params.loadTiles();
+
+        //TM
         gs.playerResources = new HashMap[gs.getNPlayers()];
         gs.playerProduction = new HashMap[gs.getNPlayers()];
         gs.playerResourceMap = new HashSet[gs.getNPlayers()];

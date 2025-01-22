@@ -14,7 +14,7 @@ public class CalicoTile extends Card {
     String imagePath;
     String imagePathStart = "data/calico/images/tiles/";
 
-    CalicoTile(TileColour colour, TilePattern pattern) {
+    public CalicoTile(TileColour colour, TilePattern pattern) {
         this.colour = colour;
         this.pattern = pattern;
         this.imagePath = imagePathStart + colour + "/" + pattern + ".png";

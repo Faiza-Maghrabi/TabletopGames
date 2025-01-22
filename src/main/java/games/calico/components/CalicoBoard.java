@@ -2,26 +2,46 @@ package games.calico.components;
 
 import core.components.GridBoard;
 import games.calico.CalicoTypes;
+import games.calico.CalicoTypes.TileColour;
+import games.calico.CalicoTypes.TilePattern;
 
 //Exstension of Gridboard to include more functions needed in Calico
 public class CalicoBoard extends GridBoard<CalicoBoardTile> {
 
+    public CalicoBoard(int sideLength){
+        super(sideLength, sideLength);
+    }
+
+    //setting an empty tile
+    public boolean setBoardTile(int x, int y){
+        CalicoBoardTile tile = new CalicoBoardTile(x, y);
+        return this.setElement(x, y, tile);
+    }
+    //setting a tile with a known colour and pattern
+    public boolean setBoardTilePatch(int x, int y, TileColour colour, TilePattern pattern){
+        CalicoBoardTile tile = new CalicoBoardTile(x, y, colour, pattern);
+        return this.setElement(x, y, tile);
+    }
+    //setting a tile with a design goal
+    public boolean setBoardTileDesign(int x, int y, CalicoTypes.DesignGoalTile designGoalTile){
+        CalicoBoardTile tile = new CalicoBoardTile(x, y, designGoalTile);
+        return this.setElement(x, y, tile);
+    }
+
     //get the locations of the neighbouring tiles
-    public int[][] getNeighbouringTiles(int x, int y) {
+    public CalicoBoardTile[] getNeighbouringTiles(int x, int y) {
         // int parity;
         if (x >= 0 && x < getWidth() && y >= 0 && y < getHeight()){
             int parity = y & 1;
-            int[][] tileCoordArr = new int[6][2];
+            CalicoBoardTile[] tileArr = new CalicoBoardTile[6];
             for(int j = 0; j < 6; j++) {
                 var direction = CalicoTypes.neighbor_directions[parity][0];
-                tileCoordArr[j][0] = x + direction.getX();
-                tileCoordArr[j][1] = y + direction.getY();
+                tileArr[j] = this.getElement(direction);
             }
-            return tileCoordArr;
+            return tileArr;
         }
         return null;
     }
-
     //axial oddr conversions for grid calculations col is x and row is y
     public int[] oddr_to_axial(int col, int row){
         var q = col - (row - (row&1)) / 2;

@@ -1,9 +1,11 @@
 package games.calico;
 
+import core.CoreConstants;
 import core.components.Counter;
 import core.components.Deck;
 import core.components.GridBoard;
 import games.calico.components.CalicoBoardTile;
+import games.calico.components.CalicoTile;
 import games.terraformingmars.TMGameParameters;
 import games.terraformingmars.actions.TMAction;
 import games.terraformingmars.components.Award;
@@ -95,23 +97,13 @@ public class CalicoTypes {
     }
 
     public enum TilePattern{
-        Flowers ("data/calico/images/patches/flowers.png"),
-        Dots ("data/calico/images/patches/dots.png"),
-        Vines ("data/calico/images/patches/vines.png"),
-        Stripes ("data/calico/images/patches/stripes.png"),
-        Quatrefoil ("data/calico/images/patches/quatrefoil.png"),
-        Ferns ("data/calico/images/patches/ferns.png"),
-        Null ("null"); //no patch tile for null
-
-        String imagePath;
-
-        TilePattern(String imagePath){
-            this.imagePath = imagePath;
-        }
-
-        public String getImagePath() {
-            return imagePath;
-        }
+        Flowers,
+        Dots,
+        Vines,
+        Stripes,
+        Quatrefoil,
+        Ferns,
+        Null
     }
 
     public enum Button{
@@ -160,63 +152,6 @@ public class CalicoTypes {
 
         public int getArrangement() {
             return arrangement;
-        }
-    }
-
-
-    public enum Resource {
-        MegaCredit("data/terraformingmars/images/megacredits/megacredit.png", true, false),
-        Steel("data/terraformingmars/images/resources/steel.png", true, false),
-        Titanium("data/terraformingmars/images/resources/titanium.png", true, false),
-        Plant("data/terraformingmars/images/resources/plant.png", true, false),
-        Energy("data/terraformingmars/images/resources/power.png", true, false),
-        Heat("data/terraformingmars/images/resources/heat.png", true, false),
-        Card("data/terraformingmars/images/resources/card.png", false, false),
-        TR("data/terraformingmars/images/resources/TR.png", false, false),
-        Microbe("data/terraformingmars/images/resources/microbe.png", false, true),
-        Animal("data/terraformingmars/images/resources/animal.png", false, true),
-        Science("data/terraformingmars/images/resources/science.png", false, true),
-        Fighter("data/terraformingmars/images/resources/fighter.png", false, true),
-        Floater("data/terraformingmars/images/resources/floater.png", false, true);
-
-        String imagePath;
-        boolean playerBoardRes;
-        boolean canGoOnCard;
-        static int nPlayerBoardRes = -1;
-
-        Resource(String imagePath, boolean playerBoardRes, boolean canGoOnCard) {
-            this.imagePath = imagePath;
-            this.playerBoardRes = playerBoardRes;
-        }
-
-        public String getImagePath() {
-            return imagePath;
-        }
-
-        public boolean isPlayerBoardRes() {
-            return playerBoardRes;
-        }
-
-        public static int nPlayerBoardRes() {
-            if (nPlayerBoardRes == -1) {
-                nPlayerBoardRes = 0;
-                for (Resource res : values()) {
-                    if (res.isPlayerBoardRes()) nPlayerBoardRes++;
-                }
-            }
-            return nPlayerBoardRes;
-        }
-
-        public boolean canGoOnCard() {
-            return canGoOnCard;
-        }
-
-        public static Resource[] getPlayerBoardResources() {
-            ArrayList<Resource> res = new ArrayList<>();
-            for (Resource r: values()) {
-                if (r.isPlayerBoardRes()) res.add(r);
-            }
-            return res.toArray(new Resource[0]);
         }
     }
 
@@ -349,6 +284,7 @@ public class CalicoTypes {
         }
 
         /* custom loading info from json */
+
 
         public void loadBoard(GridBoard<CalicoMapTile> board, HashSet<CalicoMapTile> extraTiles, HashSet<Bonus> bonuses,
                               HashSet<Milestone> milestones, HashSet<Award> awards, HashMap<GlobalParameter, games.terraformingmars.components.GlobalParameter> globalParameters) {

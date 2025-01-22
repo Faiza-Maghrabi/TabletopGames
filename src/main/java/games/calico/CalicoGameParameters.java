@@ -1,11 +1,22 @@
 package games.calico;
 
 import core.AbstractParameters;
+import core.CoreConstants;
+import core.components.Deck;
 import games.calico.CalicoTypes.Button;
 import games.calico.CalicoTypes.TileColour;
+import games.calico.CalicoTypes.TilePattern;
+import games.calico.components.CalicoTile;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 // import static games.terraformingmars.TMTypes.Expansion.*;
 
@@ -24,9 +35,29 @@ public class CalicoGameParameters extends AbstractParameters {
     public HashMap<TileColour, Button> getColourButtonMap() {
         return colourButtonMap;
     }
-    
 
-    int boardSize = 9;
+    int boardSize = 7;
+
+    public Deck<CalicoTile> loadTiles(){
+        JSONParser jsonParser = new JSONParser();
+        Deck<CalicoTile> allTiles = new Deck<CalicoTile>("all times", CoreConstants.VisibilityMode.HIDDEN_TO_ALL);
+        try (FileReader reader = new FileReader("data/files/tileCombos.json")) {
+            JSONObject data = (JSONObject) jsonParser.parse(reader);
+            JSONArray arr = (JSONArray) data.get("tiles");
+            for (Object a : arr) {
+                String[] tileVals = a.toString().split(",");
+                //add tile in 3 times
+                allTiles.add(new CalicoTile(TileColour.valueOf(tileVals[0]), TilePattern.valueOf(tileVals[1])));
+                allTiles.add(new CalicoTile(TileColour.valueOf(tileVals[0]), TilePattern.valueOf(tileVals[1])));
+                allTiles.add(new CalicoTile(TileColour.valueOf(tileVals[0]), TilePattern.valueOf(tileVals[1])));
+            }
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        return allTiles;
+    }
+
+    //TM
     HashSet<CalicoTypes.Expansion> expansions = new HashSet<CalicoTypes.Expansion>() {{ add(CorporateEra); }};  // Elysium, Hellas and Venus compiling, but not fully parsed yet
     int soloTR = 14;
     int soloMaxGen = 14;

@@ -9,6 +9,7 @@ import core.turnorders.TurnOrder;
 import games.GameType;
 import games.calico.CalicoTypes.Button;
 import games.calico.CalicoTypes.Cat;
+import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoBoardTile;
 import games.calico.components.CalicoCatCard;
 import games.calico.components.CalicoTile;
@@ -23,22 +24,19 @@ import java.util.*;
 //changed from AbstractGameStateWithTurnOrder due to deprecation
 public class CalicoGameState extends AbstractGameState {
 
-    //are all these states for one player only? do these all get copied over for each player?
-
     // General state info
     int generation;
-    // HashMap<TMTypes.GlobalParameter, GlobalParameter> globalParameters;
+
+    //Active Cats
     Deck<CalicoCatCard> activeCats;
+    //Tile Locations
     Deck<CalicoTile> tileBag, tileMarket;
 
     // Effects and actions played - to be updated when actions are added
     // HashSet<TMAction>[] playerExtraActions;
-    // HashSet<ResourceMapping>[] playerResourceMap;  // Effects for turning one resource into another
-    // HashMap<Requirement, Integer>[] playerDiscountEffects;
-    // HashSet<Effect>[] playerPersistingEffects;
 
     // Player-specific values
-    GridBoard<CalicoBoardTile>[] playerBoards;  //are design token points going to be stored here?
+    CalicoBoard[] playerBoards;  //are design token points going to be stored here?
     HashMap<Cat, Counter>[] playerCats;
     HashMap<Button, Counter>[] playerButtons;
     Counter[] playerFinalPoints;  // Points calculated at the end of the game

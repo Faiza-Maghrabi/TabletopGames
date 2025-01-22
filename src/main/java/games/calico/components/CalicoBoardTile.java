@@ -11,7 +11,7 @@ import static core.CoreConstants.ComponentType.BOARD_NODE;
 
 //Odd-r grid for GridBoard
 public class CalicoBoardTile extends Component {
-    int x, y, playerBoard;
+    int x, y;
     CalicoTile tilePlaced;
     boolean isEmpty = true;
 
@@ -21,29 +21,26 @@ public class CalicoBoardTile extends Component {
     boolean hasButton = false;
     boolean hasCat = false;
 
-    public CalicoBoardTile(int x, int y, int playerBoard) {
+    public CalicoBoardTile(int x, int y) {
         super(BOARD_NODE, "Tile");
         this.x = x;
         this.y = y;
-        this.playerBoard = playerBoard;
         this.tilePlaced = new CalicoTile(TileColour.Null, TilePattern.Null);
     }
 
-    public CalicoBoardTile(int x, int y, int playerBoard, CalicoTypes.DesignGoalTile designGoalTile) {
+    public CalicoBoardTile(int x, int y, CalicoTypes.DesignGoalTile designGoalTile) {
         super(BOARD_NODE, "Tile");
         this.x = x;
         this.y = y;
-        this.playerBoard = playerBoard;
         this.designGoalTile = designGoalTile;
         this.isDesignTile = true;
         this.isEmpty = false;
     }
 
-    public CalicoBoardTile(int x, int y, int playerBoard, TileColour colour, TilePattern pattern) {
+    public CalicoBoardTile(int x, int y, TileColour colour, TilePattern pattern) {
         super(BOARD_NODE, "Tile");
         this.x = x;
         this.y = y;
-        this.playerBoard = playerBoard;
         this.tilePlaced = new CalicoTile(colour, pattern);
         this.isEmpty = false;
     }
@@ -116,7 +113,7 @@ public class CalicoBoardTile extends Component {
 
     @Override
     public CalicoBoardTile copy() {
-        CalicoBoardTile copy = new CalicoBoardTile(x, y, playerBoard);
+        CalicoBoardTile copy = new CalicoBoardTile(x, y);
         copyComponentTo(copy);
         copy.tilePlaced = tilePlaced;
         copy.isEmpty = isEmpty;
@@ -172,7 +169,7 @@ public class CalicoBoardTile extends Component {
         if (!(o instanceof CalicoBoardTile)) return false;
         if (!super.equals(o)) return false;
         CalicoBoardTile calicoMapTile = (CalicoBoardTile) o;
-        return playerBoard == calicoMapTile.playerBoard && x == calicoMapTile.x && y == calicoMapTile.y && tilePlaced == calicoMapTile.tilePlaced && isEmpty == calicoMapTile.isEmpty && isDesignTile == calicoMapTile.isDesignTile && designGoalTile == calicoMapTile.designGoalTile && hasButton == calicoMapTile.hasButton && hasCat == calicoMapTile.hasCat;
+        return x == calicoMapTile.x && y == calicoMapTile.y && tilePlaced == calicoMapTile.tilePlaced && isEmpty == calicoMapTile.isEmpty && isDesignTile == calicoMapTile.isDesignTile && designGoalTile == calicoMapTile.designGoalTile && hasButton == calicoMapTile.hasButton && hasCat == calicoMapTile.hasCat;
     }
 
     @Override
