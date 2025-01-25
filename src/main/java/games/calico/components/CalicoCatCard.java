@@ -12,10 +12,14 @@ public class CalicoCatCard extends Card{
 
     TilePattern[] patches = new TilePattern[2];
 
-    CalicoCatCard(Cat cat, TilePattern patch1, TilePattern patch2) {
+    public CalicoCatCard(Cat cat, TilePattern patch1, TilePattern patch2) {
         this.cat = cat;
         this.patches[0] = patch1;
         this.patches[1] = patch2;
+    }
+
+    public Cat getCat(){ 
+        return cat;
     }
 
     public String getName(){ 

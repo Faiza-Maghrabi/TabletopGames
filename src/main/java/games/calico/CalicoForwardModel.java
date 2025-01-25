@@ -7,6 +7,8 @@ import core.actions.AbstractAction;
 import core.components.Counter;
 import core.components.Deck;
 import core.components.GridBoard;
+import games.calico.CalicoTypes.Button;
+import games.calico.CalicoTypes.Cat;
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoTile;
 import games.terraformingmars.TMGameState;
@@ -93,13 +95,48 @@ public class CalicoForwardModel extends StandardForwardModel {
         CalicoGameState gs = (CalicoGameState) firstState;
         CalicoGameParameters params = (CalicoGameParameters) firstState.getGameParameters();
 
+        gs.turn = 1;
+        gs.seed = params.getRandomSeed();
+
+        gs.activeCats = params.loadCats();
+
+        gs.tileBag = params.loadTiles();
+        gs.tileBag.shuffle(new Random(gs.seed));
+
+        //add 3 to the tile market
+        gs.tileMarket.add(gs.tileBag.draw());
+        gs.tileMarket.add(gs.tileBag.draw());
+        gs.tileMarket.add(gs.tileBag.draw());
+
+        gs.tileBag.shuffle(new Random(params.getRandomSeed()));
+        
         gs.playerBoards = new CalicoBoard[gs.getNPlayers()];
+
+        gs.playerCatScore = new HashMap[gs.getNPlayers()];
+        gs.playerButtonScore = new HashMap[gs.getNPlayers()];
+        gs.playerGoalScore = new HashMap[gs.getNPlayers()];
+        gs.playerFinalPoints = new Counter[gs.getNPlayers()];
+
         for (int i = 0; i< gs.getNPlayers(); i++){
             gs.playerBoards[i] = new CalicoBoard(params.boardSize);
             // TODO assign a board to each player and fill up board
+
+            //fill in point hashmaps
+            gs.playerCatScore[i] = new HashMap<Cat, Counter>();
+            for (int j = 0; j < gs.activeCats.size(); j++) {
+                Cat c = gs.activeCats.get(j).getCat()
+                gs.playerCatScore[i].put(c, new Counter(0,"cat point for " + c.getName()));
+            }
+
+            gs.playerButtonScore[i] = new HashMap<Button, Counter>();
+            for (Button b : Button.values()) {
+                gs.playerButtonScore[i].put(b, new Counter(0,"button point for " + b));
+            }
+
+            //find design tiles for the board and then set the point hashmap for it
         }
 
-        gs.tileBag = params.loadTiles();
+        //setup hashmaps for cat and button points (and design tiles?)
 
         //TM
         gs.playerResources = new HashMap[gs.getNPlayers()];

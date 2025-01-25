@@ -2,16 +2,22 @@ package games.calico;
 
 import core.AbstractParameters;
 import core.CoreConstants;
+import core.components.Counter;
 import core.components.Deck;
 import games.calico.CalicoTypes.Button;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
+import games.calico.components.CalicoCatCard;
 import games.calico.components.CalicoTile;
+import games.terraformingmars.TMTypes;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -40,7 +46,7 @@ public class CalicoGameParameters extends AbstractParameters {
 
     public Deck<CalicoTile> loadTiles(){
         JSONParser jsonParser = new JSONParser();
-        Deck<CalicoTile> allTiles = new Deck<CalicoTile>("all times", CoreConstants.VisibilityMode.HIDDEN_TO_ALL);
+        Deck<CalicoTile> allTiles = new Deck<CalicoTile>("all tiles", CoreConstants.VisibilityMode.HIDDEN_TO_ALL);
         try (FileReader reader = new FileReader("data/files/tileCombos.json")) {
             JSONObject data = (JSONObject) jsonParser.parse(reader);
             JSONArray arr = (JSONArray) data.get("tiles");
@@ -55,6 +61,39 @@ public class CalicoGameParameters extends AbstractParameters {
             e.printStackTrace();
         }
         return allTiles;
+    }
+
+    //load patterns needed for the cat cards
+    public ArrayList<TilePattern> loadPatternTiles(){
+        ArrayList<TilePattern> patternTiles = new ArrayList<TilePattern>();
+
+        for (TilePattern t : TilePattern.values()) {
+            patternTiles.add(t);
+        }
+        
+        Collections.shuffle(patternTiles);
+        return patternTiles;
+    }
+
+    //chose 3 cats and assign patterns to them
+    public ArrayList<CalicoCatCard> loadCats(){
+        ArrayList<CalicoCatCard> catsInPlay = new ArrayList<CalicoCatCard>();
+        ArrayList<TilePattern> patternTiles = loadPatternTiles();
+
+        ArrayList<CalicoTypes.Cat> allCats = new ArrayList<CalicoTypes.Cat>();
+        for (CalicoTypes.Cat c : CalicoTypes.Cat.values()) {
+            allCats.add(c);
+        }
+        Collections.shuffle(allCats);
+
+        int tileCounter = 0;
+
+        for (int i = 0; i < 3; i++){
+            catsInPlay.add(new CalicoCatCard(allCats.get(i), patternTiles.get(tileCounter), patternTiles.get(tileCounter)));
+            tileCounter+= 2;
+        }
+
+        return catsInPlay;
     }
 
     //TM
