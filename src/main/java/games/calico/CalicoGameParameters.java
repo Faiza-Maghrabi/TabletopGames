@@ -47,18 +47,12 @@ public class CalicoGameParameters extends AbstractParameters {
     public Deck<CalicoTile> loadTiles(){
         JSONParser jsonParser = new JSONParser();
         Deck<CalicoTile> allTiles = new Deck<CalicoTile>("all tiles", CoreConstants.VisibilityMode.HIDDEN_TO_ALL);
-        try (FileReader reader = new FileReader("data/files/tileCombos.json")) {
-            JSONObject data = (JSONObject) jsonParser.parse(reader);
-            JSONArray arr = (JSONArray) data.get("tiles");
-            for (Object a : arr) {
-                String[] tileVals = a.toString().split(",");
-                //add tile in 3 times
-                allTiles.add(new CalicoTile(TileColour.valueOf(tileVals[0]), TilePattern.valueOf(tileVals[1])));
-                allTiles.add(new CalicoTile(TileColour.valueOf(tileVals[0]), TilePattern.valueOf(tileVals[1])));
-                allTiles.add(new CalicoTile(TileColour.valueOf(tileVals[0]), TilePattern.valueOf(tileVals[1])));
+        for (TileColour colour : TileColour.values()) {
+            for (TilePattern pattern : TilePattern.values()) {
+                allTiles.add(new CalicoTile(colour, pattern));
+                allTiles.add(new CalicoTile(colour, pattern));
+                allTiles.add(new CalicoTile(colour, pattern));
             }
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
         }
         return allTiles;
     }
