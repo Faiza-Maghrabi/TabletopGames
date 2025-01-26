@@ -2,14 +2,18 @@ package games.calico.components;
 
 import core.components.GridBoard;
 import games.calico.CalicoTypes;
+import games.calico.CalicoTypes.BoardTypes;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
 
 //Exstension of Gridboard to include more functions needed in Calico
 public class CalicoBoard extends GridBoard<CalicoBoardTile> {
 
-    public CalicoBoard(int sideLength){
+    BoardTypes type;
+
+    public CalicoBoard(int sideLength, BoardTypes type){
         super(sideLength, sideLength);
+        this.type = type;
     }
 
     //setting an empty tile
@@ -22,6 +26,12 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         CalicoBoardTile tile = new CalicoBoardTile(x, y, colour, pattern);
         return this.setElement(x, y, tile);
     }
+        //setting a tile with a known tile
+    public boolean setBoardTilePatch(int x, int y, CalicoBoardTile tile){
+        CalicoBoardTile boardtile = new CalicoBoardTile(x, y, tile.getTileColour(), tile.getTilePattern());
+        return this.setElement(x, y, boardtile);
+    }
+
     //setting a tile with a design goal
     public boolean setBoardTileDesign(int x, int y, CalicoTypes.DesignGoalTile designGoalTile){
         CalicoBoardTile tile = new CalicoBoardTile(x, y, designGoalTile);

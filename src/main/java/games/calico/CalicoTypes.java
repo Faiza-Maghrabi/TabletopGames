@@ -87,6 +87,13 @@ public class CalicoTypes {
         }
     }
 
+    public enum BoardTypes{
+        blue,
+        green,
+        purple,
+        yellow
+    }
+
     public enum TileColour{
         DBlue,
         Green,

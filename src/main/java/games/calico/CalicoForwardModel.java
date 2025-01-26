@@ -7,85 +7,17 @@ import core.actions.AbstractAction;
 import core.components.Counter;
 import core.components.Deck;
 import core.components.GridBoard;
+
+import games.calico.CalicoTypes.BoardTypes;
 import games.calico.CalicoTypes.Button;
 import games.calico.CalicoTypes.Cat;
 import games.calico.CalicoTypes.DesignGoalTile;
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoTile;
-import games.terraformingmars.TMGameState;
-import games.terraformingmars.TMTurnOrder;
-import games.terraformingmars.actions.ClaimAwardMilestone;
-import games.terraformingmars.actions.CompoundAction;
-import games.terraformingmars.actions.ModifyGlobalParameter;
-import games.terraformingmars.actions.ModifyPlayerResource;
-import games.terraformingmars.actions.PayForAction;
-import games.terraformingmars.actions.PlaceTile;
-import games.terraformingmars.actions.SellProjects;
-import games.terraformingmars.actions.TMAction;
-import games.terraformingmars.components.Award;
-import games.terraformingmars.components.Milestone;
-import games.terraformingmars.components.TMCard;
-import games.terraformingmars.rules.requirements.TagOnCardRequirement;
-// import games.terraformingmars.TMTurnOrder;
-// import games.terraformingmars.actions.ClaimAwardMilestone;
-// import games.terraformingmars.actions.CompoundAction;
-// import games.terraformingmars.actions.ModifyGlobalParameter;
-// import games.terraformingmars.actions.ModifyPlayerResource;
-// import games.terraformingmars.actions.PayForAction;
-// import games.terraformingmars.actions.PlaceTile;
-// import games.terraformingmars.actions.SellProjects;
-// import games.terraformingmars.actions.TMAction;
-// import games.terraformingmars.components.Award;
-// import games.terraformingmars.components.Milestone;
-// import games.terraformingmars.components.TMCard;
-// import games.terraformingmars.rules.requirements.TagOnCardRequirement;
-// import games.terraformingmars.TMGameState;
-// import games.terraformingmars.TMTurnOrder;
-// import games.terraformingmars.TMTypes;
-// import games.terraformingmars.actions.ClaimAwardMilestone;
-// import games.terraformingmars.actions.CompoundAction;
-// import games.terraformingmars.actions.ModifyGlobalParameter;
-// import games.terraformingmars.actions.ModifyPlayerResource;
-// import games.terraformingmars.actions.PayForAction;
-// import games.terraformingmars.actions.PlaceTile;
-// import games.terraformingmars.actions.SellProjects;
-// import games.terraformingmars.actions.TMAction;
-// import games.terraformingmars.components.Award;
-// import games.terraformingmars.components.Milestone;
-// import games.terraformingmars.components.TMCard;
-// import games.terraformingmars.components.TMMapTile;
-// import games.terraformingmars.rules.requirements.TagOnCardRequirement;
-// import games.terraformingmars.TMGameState;
-// import games.terraformingmars.TMTurnOrder;
-// import games.terraformingmars.TMTypes;
-// import games.terraformingmars.actions.ClaimAwardMilestone;
-// import games.terraformingmars.actions.CompoundAction;
-// import games.terraformingmars.actions.ModifyGlobalParameter;
-// import games.terraformingmars.actions.ModifyPlayerResource;
-// import games.terraformingmars.actions.PayForAction;
-// import games.terraformingmars.actions.PlaceTile;
-// import games.terraformingmars.actions.SellProjects;
-// import games.terraformingmars.actions.TMAction;
-// import games.terraformingmars.components.Award;
-// import games.terraformingmars.components.Milestone;
-// import games.terraformingmars.components.TMCard;
-// import games.terraformingmars.components.TMMapTile;
-// import games.terraformingmars.rules.requirements.TagOnCardRequirement;
-// import games.terraformingmars.actions.*;
-// import games.terraformingmars.components.Award;
-// import games.terraformingmars.components.Milestone;
-// import games.terraformingmars.components.TMCard;
-// import games.terraformingmars.components.TMMapTile;
-// import games.terraformingmars.rules.requirements.TagOnCardRequirement;
+
 import utilities.Vector2D;
 
 import java.util.*;
-
-// import static games.terraformingmars.TMGameState.TMPhase.*;
-// import static games.terraformingmars.TMTypes.Resource.MegaCredit;
-// import static games.terraformingmars.TMTypes.Resource.TR;
-// import static games.terraformingmars.TMTypes.StandardProject.*;
-// import static games.terraformingmars.TMTypes.ActionType.*;
 
 //changed from StandardForwardModelWithTurnOrder due to deprecated?
 public class CalicoForwardModel extends StandardForwardModel {
@@ -120,12 +52,12 @@ public class CalicoForwardModel extends StandardForwardModel {
 
         gs.playerTiles = new Deck[gs.getNPlayers()];
 
-        for (int i = 0; i< gs.getNPlayers(); i++){
-            //design tiles to be used in playerBoard
-            DesignGoalTile[] goalTiles = params.getRandomDesignTile();
+        ArrayList<BoardTypes> allBoardTypes = params.getShuffledBoardTypes();
 
-            gs.playerBoards[i] = new CalicoBoard(params.boardSize);
-            // TODO assign a board to each player and fill up board
+        for (int i = 0; i< gs.getNPlayers(); i++){
+
+            gs.playerBoards[i] = new CalicoBoard(params.boardSize, allBoardTypes.get(i));
+            gs.playerBoards[i] = params.setupBoard(gs.playerBoards[i], allBoardTypes.get(i));
 
             //fill in point hashmaps
             gs.playerCatScore[i] = new HashMap<Cat, Counter>();
@@ -149,134 +81,6 @@ public class CalicoForwardModel extends StandardForwardModel {
             gs.playerTiles[i].add(gs.tileBag.draw());
             gs.playerTiles[i].add(gs.tileBag.draw());
         }
-
-//        TMCard cccc = null;
-//        try {
-//            GsonBuilder gsonBuilder = new GsonBuilder()
-//                    .registerTypeAdapter(Requirement.class, new SimpleSerializer<Requirement>())
-//                    .registerTypeAdapter(Effect.class, new SimpleSerializer<Effect>())
-//                    .registerTypeAdapter(Discount.class, new Discount())
-//                    .registerTypeAdapter(TMAction.class, new SimpleSerializer<TMAction>())
-//                    ;
-//
-////            GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(Requirement.class, new RequirementJSONSerializer());
-//            Gson gson = gsonBuilder.setPrettyPrinting().create();
-//
-//            FileWriter fw = new FileWriter("data/terraformingmars/projectCards/jsonCardsCORP.json");
-//            fw.write("[");
-//            for (TMCard c: gs.projectCards.getComponents()) {
-//                cccc = c;
-//                TMCard cCopy = c.copySerializable();
-//                String jsonString = gson.toJson(cCopy);
-//                fw.write(jsonString + ",");
-//                System.out.println(jsonString);
-//                fw.flush();
-//            }
-//            fw.write("]");
-//            fw.flush();
-//            fw.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println(cccc.toString());
-//        }
-
-        if (gs.getNPlayers() == 1) {
-            // Disable milestones and awards for solo play
-            gs.milestones = new HashSet<>();
-            gs.awards = new HashSet<>();
-        }
-
-        // Shuffle dekcs
-        gs.projectCards.shuffle(gs.getRnd());
-        gs.corpCards.shuffle(gs.getRnd());
-
-        HashMap<CalicoTypes.Tag, Counter>[] playerCardsPlayedTags;
-        HashSet<AbstractAction>[] playerCardsPlayedEffects;
-        HashSet<AbstractAction>[] playerCardsPlayedActions;
-        HashMap<CalicoTypes.CardType, Counter>[] playerCardsPlayedTypes;
-        HashMap<CalicoTypes.Tile, Counter>[] tilesPlaced;
-
-        gs.playerCorporations = new TMCard[gs.getNPlayers()];
-        gs.playerCardChoice = new Deck[gs.getNPlayers()];
-        gs.playerHands = new Deck[gs.getNPlayers()];
-        gs.playerComplicatedPointCards = new Deck[gs.getNPlayers()];
-        gs.playedCards = new Deck[gs.getNPlayers()];
-        gs.playerCardPoints = new Counter[gs.getNPlayers()];
-        for (int i = 0; i < gs.getNPlayers(); i++) {
-            gs.playerHands[i] = new Deck<>("Hand of p" + i, i, CoreConstants.VisibilityMode.VISIBLE_TO_OWNER);
-            gs.playerCardChoice[i] = new Deck<>("Card Choice for p" + i, i, CoreConstants.VisibilityMode.VISIBLE_TO_OWNER);
-            gs.playerComplicatedPointCards[i] = new Deck<>("Resource or Points Cards Played by p" + i, i, CoreConstants.VisibilityMode.VISIBLE_TO_ALL);
-            gs.playedCards[i] = new Deck<>("Other Cards Played by p" + i, i, CoreConstants.VisibilityMode.VISIBLE_TO_ALL);
-            gs.playerCardPoints[i] = new Counter(0, 0, params.maxPoints, "Points of p" + i);
-        }
-
-        gs.playerTilesPlaced = new HashMap[gs.getNPlayers()];
-        gs.playerCardsPlayedTypes = new HashMap[gs.getNPlayers()];
-        gs.playerCardsPlayedTags = new HashMap[gs.getNPlayers()];
-        gs.playerExtraActions = new HashSet[gs.getNPlayers()];
-        gs.playerPersistingEffects = new HashSet[gs.getNPlayers()];
-        for (int i = 0; i < gs.getNPlayers(); i++) {
-            gs.playerTilesPlaced[i] = new HashMap<>();
-            for (CalicoTypes.Tile t : CalicoTypes.Tile.values()) {
-                gs.playerTilesPlaced[i].put(t, new Counter(0, 0, params.maxPoints, t.name() + " tiles placed player " + i));
-            }
-            gs.playerCardsPlayedTypes[i] = new HashMap<>();
-            for (CalicoTypes.CardType t : CalicoTypes.CardType.values()) {
-                gs.playerCardsPlayedTypes[i].put(t, new Counter(0, 0, params.maxPoints, t.name() + " cards played player " + i));
-            }
-            gs.playerCardsPlayedTags[i] = new HashMap<>();
-            for (CalicoTypes.Tag t : CalicoTypes.Tag.values()) {
-                gs.playerCardsPlayedTags[i].put(t, new Counter(0, 0, params.maxPoints, t.name() + " cards played player " + i));
-            }
-            gs.playerExtraActions[i] = new HashSet<>();
-            gs.playerPersistingEffects[i] = new HashSet<>();
-        }
-
-        gs.nAwardsFunded = new Counter(0, 0, params.nCostAwards.length, "Awards funded");
-        gs.nMilestonesClaimed = new Counter(0, 0, params.nCostMilestone.length, "Milestones claimed");
-
-        // First thing to do is select corporations
-        gs.setGamePhase(CorporationSelect);
-        for (int i = 0; i < gs.getNPlayers(); i++) {
-            // TODO: remove, used for testing corps
-//            for (TMCard c: gs.corpCards.getComponents()) {
-//                if (c.getComponentName().equals("UNITED NATIONS MARS INITIATIVE")) {
-//                    gs.playerCardChoice[i].add(c);
-//                }
-//            }
-            for (int j = 0; j < params.nCorpChoiceStart; j++) {
-                gs.playerCardChoice[i].add(gs.corpCards.pick(0));
-            }
-        }
-
-        // Solo setup: place X cities randomly, with 1 greenery adjacent each (no oxygen increase)
-        if (gs.getNPlayers() == 1) {
-            int boardH = gs.board.getHeight();
-            int boardW = gs.board.getWidth();
-            gs.getTurnOrder().setTurnOwner(1);
-            for (int i = 0; i < params.soloCities; i++) {
-                // Place city + greenery adjacent
-                PlaceTile pt = new PlaceTile(1, CalicoTypes.Tile.City, CalicoTypes.MapTileType.Ground, true);
-                List<AbstractAction> actions = pt._computeAvailableActions(gs);
-                PlaceTile action = (PlaceTile) actions.get(gs.getRnd().nextInt(actions.size()));
-                action.execute(gs);
-                CalicoMapTile mt = (CalicoMapTile) gs.getComponentById(action.mapTileID);
-                List<Vector2D> neighbours = PlaceTile.getNeighbours(new Vector2D(mt.getX(), mt.getY()));
-                boolean placed = false;
-                while (!placed) {
-                    Vector2D v = neighbours.get(gs.getRnd().nextInt(neighbours.size()));
-                    CalicoMapTile mtn = gs.board.getElement(v.getX(), v.getY());
-                    if (mtn != null && mtn.getOwnerId() == -1 && mtn.getTileType() == CalicoTypes.MapTileType.Ground) {
-                        mtn.setTilePlaced(CalicoTypes.Tile.Greenery, gs);
-                        placed = true;
-                    }
-                }
-            }
-            gs.getTurnOrder().setTurnOwner(0);
-            gs.globalParameters.get(CalicoTypes.GlobalParameter.Oxygen).setValue(0);
-        }
-
-        gs.generation = 1;
     }
 
     //This is called every time an action is taken by one of the players, human or AI.

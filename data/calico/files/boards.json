@@ -2,36 +2,36 @@
     "blue": [
         ["Magenta,Vines", "Yellow,Stripes", "LBlue,Vines", "Magenta,Ferns", "Purple,Quatrefoil", "Yellow,Flowers", "Green,Stripes"],
         ["Green,Flowers", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "DBlue,Dots"],
-        ["DBlue,Quatrefoil", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Purple,Vines"],
-        ["LBlue,Ferns", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Yellow,Ferns"],
-        ["Purple,Stripes", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Green,Quatrefoil"],
+        ["DBlue,Quatrefoil", "Null,Null", "Null,Null", "DesignGoal", "Null,Null", "Null,Null", "Purple,Vines"],
+        ["LBlue,Ferns", "Null,Null", "Null,Null", "Null,Null", "DesignGoal", "Null,Null", "Yellow,Ferns"],
+        ["Purple,Stripes", "Null,Null", "DesignGoal", "Null,Null", "Null,Null", "Null,Null", "Green,Quatrefoil"],
         ["Yellow,Dots", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "DBlue,Flowers"],
         ["Purple,Flowers", "LBlue,Quatrefoil", "Magenta,Flowers", "DBlue,Ferns", "Green,Vines", "Magenta,Dots", "LBlue,Stripes"]
     ],
     "yellow": [
         ["Green,Quatrefoil", "DBlue,Flowers", "Yellow,Stripes", "Purple,Dots", "DBlue,Vines", "Green,Ferns", "Magenta,Quatrefoil"],
         ["Magenta,Ferns", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "LBlue,Flowers"],
-        ["Purple,Vines", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "DBlue,Stripes"],
-        ["Yellow,Dots", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Green,Dots"],
-        ["Green,Flowers", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Magenta,Vines"],
+        ["Purple,Vines", "Null,Null", "Null,Null", "DesignGoal", "Null,Null", "Null,Null", "DBlue,Stripes"],
+        ["Yellow,Dots", "Null,Null", "Null,Null", "Null,Null", "DesignGoal", "Null,Null", "Green,Dots"],
+        ["Green,Flowers", "Null,Null", "DesignGoal", "Null,Null", "Null,Null", "Null,Null", "Magenta,Vines"],
         ["DBlue,Quatrefoil", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "LBlue,Ferns"],
         ["LBlue,Vines", "Purple,Ferns", "Yellow,Vines", "LBlue,Dots", "Magenta,Stripes", "Purple,Flowers", "Yellow,Quatrefoil"]
     ],
     "green": [
         ["DBlue,Ferns", "Yellow,Vines", "Green,Ferns", "DBlue,Stripes", "Purple,Quatrefoil", "Yellow,Dots", "LBlue,Vines"],
         ["Purple,Dots", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Magenta,Flowers"],
-        ["Magenta,Quatrefoil", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Purple,Ferns"],
-        ["LBlue,Stripes", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Yellow,Stripes"],
-        ["Yellow,Flowers", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "LBlue,Quatrefoil"],
+        ["Magenta,Quatrefoil", "Null,Null", "Null,Null", "DesignGoal", "Null,Null", "Null,Null", "Purple,Ferns"],
+        ["LBlue,Stripes", "Null,Null", "Null,Null", "Null,Null", "DesignGoal", "Null,Null", "Yellow,Stripes"],
+        ["Yellow,Flowers", "Null,Null", "DesignGoal", "Null,Null", "Null,Null", "Null,Null", "LBlue,Quatrefoil"],
         ["Purple,Vines", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Magenta,Dots"],
         ["Green,Stripes", "DBlue,Dots", "Green,Quatrefoil", "Magenta,Stripes", "LBlue,Ferns", "DBlue,Flowers", "Green,Vines"]
     ],
     "purple": [
         ["Yellow,Flowers", "Magenta,Dots", "Purple,Flowers", "Yellow,Vines", "LBlue,Stripes", "Magenta,Quatrefoil", "Green,Dots"],
         ["LBlue,Quatrefoil", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "DBlue,Vines"],
-        ["DBlue,Stripes", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "LBlue,Flowers"],
-        ["Green,Ferns", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Magenta,Stripes"],
-        ["Magenta,Vines", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Green,Stripes"],
+        ["DBlue,Stripes", "Null,Null", "Null,Null", "DesignGoal", "Null,Null", "Null,Null", "LBlue,Flowers"],
+        ["Green,Ferns", "Null,Null", "Null,Null", "Null,Null", "DesignGoal", "Null,Null", "Magenta,Stripes"],
+        ["Magenta,Vines", "Null,Null", "DesignGoal", "Null,Null", "Null,Null", "Null,Null", "Green,Stripes"],
         ["LBlue,Dots", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "Null,Null", "DBlue,Quatrefoil"],
         ["Purple,Ferns", "Yellow,Quatrefoil", "Purple,Stripes", "DBlue,Ferns", "Green,Flowers", "Yellow,Vines", "Purple,Dots"]
     ]
