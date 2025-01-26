@@ -5,11 +5,11 @@ import core.CoreConstants;
 import core.components.Counter;
 import core.components.Deck;
 import games.calico.CalicoTypes.Button;
+import games.calico.CalicoTypes.DesignGoalTile;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
 import games.calico.components.CalicoCatCard;
 import games.calico.components.CalicoTile;
-import games.terraformingmars.TMTypes;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -28,7 +28,6 @@ import org.json.simple.parser.ParseException;
 
 public class CalicoGameParameters extends AbstractParameters {
 
-    //should this be here?
     public HashMap<TileColour, Button> colourButtonMap = new HashMap<TileColour, Button>() {{
         put(TileColour.DBlue, Button.Blueberry);
         put(TileColour.Green, Button.Leaf);
@@ -37,10 +36,6 @@ public class CalicoGameParameters extends AbstractParameters {
         put(TileColour.Magenta, Button.Flower);
         put(TileColour.Purple, Button.Mushroom);
     }};
-
-    public HashMap<TileColour, Button> getColourButtonMap() {
-        return colourButtonMap;
-    }
 
     int boardSize = 7;
 
@@ -55,6 +50,20 @@ public class CalicoGameParameters extends AbstractParameters {
             }
         }
         return allTiles;
+    }
+
+    //return 3 random DesignGoalTiles to be used
+    public DesignGoalTile[] getRandomDesignTile(){
+        ArrayList<DesignGoalTile> allGoalTiles = new ArrayList<DesignGoalTile>();
+        for (DesignGoalTile g : DesignGoalTile.values()) {
+            allGoalTiles.add(g);
+        }
+        Collections.shuffle(allGoalTiles);
+        DesignGoalTile[] returnObj = new DesignGoalTile[3];
+        returnObj[0] = allGoalTiles.get(0);
+        returnObj[1] = allGoalTiles.get(1);
+        returnObj[2] = allGoalTiles.get(2);
+        return returnObj;
     }
 
     //load patterns needed for the cat cards

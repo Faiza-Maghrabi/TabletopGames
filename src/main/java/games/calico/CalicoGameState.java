@@ -49,9 +49,9 @@ public class CalicoGameState extends AbstractGameState {
 
     // Player-specific values
     CalicoBoard[] playerBoards;  //are design token points going to be stored here?
-    HashMap<Cat, Counter>[] playerCatScore;
-    HashMap<Button, Counter>[] playerButtonScore;
-    HashMap<DesignGoalTile, Counter>[] playerGoalScore;
+    HashMap<Cat, Counter>[] playerCatScore; //number of that cat tokens
+    HashMap<Button, Counter>[] playerButtonScore; //number of those buttons
+    HashMap<DesignGoalTile, Integer>[] playerGoalScore; //score acheived by each design goal tile
     Counter[] playerFinalPoints;  // Points calculated at the end of the game
     // Player tiles on hand
     Deck<CalicoTile>[] playerTiles;
@@ -898,42 +898,4 @@ public class CalicoGameState extends AbstractGameState {
         }
         return points;
     }
-
-    public static class ResourceMapping {
-        public final TMTypes.Resource from;
-        public final TMTypes.Resource to;
-        public double rate;
-        public Requirement<TMCard> requirement;
-
-        public ResourceMapping(TMTypes.Resource from, TMTypes.Resource to, double rate, Requirement<TMCard> requirement) {
-            this.from = from;
-            this.to = to;
-            this.rate = rate;
-            this.requirement = requirement;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof ResourceMapping)) return false;
-            ResourceMapping that = (ResourceMapping) o;
-            return from == that.from &&
-                    to == that.to &&
-                    (requirement == null && that.requirement == null || Objects.equals(requirement, that.requirement));
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(from, to, requirement);
-        }
-
-        public ResourceMapping copy() {
-            ResourceMapping rm = new ResourceMapping(from, to, rate, requirement);
-            if (requirement != null) {
-                rm.requirement = requirement.copy();
-            }
-            return rm;
-        }
-    }
-
 }

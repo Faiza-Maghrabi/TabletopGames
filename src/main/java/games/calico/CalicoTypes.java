@@ -56,33 +56,34 @@ public class CalicoTypes {
     };
 
     // Enums
-
-    //update with appropriate actions when made
-    public enum ActionType {
-        PlayCard,
-        StandardProject,
-        ClaimMilestone,
-        FundAward,
-        ActiveAction,
-        BasicResourceAction,
-        BuyProject  // TODO ignore in GUI
-    }
-
     public enum  DesignGoalTile{
-        AAA_BBB ("data/calico/images/tiles/aaa_bbb.png"),
-        AA_BB_CC ("data/calico/images/tiles/aa_bb_cc.png"),
-        NOT ("data/calico/images/tiles/not.png"),
-        AAAA_BB ("data/calico/images/tiles/aaaa_bb.png"),
-        AA_BB_C_D ("data/calico/images/tiles/aa_bb_c_d.png");
+        AAA_BBB ("data/calico/images/tiles/aaa_bbb.png", 8, 13),
+        AA_BB_CC ("data/calico/images/tiles/aa_bb_cc.png", 7, 11),
+        NOT ("data/calico/images/tiles/not.png", 10, 15),
+        AAAA_BB ("data/calico/images/tiles/aaaa_bb.png", 8, 14),
+        AAA_BB_C ("data/calico/images/tiles/aaa_bb_c.png", 7, 11),
+        AA_BB_C_D ("data/calico/images/tiles/aa_bb_c_d.png", 5, 8);
 
         String imagePath;
+        int oneGoal;
+        int twoGoal;
 
-        DesignGoalTile(String imagePath) {
+        DesignGoalTile(String imagePath, int oneGoal, int twoGoal) {
             this.imagePath = imagePath;
+            this.oneGoal = oneGoal;
+            this.twoGoal = twoGoal;
         }
 
         public String getImagePath() {
             return imagePath;
+        }
+
+        public int getGoalOne() {
+            return oneGoal;
+        }
+
+        public int getGoalTwo() {
+            return twoGoal;
         }
     }
 
@@ -155,6 +156,8 @@ public class CalicoTypes {
         }
     }
 
+
+    //TM
     public enum Tag {
         Plant("data/terraformingmars/images/tags/plant.png"),
         Microbe("data/terraformingmars/images/tags/microbe.png"),

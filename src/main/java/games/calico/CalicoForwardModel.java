@@ -9,6 +9,7 @@ import core.components.Deck;
 import core.components.GridBoard;
 import games.calico.CalicoTypes.Button;
 import games.calico.CalicoTypes.Cat;
+import games.calico.CalicoTypes.DesignGoalTile;
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoTile;
 import games.terraformingmars.TMGameState;
@@ -117,91 +118,36 @@ public class CalicoForwardModel extends StandardForwardModel {
         gs.playerGoalScore = new HashMap[gs.getNPlayers()];
         gs.playerFinalPoints = new Counter[gs.getNPlayers()];
 
+        gs.playerTiles = new Deck[gs.getNPlayers()];
+
         for (int i = 0; i< gs.getNPlayers(); i++){
+            //design tiles to be used in playerBoard
+            DesignGoalTile[] goalTiles = params.getRandomDesignTile();
+
             gs.playerBoards[i] = new CalicoBoard(params.boardSize);
             // TODO assign a board to each player and fill up board
 
             //fill in point hashmaps
             gs.playerCatScore[i] = new HashMap<Cat, Counter>();
             for (int j = 0; j < gs.activeCats.size(); j++) {
-                Cat c = gs.activeCats.get(j).getCat()
-                gs.playerCatScore[i].put(c, new Counter(0,"cat point for " + c.getName()));
+                Cat c = gs.activeCats.get(j).getCat();
+                gs.playerCatScore[i].put(c, new Counter(0,"player" + i +"'s cat points for " + c.getName()));
             }
 
             gs.playerButtonScore[i] = new HashMap<Button, Counter>();
             for (Button b : Button.values()) {
-                gs.playerButtonScore[i].put(b, new Counter(0,"button point for " + b));
+                gs.playerButtonScore[i].put(b, new Counter(0,"player" + i +"'s button points for " + b));
             }
 
-            //find design tiles for the board and then set the point hashmap for it
-        }
-
-        //setup hashmaps for cat and button points (and design tiles?)
-
-        //TM
-        gs.playerResources = new HashMap[gs.getNPlayers()];
-        gs.playerProduction = new HashMap[gs.getNPlayers()];
-        gs.playerResourceMap = new HashSet[gs.getNPlayers()];
-        gs.playerDiscountEffects = new HashMap[gs.getNPlayers()];
-        gs.playerResourceIncreaseGen = new HashMap[gs.getNPlayers()];
-
-        for (int i = 0; i < gs.getNPlayers(); i++) {
-            gs.playerResources[i] = new HashMap<>();
-            gs.playerProduction[i] = new HashMap<>();
-            gs.playerResourceIncreaseGen[i] = new HashMap<>();
-            for (CalicoTypes.Resource res : CalicoTypes.Resource.values()) {
-                int startingRes = params.startingResources.get(res);
-                if (res == TR && gs.getNPlayers() == 1) {
-                    startingRes = params.soloTR;
-                }
-                gs.playerResources[i].put(res, new Counter(startingRes, 0, params.maxPoints, res.toString() + "-" + i));
-                if (params.startingProduction.containsKey(res)) {
-                    int startingProduction = params.startingProduction.get(res);
-                    if (params.expansions.contains(CalicoTypes.Expansion.CorporateEra))
-                        startingProduction = 0;  // No production in corporate era
-                    gs.playerProduction[i].put(res, new Counter(startingProduction, params.minimumProduction.get(res), params.maxPoints, res + "-prod-" + i));
-                }
-                gs.playerResourceIncreaseGen[i].put(res, false);
+            gs.playerGoalScore[i] = new HashMap<DesignGoalTile, Integer>();
+            for (DesignGoalTile g : DesignGoalTile.values()) {
+                gs.playerGoalScore[i].put(g, 0);
             }
-            gs.playerResourceMap[i] = new HashSet<>();
-            // By default, players can exchange steel for X MC and titanium for X MC. More may be added
-            gs.playerResourceMap[i].add(new TMGameState.ResourceMapping(CalicoTypes.Resource.Steel, CalicoTypes.Resource.MegaCredit, params.nSteelMC, new TagOnCardRequirement(new CalicoTypes.Tag[]{CalicoTypes.Tag.Building})));
-            gs.playerResourceMap[i].add(new TMGameState.ResourceMapping(CalicoTypes.Resource.Titanium, CalicoTypes.Resource.MegaCredit, params.nTitaniumMC, new TagOnCardRequirement(new CalicoTypes.Tag[]{CalicoTypes.Tag.Space})));
 
-            // Set up player discount maps
-            gs.playerDiscountEffects[i] = new HashMap<>();
-        }
-
-        gs.projectCards = new Deck<>("Projects", CoreConstants.VisibilityMode.HIDDEN_TO_ALL);
-        gs.corpCards = new Deck<>("Corporations", CoreConstants.VisibilityMode.HIDDEN_TO_ALL);
-        gs.discardCards = new Deck<>("Discard", CoreConstants.VisibilityMode.HIDDEN_TO_ALL);
-
-        // Load info from expansions (includes base)
-        gs.board = new GridBoard<>(params.boardSize, params.boardSize);
-        gs.extraTiles = new HashSet<>();
-        gs.bonuses = new HashSet<>();
-        gs.milestones = new HashSet<>();
-        gs.awards = new HashSet<>();
-        gs.globalParameters = new HashMap<>();
-
-        // Load base
-        CalicoTypes.Expansion.Base.loadProjectCards(gs.projectCards);
-        CalicoTypes.Expansion.Base.loadCorpCards(gs.corpCards);
-        CalicoTypes.Expansion.Base.loadBoard(gs.board, gs.extraTiles, gs.bonuses, gs.milestones, gs.awards, gs.globalParameters);
-
-        if (params.expansions.contains(CalicoTypes.Expansion.Hellas) || params.expansions.contains(CalicoTypes.Expansion.Elysium)) {
-            // Clear milestones and awards, they'll be replaced by these expansions
-            gs.milestones.clear();
-            gs.awards.clear();
-        }
-
-        for (CalicoTypes.Expansion e : params.expansions) {
-            if (e != CalicoTypes.Expansion.Hellas && e != CalicoTypes.Expansion.Elysium) {
-                // Hellas and Elysium don't have project or corporation cards
-                e.loadProjectCards(gs.projectCards);
-                e.loadCorpCards(gs.corpCards);
-            }
-            e.loadBoard(gs.board, gs.extraTiles, gs.bonuses, gs.milestones, gs.awards, gs.globalParameters);
+            gs.playerTiles[i] = new Deck<CalicoTile>("player" + i +"'s tiles on hand", i, CoreConstants.VisibilityMode.VISIBLE_TO_OWNER);
+            gs.playerTiles[i].add(gs.tileBag.draw());
+            gs.playerTiles[i].add(gs.tileBag.draw());
+            gs.playerTiles[i].add(gs.tileBag.draw());
         }
 
 //        TMCard cccc = null;
