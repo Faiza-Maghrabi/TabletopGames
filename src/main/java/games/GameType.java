@@ -6,6 +6,10 @@ import games.battlelore.*;
 import games.battlelore.gui.BattleloreGUI;
 import games.blackjack.*;
 import games.blackjack.gui.BlackjackGUIManager;
+import games.calico.CalicoForwardModel;
+import games.calico.CalicoGameParameters;
+import games.calico.CalicoGameState;
+import games.calico.gui.CalicoGUI;
 import games.cantstop.*;
 import games.cantstop.gui.CantStopGUIManager;
 import games.catan.*;
@@ -214,7 +218,11 @@ public enum GameType {
     WarOfTheToads(2, 2,
             Arrays.asList(Strategy, Abstract, Cards),
             Collections.singletonList(TrickTaking),
-            ToadGameState.class, ToadForwardModel.class, ToadParameters.class, ToadGUIManager.class);
+            ToadGameState.class, ToadForwardModel.class, ToadParameters.class, ToadGUIManager.class),
+    Calico(1, 4, 
+            Arrays.asList(Strategy, Simple, Animals), 
+            Arrays.asList(HexagonGrid), 
+            CalicoGameState.class, CalicoForwardModel.class, CalicoGameParameters.class, CalicoGUI.class);
 
 
     // Core classes where the game is defined
