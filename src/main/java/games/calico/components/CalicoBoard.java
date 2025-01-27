@@ -16,6 +16,11 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         this.type = type;
     }
 
+    public CalicoBoard(GridBoard<CalicoBoardTile> grid, BoardTypes type){
+        super(grid);
+        this.type = type;
+    }
+
     //setting an empty tile
     public boolean setBoardTile(int x, int y){
         CalicoBoardTile tile = new CalicoBoardTile(x, y);
@@ -65,6 +70,14 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         int row = r;
         int[] returnArr = {col, row};
         return returnArr;
+    }
+
+    @Override
+    public CalicoBoard copy() {
+        GridBoard<CalicoBoardTile> board = super.copy();
+        CalicoBoard copy = new CalicoBoard(board, this.type);
+        copyComponentTo(copy);
+        return copy;
     }
 
 }

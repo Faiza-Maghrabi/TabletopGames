@@ -37,6 +37,7 @@ public class CalicoGameParameters extends AbstractParameters {
     }};
 
     int boardSize = 7;
+    int nActionsPerPlayer = 2; //players make 2 actions each turn - is this needed?
 
     //given a colour and a board, set up the board according to the json 
     public CalicoBoard setupBoard(CalicoBoard board, BoardTypes type){
@@ -126,8 +127,8 @@ public class CalicoGameParameters extends AbstractParameters {
     }
 
     //chose 3 cats and assign patterns to them
-    public ArrayList<CalicoCatCard> loadCats(){
-        ArrayList<CalicoCatCard> catsInPlay = new ArrayList<CalicoCatCard>();
+    public CalicoCatCard[] loadCats(){
+        CalicoCatCard[] catsInPlay = new CalicoCatCard[3];
         ArrayList<TilePattern> patternTiles = loadPatternTiles();
 
         ArrayList<CalicoTypes.Cat> allCats = new ArrayList<CalicoTypes.Cat>();
@@ -139,7 +140,7 @@ public class CalicoGameParameters extends AbstractParameters {
         int tileCounter = 0;
 
         for (int i = 0; i < 3; i++){
-            catsInPlay.add(new CalicoCatCard(allCats.get(i), patternTiles.get(tileCounter), patternTiles.get(tileCounter)));
+            catsInPlay[i] = new CalicoCatCard(allCats.get(i), patternTiles.get(tileCounter), patternTiles.get(tileCounter));
             tileCounter+= 2;
         }
 

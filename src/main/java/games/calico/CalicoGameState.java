@@ -39,8 +39,8 @@ public class CalicoGameState extends AbstractGameState {
     int turn;
     long seed;
 
-    //Active Cats - arraylist for easier access
-    ArrayList<CalicoCatCard> activeCats;
+    //Active Cats - array for easier access
+    CalicoCatCard[] activeCats;
     //Tile Locations
     Deck<CalicoTile> tileBag, tileMarket;
 
@@ -51,12 +51,10 @@ public class CalicoGameState extends AbstractGameState {
     CalicoBoard[] playerBoards;  //are design token points going to be stored here?
     HashMap<Cat, Counter>[] playerCatScore; //number of that cat tokens
     HashMap<Button, Counter>[] playerButtonScore; //number of those buttons
-    HashMap<DesignGoalTile, Integer>[] playerGoalScore; //score acheived by each design goal tile
+    HashMap<DesignGoalTile, Counter>[] playerGoalScore; //score acheived by each design goal tile
     Counter[] playerFinalPoints;  // Points calculated at the end of the game
     // Player tiles on hand
     Deck<CalicoTile>[] playerTiles;
-
-    // HashMap<TMTypes.Tile, Counter>[] playerTilesPlaced; // why is there a counter for this?
 
 
     //TODO: Add in button colour hashmap
@@ -68,6 +66,7 @@ public class CalicoGameState extends AbstractGameState {
     public CalicoGameState(AbstractParameters gameParameters, int nPlayers) {
         super(gameParameters, nPlayers);
     }
+
     // @Override
     // protected TurnOrder _createTurnOrder(int nPlayers) {
     //     return new TMTurnOrder(nPlayers, ((CalicoGameParameters) gameParameters).nActionsPerPlayer);
@@ -85,30 +84,16 @@ public class CalicoGameState extends AbstractGameState {
     @Override
     protected List<Component> _getAllComponents() {
         return new ArrayList<Component>() {{
-            add(board);
-            add(projectCards);
-            add(corpCards);
-            add(discardCards);
-            add(nAwardsFunded);
-            add(nMilestonesClaimed);
-            addAll(extraTiles);
-            addAll(milestones);
-            addAll(awards);
-            addAll(globalParameters.values());
-            addAll(Arrays.asList(playerHands));
-            addAll(Arrays.asList(playerCardChoice));
-            addAll(Arrays.asList(playerComplicatedPointCards));
-            addAll(Arrays.asList(playedCards));
-            addAll(Arrays.asList(playerCardPoints));
+            add(tileBag);
+            add(tileMarket);
+            addAll(Arrays.asList(playerTiles));
+            addAll(Arrays.asList(activeCats));
+            addAll(Arrays.asList(playerBoards));
+            addAll(Arrays.asList(playerFinalPoints));
             for (int i = 0; i < getNPlayers(); i++) {
-                addAll(playerResources[i].values());
-                addAll(playerProduction[i].values());
-                addAll(playerCardsPlayedTags[i].values());
-                addAll(playerTilesPlaced[i].values());
-                addAll(playerCardsPlayedTypes[i].values());
-                if (playerCorporations[i] != null) {
-                    add(playerCorporations[i]);
-                }
+                addAll(playerCatScore[i].values());
+                addAll(playerButtonScore[i].values());
+                addAll(playerGoalScore[i].values());
             }
         }};
     }
@@ -123,144 +108,42 @@ public class CalicoGameState extends AbstractGameState {
         CalicoGameState copy = new CalicoGameState(gameParameters.copy(), getNPlayers());
 
         // General public info
-        copy.generation = generation;
-        copy.board = board.emptyCopy();  // Deep copy of board
-        for (int i = 0; i < board.getHeight(); i++) {
-            for (int j = 0; j < board.getWidth(); j++) {
-                if (board.getElement(j, i) != null) {
-                    copy.board.setElement(j, i, board.getElement(j, i).copy());
-                } else {
-                    copy.board.setElement(j, i, null);
-                }
-            }
+        copy.turn = turn;
+        copy.seed = seed;
+        copy.activeCats = new CalicoCatCard[3];
+        for (int i = 0; i< 3; i++){
+            copy.activeCats[i] = activeCats[i].copy();
         }
-        copy.extraTiles = new HashSet<>();
-        for (CalicoMapTile mt : extraTiles) {
-            copy.extraTiles.add(mt.copy());
-        }
-        copy.globalParameters = new HashMap<>();
-        for (TMTypes.GlobalParameter p : globalParameters.keySet()) {
-            copy.globalParameters.put(p, globalParameters.get(p).copy());
-        }
-        copy.bonuses = new HashSet<>();
-        for (Bonus b : bonuses) {
-            copy.bonuses.add(b.copy());
-        }
-        copy.milestones = new HashSet<>();
-        for (Milestone m : milestones) {
-            copy.milestones.add(m.copy());
-        }
-        copy.awards = new HashSet<>();
-        for (Award a : awards) {
-            copy.awards.add(a.copy());
-        }
-        copy.nMilestonesClaimed = nMilestonesClaimed.copy();
-        copy.nAwardsFunded = nAwardsFunded.copy();
 
-        // Face-down decks
-        copy.projectCards = projectCards.copy();
-        copy.corpCards = corpCards.copy();
-        copy.discardCards = discardCards.copy(); // TODO: some of these are unknown
+        copy.tileBag = tileBag.copy();
+        copy.tileMarket = tileMarket.copy();
+        copy.playerBoards = new CalicoBoard[getNPlayers()];
+        copy.playerCatScore = new HashMap[getNPlayers()];
+        copy.playerButtonScore = new HashMap[getNPlayers()];
+        copy.playerGoalScore = new HashMap[getNPlayers()];
+        copy.playerFinalPoints = new Counter[getNPlayers()];
+        copy.playerTiles = new Deck[getNPlayers()];
 
-        // Player-specific public info
-        copy.playerExtraActions = new HashSet[getNPlayers()];
-        copy.playerResourceMap = new HashSet[getNPlayers()];
-        copy.playerPersistingEffects = new HashSet[getNPlayers()];
-        copy.playerDiscountEffects = new HashMap[getNPlayers()];
-        copy.playerResources = new HashMap[getNPlayers()];
-        copy.playerResourceIncreaseGen = new HashMap[getNPlayers()];
-        copy.playerProduction = new HashMap[getNPlayers()];
-        copy.playerCardsPlayedTags = new HashMap[getNPlayers()];
-        copy.playerCardsPlayedTypes = new HashMap[getNPlayers()];
-        copy.playerTilesPlaced = new HashMap[getNPlayers()];
-        copy.playerCardPoints = new Counter[getNPlayers()];
-        copy.playerComplicatedPointCards = new Deck[getNPlayers()];
-        copy.playedCards = new Deck[getNPlayers()];
-        copy.playerCorporations = new TMCard[getNPlayers()];
         for (int i = 0; i < getNPlayers(); i++) {
-            copy.playerExtraActions[i] = new HashSet<>();
-            copy.playerResourceMap[i] = new HashSet<>();
-            copy.playerPersistingEffects[i] = new HashSet<>();
-            copy.playerDiscountEffects[i] = new HashMap<>();
-            copy.playerResources[i] = new HashMap<>();
-            copy.playerResourceIncreaseGen[i] = new HashMap<>();
-            copy.playerProduction[i] = new HashMap<>();
-            copy.playerCardsPlayedTags[i] = new HashMap<>();
-            copy.playerCardsPlayedTypes[i] = new HashMap<>();
-            copy.playerTilesPlaced[i] = new HashMap<>();
-            copy.playerCardPoints[i] = playerCardPoints[i].copy();
-            copy.playerComplicatedPointCards[i] = playerComplicatedPointCards[i].copy();
-            copy.playedCards[i] = playedCards[i].copy();
-            if (playerCorporations[i] != null) {
-                copy.playerCorporations[i] = playerCorporations[i].copy();
+            copy.playerBoards[i] = playerBoards[i].copy();
+            copy.playerFinalPoints[i] = playerFinalPoints[i].copy();
+            copy.playerTiles[i] = playerTiles[i].copy();
+
+            copy.playerCatScore[i] = new HashMap<Cat, Counter>();
+            for (Cat c : playerCatScore[i].keySet()) {
+                copy.playerCatScore[i].put(c, playerCatScore[i].get(c).copy());
             }
-            for (TMAction a : playerExtraActions[i]) {
-                copy.playerExtraActions[i].add(a.copy());
+
+            copy.playerButtonScore[i] = new HashMap<Button, Counter>();
+            for (Button b : playerButtonScore[i].keySet()) {
+                copy.playerButtonScore[i].put(b, playerButtonScore[i].get(b).copy());
             }
-            for (ResourceMapping rm : playerResourceMap[i]) {
-                copy.playerResourceMap[i].add(rm.copy());
-            }
-            for (Requirement r : playerDiscountEffects[i].keySet()) {
-                copy.playerDiscountEffects[i].put(r.copy(), playerDiscountEffects[i].get(r));
-            }
-            for (Effect e : playerPersistingEffects[i]) {
-                copy.playerPersistingEffects[i].add(e.copy());
-            }
-            for (CalicoTypes.Resource r : playerResources[i].keySet()) {
-                copy.playerResources[i].put(r, playerResources[i].get(r).copy());
-                copy.playerResourceIncreaseGen[i].put(r, playerResourceIncreaseGen[i].get(r));
-            }
-            for (CalicoTypes.Resource r : playerProduction[i].keySet()) {
-                copy.playerProduction[i].put(r, playerProduction[i].get(r).copy());
-            }
-            for (CalicoTypes.Tag t : playerCardsPlayedTags[i].keySet()) {
-                copy.playerCardsPlayedTags[i].put(t, playerCardsPlayedTags[i].get(t).copy());
-            }
-            for (CalicoTypes.CardType t : playerCardsPlayedTypes[i].keySet()) {
-                copy.playerCardsPlayedTypes[i].put(t, playerCardsPlayedTypes[i].get(t).copy());
-            }
-            for (CalicoTypes.Tile t : playerTilesPlaced[i].keySet()) {
-                copy.playerTilesPlaced[i].put(t, playerTilesPlaced[i].get(t).copy());
+
+            copy.playerGoalScore[i] = new HashMap<DesignGoalTile, Counter>();
+            for (DesignGoalTile g : playerGoalScore[i].keySet()) {
+                copy.playerGoalScore[i].put(g, playerGoalScore[i].get(g).copy());
             }
         }
-
-        // Player-specific hidden info
-        copy.playerHands = new Deck[getNPlayers()];
-        copy.playerCardChoice = new Deck[getNPlayers()];
-        if (playerId != -1 && getCoreGameParameters().partialObservable) {
-            for (int i = 0; i < getNPlayers(); i++) {
-                copy.playerHands[i] = playerHands[i].copy();
-                copy.playerCardChoice[i] = playerCardChoice[i].copy();
-                if (i != playerId) {  // Player knows what cards they have, but shuffle for opponents, all project cards together and deal new
-                    copy.projectCards.add(copy.playerHands[i]);
-                    if (gamePhase != CorporationSelect) {  // corporation selection is public info, card choice only hidden afterwards
-                        copy.projectCards.add(copy.playerCardChoice[i]);
-                        copy.playerCardChoice[i].clear();
-                    }
-                    copy.playerHands[i].clear();
-                }
-            }
-            copy.corpCards.shuffle(rnd);
-            copy.projectCards.shuffle(rnd);
-            for (int i = 0; i < getNPlayers(); i++) {
-                if (i != playerId) {
-                    for (int j = 0; j < playerHands[i].getSize(); j++) {
-                        copy.playerHands[i].add(copy.drawCard());
-                    }
-                    if (gamePhase != CorporationSelect) {
-                        for (int j = 0; j < playerCardChoice[i].getSize(); j++) {
-                            copy.playerCardChoice[i].add(copy.drawCard());
-                        }
-                    }
-                }
-            }
-        } else {
-            for (int i = 0; i < getNPlayers(); i++) {
-                copy.playerHands[i] = playerHands[i].copy();
-                copy.playerCardChoice[i] = playerCardChoice[i].copy();
-            }
-        }
-
         return copy;
     }
 

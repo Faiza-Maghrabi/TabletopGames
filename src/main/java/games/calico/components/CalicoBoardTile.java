@@ -44,13 +44,7 @@ public class CalicoBoardTile extends Component {
         this.tilePlaced = new CalicoTile(colour, pattern);
         this.isEmpty = false;
     }
-
-    // protected CalicoMapTile(int x, int y, int componentID) {
-    //     super(BOARD_NODE, "Tile", componentID);
-    //     this.x = x;
-    //     this.y = y;
-    // }
-
+    
     public boolean isEmpty() {
         return isEmpty;
     }
@@ -121,47 +115,6 @@ public class CalicoBoardTile extends Component {
         copy.designGoalTile = designGoalTile;
         return copy;
     }
-
-    /*
-     * Not sure what this is used for yet
-     */
-
-    // public static CalicoBoardTile parseMapTile(String s) {
-    //     return parseMapTile(s, -1, -1);
-    // }
-
-    // public static CalicoBoardTile parseMapTile(String s, int x, int y) {
-    //     if (s.equals("0")) return null;
-
-    //     CalicoBoardTile mt = new CalicoBoardTile(x, y);
-
-    //     String[] split = s.split(":");
-
-    //     // First element is tile type
-    //     TMTypes.MapTileType type = Utils.searchEnum(TMTypes.MapTileType.class, split[0]);
-    //     if (type == null) {
-    //         type = TMTypes.MapTileType.City;
-    //         mt.setComponentName(split[0]); // Keep city name
-    //     } else if (type == TMTypes.MapTileType.Volcanic) {
-    //         type = TMTypes.MapTileType.Ground;
-    //         mt.setVolcanic(true);
-    //     }
-    //     mt.setType(type);
-
-    //     // The rest are resources existing here
-    //     int nResources = split.length-1;
-    //     TMTypes.Resource[] resources = new TMTypes.Resource[nResources];
-    //     for (int i = 1; i < split.length; i++) {
-    //         TMTypes.Resource res = Utils.searchEnum(TMTypes.Resource.class, split[i]);
-    //         if (res != null) {
-    //             resources[i - 1] = res;
-    //         } else {
-    //         }
-    //     }
-    //     mt.setResources(resources);
-
-    //     return mt;
-    // }
 
     @Override
     public boolean equals(Object o) {
