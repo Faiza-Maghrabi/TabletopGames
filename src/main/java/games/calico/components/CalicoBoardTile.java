@@ -68,6 +68,14 @@ public class CalicoBoardTile extends Component {
         }
     }
 
+    public void addTile(CalicoTile tile) {
+        if (!isDesignTile && isEmpty) {
+            this.tilePlaced = tile;
+            this.isEmpty = false;
+        }
+    }
+
+
     public void addButton(){
         this.hasButton = true;
     }

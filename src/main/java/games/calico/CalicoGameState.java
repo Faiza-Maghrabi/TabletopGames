@@ -44,6 +44,8 @@ public class CalicoGameState extends AbstractGameState {
     CalicoCatCard[] activeCats;
     //Tile Locations
     Deck<CalicoTile> tileBag, tileMarket;
+    //selected tile to place on board in a turn
+    CalicoTile selectedTile;
 
     // Effects and actions played - to be updated when actions are added
     // HashSet<TMAction>[] playerExtraActions;
@@ -87,6 +89,7 @@ public class CalicoGameState extends AbstractGameState {
         return new ArrayList<Component>() {{
             add(tileBag);
             add(tileMarket);
+            add(selectedTile);
             addAll(Arrays.asList(playerTiles));
             addAll(Arrays.asList(activeCats));
             addAll(Arrays.asList(playerBoards));
@@ -118,6 +121,7 @@ public class CalicoGameState extends AbstractGameState {
 
         copy.tileBag = tileBag.copy();
         copy.tileMarket = tileMarket.copy();
+        copy.selectedTile = selectedTile.copy();
         copy.playerBoards = new CalicoBoard[getNPlayers()];
         copy.playerCatScore = new HashMap[getNPlayers()];
         copy.playerButtonScore = new HashMap[getNPlayers()];
@@ -182,6 +186,7 @@ public class CalicoGameState extends AbstractGameState {
                 && seed == that.seed
                 && Objects.equals(tileBag, that.tileBag)
                 && Objects.equals(tileMarket, that.tileMarket)
+                && Objects.equals(selectedTile, that.selectedTile)
                 && Arrays.equals(playerTiles, that.playerTiles)
                 && Arrays.equals(activeCats, that.activeCats)
                 && Arrays.equals(playerBoards, that.playerBoards)
@@ -196,7 +201,7 @@ public class CalicoGameState extends AbstractGameState {
      */
     @Override
     public int hashCode() {
-        int result = Objects.hash(super.hashCode(), turn, seed, tileBag, tileMarket);
+        int result = Objects.hash(super.hashCode(), turn, seed, tileBag, tileMarket, selectedTile);
         result = 31 * result + Arrays.hashCode(activeCats);
         result = 31 * result + Arrays.hashCode(playerBoards);
         result = 31 * result + Arrays.hashCode(playerCatScore);
@@ -231,16 +236,18 @@ public class CalicoGameState extends AbstractGameState {
         sb.append(result).append("|3|");
         result = Objects.hash(tileMarket);
         sb.append(result).append("|4|");
-        result = 31 * result + Arrays.hashCode(playerBoards);
+        result = Objects.hash(selectedTile);
         sb.append(result).append("|5|");
-        result = 31 * result + Arrays.hashCode(playerCatScore);
+        result = 31 * result + Arrays.hashCode(playerBoards);
         sb.append(result).append("|6|");
-        result = 31 * result + Arrays.hashCode(playerButtonScore);
+        result = 31 * result + Arrays.hashCode(playerCatScore);
         sb.append(result).append("|7|");
-        result = 31 * result + Arrays.hashCode(playerGoalScore);
+        result = 31 * result + Arrays.hashCode(playerButtonScore);
         sb.append(result).append("|8|");
-        result = Arrays.hashCode(playerFinalPoints);
+        result = 31 * result + Arrays.hashCode(playerGoalScore);
         sb.append(result).append("|9|");
+        result = Arrays.hashCode(playerFinalPoints);
+        sb.append(result).append("|10|");
         result = Arrays.hashCode(playerTiles);
         sb.append(result);
         return sb.toString();
@@ -268,6 +275,14 @@ public class CalicoGameState extends AbstractGameState {
 
     public Deck<CalicoTile> getTileMarket() {
         return tileBag;
+    }
+
+    public CalicoTile getSelectedTile(){
+        return selectedTile;
+    }
+
+    public void setSelectedTile(CalicoTile pickedTile){
+        selectedTile = pickedTile;
     }
 
     public CalicoBoard[] getPlayerBoards() {

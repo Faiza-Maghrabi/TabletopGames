@@ -32,8 +32,8 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         return this.setElement(x, y, tile);
     }
         //setting a tile with a known tile
-    public boolean setBoardTilePatch(int x, int y, CalicoBoardTile tile){
-        CalicoBoardTile boardtile = new CalicoBoardTile(x, y, tile.getTileColour(), tile.getTilePattern());
+    public boolean setBoardTilePatch(int x, int y, CalicoTile tile){
+        CalicoBoardTile boardtile = new CalicoBoardTile(x, y, tile.getColour(), tile.getPattern());
         return this.setElement(x, y, boardtile);
     }
 

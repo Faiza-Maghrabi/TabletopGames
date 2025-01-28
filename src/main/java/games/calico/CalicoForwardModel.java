@@ -12,6 +12,8 @@ import games.calico.CalicoTypes.BoardTypes;
 import games.calico.CalicoTypes.Button;
 import games.calico.CalicoTypes.Cat;
 import games.calico.CalicoTypes.DesignGoalTile;
+import games.calico.CalicoTypes.TileColour;
+import games.calico.CalicoTypes.TilePattern;
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoTile;
 
@@ -42,6 +44,8 @@ public class CalicoForwardModel extends StandardForwardModel {
         gs.tileMarket.add(gs.tileBag.draw());
 
         gs.tileBag.shuffle(new Random(params.getRandomSeed()));
+
+        gs.selectedTile = new CalicoTile(TileColour.Null, TilePattern.Null);
         
         gs.playerBoards = new CalicoBoard[gs.getNPlayers()];
 
