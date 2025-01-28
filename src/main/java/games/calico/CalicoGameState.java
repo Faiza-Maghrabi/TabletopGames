@@ -14,6 +14,7 @@ import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoBoardTile;
 import games.calico.components.CalicoCatCard;
 import games.calico.components.CalicoTile;
+import games.terraformingmars.TMGameState.ResourceMapping;
 import games.terraformingmars.TMTypes;
 import games.terraformingmars.actions.PlaceTile;
 import games.terraformingmars.actions.TMAction;
@@ -147,20 +148,11 @@ public class CalicoGameState extends AbstractGameState {
         return copy;
     }
 
-    public TMCard drawCard() {
-        // Reshuffle discards into draw pile if empty
-        if (projectCards.getSize() == 0) {
-            projectCards.add(discardCards);
-            discardCards.clear();
-            projectCards.shuffle(rnd);
-        }
-        return projectCards.draw();
-    }
-
     /*
      * return estimate of how well a player is doing in range [-1, +1]
      * How can I do this for calico?
      * Not part of implementation - is for rule based player
+     * //TODO
      */
     @Override
     protected double _getHeuristicScore(int playerId) {
@@ -186,66 +178,42 @@ public class CalicoGameState extends AbstractGameState {
         if (this == o) return true;
         if (!(o instanceof CalicoGameState)) return false;
         CalicoGameState that = (CalicoGameState) o;
-        return generation == that.generation
-                && Objects.equals(board, that.board)
-                && Objects.equals(extraTiles, that.extraTiles)
-                && Objects.equals(globalParameters, that.globalParameters)
-                && Objects.equals(bonuses, that.bonuses)
-                && Objects.equals(projectCards, that.projectCards)
-                && Objects.equals(corpCards, that.corpCards)
-                && Objects.equals(discardCards, that.discardCards)
-                && Arrays.equals(playerExtraActions, that.playerExtraActions)
-                && Arrays.equals(playerResourceMap, that.playerResourceMap)
-                && Arrays.equals(playerDiscountEffects, that.playerDiscountEffects)
-                && Arrays.equals(playerPersistingEffects, that.playerPersistingEffects)
-                && Arrays.equals(playerResources, that.playerResources)
-                && Arrays.equals(playerResourceIncreaseGen, that.playerResourceIncreaseGen)
-                && Arrays.equals(playerProduction, that.playerProduction)
-                && Arrays.equals(playerCardsPlayedTags, that.playerCardsPlayedTags)
-                && Arrays.equals(playerCardsPlayedTypes, that.playerCardsPlayedTypes)
-                && Arrays.equals(playerTilesPlaced, that.playerTilesPlaced)
-                && Arrays.equals(playerCardPoints, that.playerCardPoints)
-                && Arrays.equals(playerHands, that.playerHands)
-                && Arrays.equals(playerComplicatedPointCards, that.playerComplicatedPointCards)
-                && Arrays.equals(playerCardChoice, that.playerCardChoice)
-                && Arrays.equals(playerCorporations, that.playerCorporations)
-                && Objects.equals(milestones, that.milestones)
-                && Objects.equals(awards, that.awards)
-                && Objects.equals(nMilestonesClaimed, that.nMilestonesClaimed)
-                && Objects.equals(nAwardsFunded, that.nAwardsFunded);
+        return turn == that.turn
+                && seed == that.seed
+                && Objects.equals(tileBag, that.tileBag)
+                && Objects.equals(tileMarket, that.tileMarket)
+                && Arrays.equals(playerTiles, that.playerTiles)
+                && Arrays.equals(activeCats, that.activeCats)
+                && Arrays.equals(playerBoards, that.playerBoards)
+                && Arrays.equals(playerFinalPoints, that.playerFinalPoints)
+                && Arrays.equals(playerCatScore, that.playerCatScore)
+                && Arrays.equals(playerButtonScore, that.playerButtonScore)
+                && Arrays.equals(playerGoalScore, that.playerGoalScore);
     }
 
     /*
-     * Look into this - not sure what its used for
+     * return hash code for game state
      */
     @Override
     public int hashCode() {
-        int result = Objects.hash(super.hashCode(), generation, board, extraTiles, globalParameters, bonuses,
-                projectCards, corpCards, discardCards, milestones, awards, nMilestonesClaimed, nAwardsFunded);
-        result = 31 * result + Arrays.hashCode(playerExtraActions);
-        result = 31 * result + Arrays.hashCode(playerResourceMap);
-        result = 31 * result + Arrays.hashCode(playerDiscountEffects);
-        result = 31 * result + Arrays.hashCode(playerPersistingEffects);
-        result = 31 * result + Arrays.hashCode(playerResources);
-        result = 31 * result + Arrays.hashCode(playerResourceIncreaseGen);
-        result = 31 * result + Arrays.hashCode(playerProduction);
-        result = 31 * result + Arrays.hashCode(playerCardsPlayedTags);
-        result = 31 * result + Arrays.hashCode(playerCardsPlayedTypes);
-        result = 31 * result + Arrays.hashCode(playerTilesPlaced);
-        result = 31 * result + Arrays.hashCode(playerCardPoints);
-        result = 31 * result + Arrays.hashCode(playerHands);
-        result = 31 * result + Arrays.hashCode(playerComplicatedPointCards);
-        result = 31 * result + Arrays.hashCode(playerCardChoice);
-        result = 31 * result + Arrays.hashCode(playerCorporations);
+        int result = Objects.hash(super.hashCode(), turn, seed, tileBag, tileMarket);
+        result = 31 * result + Arrays.hashCode(activeCats);
+        result = 31 * result + Arrays.hashCode(playerBoards);
+        result = 31 * result + Arrays.hashCode(playerCatScore);
+        result = 31 * result + Arrays.hashCode(playerButtonScore);
+        result = 31 * result + Arrays.hashCode(playerGoalScore);
+        result = 31 * result + Arrays.hashCode(playerFinalPoints);
+        result = 31 * result + Arrays.hashCode(playerTiles);
         return result;
     }
 
+    /*
+     * TODO: check over this
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         int result = Objects.hash(gameParameters);
-        sb.append(result).append("|");
-        result = Objects.hash(turnOrder);
         sb.append(result).append("|");
         result = Objects.hash(getAllComponents());
         sb.append(result).append("|");
@@ -255,52 +223,25 @@ public class CalicoGameState extends AbstractGameState {
         sb.append(result).append("|");
         result = Arrays.hashCode(playerResults);
         sb.append(result).append("|*|");
-        result = Objects.hash(generation);
+        result = Objects.hash(turn);
         sb.append(result).append("|");
-        result = Objects.hash(board);
-        sb.append(result).append("|");
-        result = Objects.hash(extraTiles);
-        sb.append(result).append("|");
-        result = Objects.hash(globalParameters);
-        sb.append(result).append("|");
-        result = Objects.hash(bonuses);
+        result = Objects.hash(seed);
         sb.append(result).append("|2|");
-        result = Objects.hash(projectCards);
+        result = Objects.hash(tileBag);
         sb.append(result).append("|3|");
-        result = Objects.hash(corpCards);
+        result = Objects.hash(tileMarket);
         sb.append(result).append("|4|");
-        result = Objects.hash(discardCards);
+        result = 31 * result + Arrays.hashCode(playerBoards);
         sb.append(result).append("|5|");
-        result = Objects.hash(milestones);
+        result = 31 * result + Arrays.hashCode(playerCatScore);
         sb.append(result).append("|6|");
-        result = Objects.hash(awards);
+        result = 31 * result + Arrays.hashCode(playerButtonScore);
         sb.append(result).append("|7|");
-        result = Objects.hash(nMilestonesClaimed, nAwardsFunded);
+        result = 31 * result + Arrays.hashCode(playerGoalScore);
         sb.append(result).append("|8|");
-        result = Arrays.hashCode(playerExtraActions);
-        result = 31 * result + Arrays.hashCode(playerResourceMap);
-        result = 31 * result + Arrays.hashCode(playerDiscountEffects);
-        result = 31 * result + Arrays.hashCode(playerPersistingEffects);
-        result = 31 * result + Arrays.hashCode(playerResources);
-        result = 31 * result + Arrays.hashCode(playerResourceIncreaseGen);
+        result = Arrays.hashCode(playerFinalPoints);
         sb.append(result).append("|9|");
-        result = Arrays.hashCode(playerProduction);
-        sb.append(result).append("|10|");
-        result = Arrays.hashCode(playerCardsPlayedTags);
-        sb.append(result).append("|10|");
-        result = Arrays.hashCode(playerCardsPlayedTypes);
-        sb.append(result).append("|12|");
-        result = Arrays.hashCode(playerTilesPlaced);
-        sb.append(result).append("|13|");
-        result = Arrays.hashCode(playerCardPoints);
-        sb.append(result).append("|14|");
-        result = Arrays.hashCode(playerHands);
-        sb.append(result).append("|15|");
-        result = Arrays.hashCode(playerComplicatedPointCards);
-        sb.append(result).append("|16|");
-        result = Arrays.hashCode(playerCardChoice);
-        sb.append(result).append("|17|");
-        result = Arrays.hashCode(playerCorporations);
+        result = Arrays.hashCode(playerTiles);
         sb.append(result);
         return sb.toString();
     }
@@ -309,123 +250,48 @@ public class CalicoGameState extends AbstractGameState {
      * Public API
      */
 
-    public HashMap<TMTypes.Resource, Counter>[] getPlayerProduction() {
-        return playerProduction;
+    public int getTurn() {
+        return turn;
     }
 
-    public HashMap<TMTypes.Resource, Counter>[] getPlayerResources() {
-        return playerResources;
+    public long getSeed() {
+        return seed;
     }
 
-    public GridBoard<CalicoMapTile> getBoard() {
-        return board;
+    public CalicoCatCard[] getActiveCats() {
+        return activeCats;
     }
 
-    public HashSet<Bonus> getBonuses() {
-        return bonuses;
+    public Deck<CalicoTile> getTileBag() {
+        return tileBag;
     }
 
-    public HashMap<TMTypes.GlobalParameter, GlobalParameter> getGlobalParameters() {
-        return globalParameters;
+    public Deck<CalicoTile> getTileMarket() {
+        return tileBag;
     }
 
-    public HashSet<CalicoMapTile> getExtraTiles() {
-        return extraTiles;
+    public CalicoBoard[] getPlayerBoards() {
+        return playerBoards;
     }
 
-    public Deck<TMCard>[] getPlayerHands() {
-        return playerHands;
+    public HashMap<Cat, Counter>[] getPlayerCatScore() {
+        return playerCatScore;
     }
 
-    public HashMap<TMTypes.Tag, Counter>[] getPlayerCardsPlayedTags() {
-        return playerCardsPlayedTags;
+    public HashMap<Button, Counter>[] gePlayerButtonScore() {
+        return playerButtonScore;
     }
 
-    public HashMap<TMTypes.CardType, Counter>[] getPlayerCardsPlayedTypes() {
-        return playerCardsPlayedTypes;
+    public HashMap<DesignGoalTile, Counter>[] getPlayerGoalScore() {
+        return playerGoalScore;
     }
 
-    public HashSet<TMAction>[] getPlayerExtraActions() {
-        return playerExtraActions;
+    public Counter[] getPlayerFinalPoints() {
+        return playerFinalPoints;
     }
 
-    public HashMap<TMTypes.Tile, Counter>[] getPlayerTilesPlaced() {
-        return playerTilesPlaced;
-    }
-
-    public HashSet<Milestone> getMilestones() {
-        return milestones;
-    }
-
-    public HashSet<Award> getAwards() {
-        return awards;
-    }
-
-    public TMCard[] getPlayerCorporations() {
-        return playerCorporations;
-    }
-
-    public boolean allCorpChosen() {
-        for (int i = 0; i < getNPlayers(); i++) {
-            if (playerCorporations[i] == null) return false;
-        }
-        return true;
-    }
-
-    public Deck<TMCard>[] getPlayerCardChoice() {
-        return playerCardChoice;
-    }
-
-    public Deck<TMCard> getDiscardCards() {
-        return discardCards;
-    }
-
-    public Deck<TMCard> getCorpCards() {
-        return corpCards;
-    }
-
-    public Deck<TMCard> getProjectCards() {
-        return projectCards;
-    }
-
-    public HashSet<ResourceMapping>[] getPlayerResourceMap() {
-        return playerResourceMap;
-    }
-
-    public Counter getnAwardsFunded() {
-        return nAwardsFunded;
-    }
-
-    public Counter getnMilestonesClaimed() {
-        return nMilestonesClaimed;
-    }
-
-    public int getGeneration() {
-        return generation;
-    }
-
-    public HashMap<TMTypes.Resource, Boolean>[] getPlayerResourceIncreaseGen() {
-        return playerResourceIncreaseGen;
-    }
-
-    public HashSet<Effect>[] getPlayerPersistingEffects() {
-        return playerPersistingEffects;
-    }
-
-    public HashMap<Requirement, Integer>[] getPlayerDiscountEffects() {
-        return playerDiscountEffects;
-    }
-
-    public Deck<TMCard>[] getPlayerComplicatedPointCards() {
-        return playerComplicatedPointCards;
-    }
-
-    public Counter[] getPlayerCardPoints() {
-        return playerCardPoints;
-    }
-
-    public Deck<TMCard>[] getPlayedCards() {
-        return playedCards;
+    public Deck<CalicoTile>[] getPlayerTiles() {
+        return playerTiles;
     }
 
     public int discountActionTypeCost(TMAction action, int player) {
