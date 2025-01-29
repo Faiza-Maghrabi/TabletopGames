@@ -9,13 +9,6 @@ import core.interfaces.IExtendedSequence;
 import games.calico.CalicoActionFactory;
 import games.calico.CalicoGameState;
 
-//TODO: REMOVE
-import games.dominion.DominionConstants.DeckType;
-import games.dominion.DominionGameState;
-import games.dominion.actions.Artisan;
-import games.dominion.actions.GainCard;
-import games.dominion.actions.MoveCard;
-
 /*
  * IExtendedSequence Action to run every turn - players pick a tile from their deck
  * place that tile onto a place on the board,
@@ -32,12 +25,15 @@ public class TurnActions extends AbstractAction implements IExtendedSequence {
     }
 
 
-    public boolean pickedTilefromHand;
-    public boolean putTileOnBoard;
-    public boolean pickedTilefromMarket;
+    public boolean pickedTilefromHand = false;
+    public boolean putTileOnBoard = false;
+    public boolean pickedTilefromMarket = false;
 
     @Override
     public boolean execute(AbstractGameState gs) {
+        if (gs.getCurrentPlayer() != playerId) {
+            throw new AssertionError("Attempting to play an action out of turn : " + this);
+        }
         return gs.setActionInProgress(this);
     }
 
@@ -67,43 +63,45 @@ public class TurnActions extends AbstractAction implements IExtendedSequence {
 
     @Override
     public void _afterAction(AbstractGameState state, AbstractAction action) {
-        if (action instanceof GainCard && ((GainCard) action).buyingPlayer == player)
-            gainedCard = true;
-        if (action instanceof MoveCard && ((MoveCard) action).playerFrom == player)
-            putCardOnDeck = true;
+        if (action instanceof PickFromHand && ((PickFromHand) action).playerId == playerId)
+            pickedTilefromHand = true;
+        else if (action instanceof PlaceTile && ((PlaceTile) action).playerId == playerId)
+            putTileOnBoard = true;
+        else if (action instanceof PickFromMarket && ((PickFromMarket) action).playerId == playerId)
+            pickedTilefromMarket = true;
     }
 
     @Override
     public boolean executionComplete(AbstractGameState state) {
-        return gainedCard && putCardOnDeck;
+        return pickedTilefromHand && putTileOnBoard && pickedTilefromMarket;
     }
 
     @Override
-    public Artisan copy() {
-        Artisan retValue = new Artisan(player, dummyAction);
-        retValue.putCardOnDeck = putCardOnDeck;
-        retValue.gainedCard = gainedCard;
+    public TurnActions copy() {
+        TurnActions retValue = new TurnActions(playerId);
+        retValue.pickedTilefromHand = pickedTilefromHand;
+        retValue.putTileOnBoard = putTileOnBoard;
+        retValue.pickedTilefromMarket = pickedTilefromMarket;
         return retValue;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Artisan) {
-            Artisan other = (Artisan) obj;
-            return other.gainedCard == gainedCard && other.putCardOnDeck == putCardOnDeck && super.equals(obj);
+        if (obj instanceof TurnActions) {
+            TurnActions other = (TurnActions) obj;
+            return other.playerId == playerId && other.pickedTilefromHand == pickedTilefromHand && other.putTileOnBoard == putTileOnBoard && other.pickedTilefromMarket == pickedTilefromMarket; 
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gainedCard, putCardOnDeck) + 31 * super.hashCode();
+        return Objects.hash(playerId, pickedTilefromHand, putTileOnBoard, pickedTilefromMarket);
     }
 
     @Override
     public String getString(AbstractGameState gameState) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getString'");
+        return String.format("p%d actions (pickHand=%b, placeBoard=%b, pickMarket=%b)",playerId, pickedTilefromHand, putTileOnBoard, pickedTilefromMarket);
     }
 }
 

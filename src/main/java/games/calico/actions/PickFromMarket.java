@@ -32,6 +32,12 @@ public class PickFromMarket extends AbstractAction {
         CalicoTile tileFromBag = cgs.getTileBag().draw();
         cgs.getTileMarket().add(tileFromBag);
 
+        //if this is the last player then update the turn count
+        int noPlayers = gs.getNPlayers() - 1;
+        if (playerId == noPlayers) {
+            cgs.updateTurn();
+        }
+
         return true;
     }
 
