@@ -3,6 +3,7 @@ package games.calico;
 import core.AbstractGameState;
 import core.CoreConstants;
 import core.StandardForwardModel;
+import core.CoreConstants.VisibilityMode;
 import core.actions.AbstractAction;
 import core.components.Counter;
 import core.components.Deck;
@@ -36,6 +37,7 @@ public class CalicoForwardModel extends StandardForwardModel {
         gs.tileBag = params.loadTiles();
         gs.tileBag.shuffle(new Random(gs.seed));
 
+        gs.tileMarket = new Deck<CalicoTile>("tile market", VisibilityMode.VISIBLE_TO_ALL);
         //add 3 to the tile market
         gs.tileMarket.add(gs.tileBag.draw());
         gs.tileMarket.add(gs.tileBag.draw());
@@ -82,6 +84,9 @@ public class CalicoForwardModel extends StandardForwardModel {
             gs.playerTiles[i].add(gs.tileBag.draw());
             gs.playerTiles[i].add(gs.tileBag.draw());
             gs.playerTiles[i].add(gs.tileBag.draw());
+
+            gs.playerFinalPoints[i] = new Counter("point counter for player " + i);
+
         }
     }
 

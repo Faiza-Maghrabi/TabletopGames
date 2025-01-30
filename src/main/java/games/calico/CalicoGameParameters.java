@@ -47,7 +47,7 @@ public class CalicoGameParameters extends AbstractParameters {
         JSONParser jsonParser = new JSONParser();
         try (FileReader reader = new FileReader("data/calico/files/boards.json")) {
             JSONObject data = (JSONObject) jsonParser.parse(reader);
-            JSONArray boardArr = (JSONArray) data.get(type);
+            JSONArray boardArr = (JSONArray) data.get(type.toString());
 
             int rowCounter = 0;
             int columnCounter = 0;
@@ -56,7 +56,7 @@ public class CalicoGameParameters extends AbstractParameters {
             for (Object row : boardArr) {
                 JSONArray rowArr = (JSONArray) row;
                 for (Object column : rowArr) {
-                    if (column.toString() == "DesignGoal"){
+                    if (column.toString().equals("DesignGoal")){
                         board.setBoardTileDesign(columnCounter, rowCounter, goalTiles[goalCounter]);
                         goalCounter++;
                     }

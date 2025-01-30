@@ -72,11 +72,13 @@ public class CalicoGameState extends AbstractGameState {
             add(tileBag);
             add(tileMarket);
             add(selectedTile);
-            addAll(Arrays.asList(playerTiles));
-            addAll(Arrays.asList(activeCats));
-            addAll(Arrays.asList(playerBoards));
-            addAll(Arrays.asList(playerFinalPoints));
+            for (int i = 0; i< activeCats.length; i++){
+                addAll(Arrays.asList(activeCats[i]));
+            }
             for (int i = 0; i < getNPlayers(); i++) {
+                addAll(Arrays.asList(playerTiles[i]));
+                addAll(Arrays.asList(playerBoards[i]));
+                add(playerFinalPoints[i]);
                 addAll(playerCatScore[i].values());
                 addAll(playerButtonScore[i].values());
                 addAll(playerGoalScore[i].values());

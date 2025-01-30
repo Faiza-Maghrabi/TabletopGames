@@ -80,4 +80,17 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         return copy;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof CalicoBoard) {
+            if (super.equals(o)){
+                CalicoBoard other = (CalicoBoard) o;
+                return type == other.type;
+            }
+        }
+        return false;
+    }
+
+    //hash is final in GridBoard
+
 }

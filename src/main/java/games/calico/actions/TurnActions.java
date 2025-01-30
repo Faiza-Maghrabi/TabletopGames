@@ -25,6 +25,7 @@ public class TurnActions extends AbstractAction implements IExtendedSequence {
     }
 
 
+    //TODO: is the false here needed?
     public boolean pickedTilefromHand = false;
     public boolean putTileOnBoard = false;
     public boolean pickedTilefromMarket = false;
