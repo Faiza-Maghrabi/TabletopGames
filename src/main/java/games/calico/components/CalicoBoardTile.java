@@ -87,17 +87,17 @@ public class CalicoBoardTile extends Component {
     }
 
     public TileColour getTileColour() {
-        if (!isDesignTile && !isEmpty) {
+        if (!isDesignTile) {
             return tilePlaced.getColour();
         }
-        return null;
+        return TileColour.Null;
     }
 
     public TilePattern getTilePattern() {
-        if (!isDesignTile && !isEmpty) {
+        if (!isDesignTile) {
             return tilePlaced.getPattern();
         }
-        return null;
+        return TilePattern.Null;
     }
 
     public CalicoTypes.DesignGoalTile getDesignGoal() {
@@ -117,20 +117,28 @@ public class CalicoBoardTile extends Component {
 
     //tile functions - based off catanTile's
     public Point getCentreCoords(double radius) {
+        // offset used in the even-r representation
+        double offset_y;
+        double offset_x;
+
         // width and height of a hexagon in pointy rotation
         double width = Math.sqrt(3) * radius;
         double height = 2 * radius;
-        
-        //x offset is the same, y offset varies
-        double offset_y = height * 0.75 * y;
-    
-        //if row is odd then move down by 0.5
-        if (x % 2 == 1) {  
-            offset_y += height * 0.5;
+
+        if (y % 2 == 1) {
+            // even lines
+            offset_x = width;
+            offset_y = height * 0.5;
+        } else {
+            // odd lines
+            offset_x = width * 0.5;
+            offset_y = height * 0.5;
         }
-    
-        return new Point((int) (width * x), (int) offset_y);
+        double x_coord = offset_x + x * width;
+        double y_coord = offset_y + y * height * 0.75;
+        return new Point((int) x_coord, (int) y_coord);
     }
+
     //returns polygon used for rendering
     public Polygon getHexagon(double radius) {
         Polygon polygon = new Polygon();

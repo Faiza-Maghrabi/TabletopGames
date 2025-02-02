@@ -29,6 +29,7 @@ public class CalicoBoardView extends JComponent implements IScreenHighlight {
     CalicoBoard board;
     int playerId;
     int tileRadius = 20;
+    int boardSize;
 
     // Highlights from clicking on the board
     HashMap<Pair<Point, Integer>, Rectangle> vertexToRectMap;
@@ -38,9 +39,10 @@ public class CalicoBoardView extends JComponent implements IScreenHighlight {
     HashMap<Point, Rectangle> hexToRectMap;
     Set<Point> hexHighlight;
 
-    public CalicoBoardView(CalicoBoard board, int playerId) {
+    public CalicoBoardView(CalicoBoard board, int playerId, int boardSize) {
         this.board = board;
         this.playerId = playerId;
+        this.boardSize = boardSize;
 
         //highlight data from catan - look over?
         edgeToRectMap = new HashMap<>();
@@ -94,30 +96,41 @@ public class CalicoBoardView extends JComponent implements IScreenHighlight {
     }
 
     private void drawBoard(Graphics2D g) {
-        Component[][] grid = board.getGridValues();
 
-        for (Component[] tiles : grid) {
-            for (Component tile : tiles) {
+        Font f = g.getFont();
+        Font boldFont = new Font(g.getFont().getName(), Font.BOLD, 12);
+        
+
+        for (int column = 0; column < boardSize; column++) {
+            for (int  row = 0; row < boardSize; row++) {
                 // Get the center coordinates of the tile
-                CalicoBoardTile ctile = (CalicoBoardTile) tile;
-                Point centreCoords = ctile.getCentreCoords(tileRadius);
+                CalicoBoardTile tile = board.getElement(column, row);
+                Point centreCoords = tile.getCentreCoords(tileRadius);
 
                 // Apply odd-r column offset (shift odd columns down)
-                if (ctile.getX() % 2 == 1) { 
+                if (tile.getX() % 2 == 1) { 
                     centreCoords.y += tileRadius * 3 / 4; 
                 }
 
                 // Store the rectangle mapping for interaction
-                hexToRectMap.put(new Point(ctile.getX(), ctile.getY()),
+                hexToRectMap.put(new Point(tile.getX(), tile.getY()),
                     new Rectangle(centreCoords.x - tileRadius / 2, centreCoords.y - tileRadius / 2, tileRadius, tileRadius)
                 );
 
                 // Fill the hexagon //TODO put in image here?
                 g.setColor(new Color(40, 157, 197));
-                Polygon tileHex = ctile.getHexagon(tileRadius);
+                Polygon tileHex = tile.getHexagon(tileRadius);
                 g.fillPolygon(tileHex);
                 g.setColor(Color.BLACK);
                 g.drawPolygon(tileHex); //outline in black
+                g.setFont(boldFont);
+                if (tile.isDesignTile()) {
+                    g.drawString(tile.getDesignGoal().toString(), centreCoords.x, centreCoords.y);
+                }
+                else {
+                    g.drawString(tile.getTileColour().toString(), centreCoords.x, centreCoords.y);
+                }
+                g.setFont(f);
 
             }
         }

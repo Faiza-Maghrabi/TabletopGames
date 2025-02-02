@@ -12,6 +12,7 @@ import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoCatCard;
 import games.calico.components.CalicoTile;
 
+import java.awt.BorderLayout;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class CalicoGameParameters extends AbstractParameters {
     int boardSize = 7;
     int nActionsPerPlayer = 2; //players make 2 actions each turn - is this needed?
 
+    String[] boardLayout =  {BorderLayout.SOUTH, BorderLayout.NORTH, BorderLayout.EAST, BorderLayout.WEST};
+
     //given a colour and a board, set up the board according to the json 
     public CalicoBoard setupBoard(CalicoBoard board, BoardTypes type){
         //design tiles to be used in playerBoard
@@ -54,6 +57,7 @@ public class CalicoGameParameters extends AbstractParameters {
             int goalCounter = 0;
             //traverse json array to fill up board
             for (Object row : boardArr) {
+                columnCounter = 0;
                 JSONArray rowArr = (JSONArray) row;
                 for (Object column : rowArr) {
                     if (column.toString().equals("DesignGoal")){
@@ -158,5 +162,9 @@ public class CalicoGameParameters extends AbstractParameters {
 
     public int getBoardSize() {
         return boardSize;
+    }
+
+    public String[] getBorderLayout() {
+        return boardLayout;
     }
 }

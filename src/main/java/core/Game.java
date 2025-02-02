@@ -62,7 +62,7 @@ public class Game {
     // Number of actions taken in a turn by a player
     private int nActionsPerTurn, nActionsPerTurnSum, nActionsPerTurnCount;
     private boolean pause, stop;
-    private boolean debug = false;
+    private boolean debug = true;
     // Video recording
     private Rectangle areaBounds;
     private boolean recordingVideo = false;
@@ -836,6 +836,7 @@ public class Game {
 
         /* Set up players for the game */
         ArrayList<AbstractPlayer> players = new ArrayList<>();
+        players.add(new HumanGUIPlayer(ac));
         players.add(new RandomPlayer());
         players.add(new RandomPlayer());
         players.add(new RandomPlayer());
@@ -853,7 +854,7 @@ public class Game {
 
 //        players.add(new OSLAPlayer());
 //        players.add(new RMHCPlayer());
-       players.add(new HumanGUIPlayer(ac));
+
 //        players.add(new HumanConsolePlayer());
 //        players.add(new FirstActionPlayer());
 
