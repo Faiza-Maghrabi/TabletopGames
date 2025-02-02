@@ -3,6 +3,7 @@ package games.calico.gui;
 import core.*;
 import core.actions.AbstractAction;
 import core.components.Deck;
+import games.calico.CalicoGameState;
 
 import gui.AbstractGUIManager;
 import gui.GamePanel;
@@ -30,20 +31,56 @@ import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
 public class CalicoGUI extends AbstractGUIManager {
 
     public CalicoGUI(GamePanel parent, Game game, ActionController ac, Set<Integer> human) {
-            super(parent, game, ac, human);
-            //TODO Auto-generated constructor stub
-        }
+        super(parent, game, ac, human);
+        if (game == null) return;
+
+        CalicoGameState gameState = (CalicoGameState) game.getGameState();
+
+        CalicoBoardView boardView = new CalicoBoardView(gameState.getPlayerBoards()[0], 0);
+
+        //view = new Connect4BoardView(gameState.getGridBoard());
+
+        // Set width/height of display
+        // this.width = Math.max(defaultDisplayWidth, defaultItemSize * gameState.getGridBoard().getWidth());
+        // this.height = defaultItemSize * gameState.getGridBoard().getHeight();
+
+        //JComponent actionPanel = createActionPanel(new IScreenHighlight[]{view},
+        //        width, defaultActionPanelHeight);
+
+        JPanel wrapper = new JPanel();
+        wrapper.setBackground(Color.white);
+        parent.setLayout(new FlowLayout());
+        parent.add(wrapper);
+
+        JPanel infoPanel = createGameStateInfoPanel("Calico", gameState, width, defaultInfoPanelHeight);
+        wrapper.setLayout(new BorderLayout());
+        wrapper.setBackground(Color.white);
+        wrapper.add(infoPanel);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        mainPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        mainPanel.add(boardView);
+
+        wrapper.add(mainPanel, BorderLayout.CENTER);
+
+        //parent.setPreferredSize(new Dimension(width, height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 20));
+        // parent.revalidate();
+        // parent.setVisible(true);
+        // parent.repaint();
+        wrapper.revalidate();
+        wrapper.repaint();
+    }
     
-        @Override
+    @Override
     public int getMaxActionSpace() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMaxActionSpace'");
+        return 5000;
     }
 
     @Override
     protected void _update(AbstractPlayer player, AbstractGameState gameState) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method '_update'");
+        //parent.repaint();
+        return;
     }
 
 }

@@ -5,6 +5,8 @@ import games.calico.CalicoTypes;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
 
+import java.awt.Point;
+import java.awt.Polygon;
 import java.util.Objects;
 
 import static core.CoreConstants.ComponentType.BOARD_NODE;
@@ -112,6 +114,39 @@ public class CalicoBoardTile extends Component {
     public int getY() {
         return y;
     }
+
+    //tile functions - based off catanTile's
+    public Point getCentreCoords(double radius) {
+        // width and height of a hexagon in pointy rotation
+        double width = Math.sqrt(3) * radius;
+        double height = 2 * radius;
+        
+        //x offset is the same, y offset varies
+        double offset_y = height * 0.75 * y;
+    
+        //if row is odd then move down by 0.5
+        if (x % 2 == 1) {  
+            offset_y += height * 0.5;
+        }
+    
+        return new Point((int) (width * x), (int) offset_y);
+    }
+    //returns polygon used for rendering
+    public Polygon getHexagon(double radius) {
+        Polygon polygon = new Polygon();
+        Point centreCoords = getCentreCoords(radius);
+        double x_coord = centreCoords.x;
+        double y_coord = centreCoords.y;
+        for (int i = 0; i < 6; i++) {
+            double angle_deg = i * 60 - 30;
+            double angle_rad = Math.PI / 180 * angle_deg;
+            int xval = (int) (x_coord + radius * Math.cos(angle_rad));
+            int yval = (int) (y_coord + radius * Math.sin(angle_rad));
+            polygon.addPoint(xval, yval);
+        }
+        return polygon;
+    }
+    
 
     @Override
     public CalicoBoardTile copy() {

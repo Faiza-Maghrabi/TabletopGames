@@ -837,7 +837,8 @@ public class Game {
         /* Set up players for the game */
         ArrayList<AbstractPlayer> players = new ArrayList<>();
         players.add(new RandomPlayer());
-        //players.add(new RandomPlayer());
+        players.add(new RandomPlayer());
+        players.add(new RandomPlayer());
         //players.add(new BasicMCTSPlayer());
 
 //        RMHCParams params = new RMHCParams();

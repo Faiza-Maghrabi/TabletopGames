@@ -18,6 +18,7 @@ import games.calico.actions.TurnActions;
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoTile;
 
+import java.io.Console;
 import java.util.*;
 
 //changed from StandardForwardModelWithTurnOrder due to deprecated?
@@ -62,30 +63,41 @@ public class CalicoForwardModel extends StandardForwardModel {
 
             gs.playerBoards[i] = new CalicoBoard(params.boardSize, allBoardTypes.get(i));
             gs.playerBoards[i] = params.setupBoard(gs.playerBoards[i], allBoardTypes.get(i));
+            System.out.println("boards");
 
             //fill in point hashmaps
             gs.playerCatScore[i] = new HashMap<Cat, Counter>();
             for (int j = 0; j < gs.activeCats.length; j++) {
-                Cat c = gs.activeCats[i].getCat();
+                Cat c = gs.activeCats[j].getCat();
                 gs.playerCatScore[i].put(c, new Counter(0,"player" + i +"'s cat points for " + c.getName()));
             }
+
+            System.out.println("playerCatScore");
 
             gs.playerButtonScore[i] = new HashMap<Button, Counter>();
             for (Button b : Button.values()) {
                 gs.playerButtonScore[i].put(b, new Counter(0,"player" + i +"'s button points for " + b));
             }
 
+            System.out.println("playerButtonScore");
+
             gs.playerGoalScore[i] = new HashMap<DesignGoalTile, Counter>();
             for (DesignGoalTile g : DesignGoalTile.values()) {
                 gs.playerGoalScore[i].put(g, new Counter(0,"player" + i +"'s goal tile points for " + g));
             }
+
+            System.out.println("playerGoalScore");
 
             gs.playerTiles[i] = new Deck<CalicoTile>("player" + i +"'s tiles on hand", i, CoreConstants.VisibilityMode.VISIBLE_TO_OWNER);
             gs.playerTiles[i].add(gs.tileBag.draw());
             gs.playerTiles[i].add(gs.tileBag.draw());
             gs.playerTiles[i].add(gs.tileBag.draw());
 
+            System.out.println("playerTiles");
+
             gs.playerFinalPoints[i] = new Counter("point counter for player " + i);
+
+            System.out.println("playerFinalPoints");
 
         }
     }
