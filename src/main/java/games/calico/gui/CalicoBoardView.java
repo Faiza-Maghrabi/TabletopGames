@@ -19,16 +19,16 @@ import javax.swing.JComponent;
 
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoBoardTile;
-import games.catan.components.CatanTile;
 import gui.IScreenHighlight;
 import gui.views.ComponentView;
+import utilities.ImageIO;
 import utilities.Pair;
 
 public class CalicoBoardView extends JComponent implements IScreenHighlight {
 
     CalicoBoard board;
     int playerId;
-    int tileRadius = 20;
+    int tileRadius = 22;
     int boardSize;
 
     // Highlights from clicking on the board
@@ -117,24 +117,42 @@ public class CalicoBoardView extends JComponent implements IScreenHighlight {
                     new Rectangle(centreCoords.x - tileRadius / 2, centreCoords.y - tileRadius / 2, tileRadius, tileRadius)
                 );
 
-                // Fill the hexagon //TODO put in image here?
-                g.setColor(new Color(40, 157, 197));
-                Polygon tileHex = tile.getHexagon(tileRadius);
-                g.fillPolygon(tileHex);
-                g.setColor(Color.BLACK);
-                g.drawPolygon(tileHex); //outline in black
-                g.setFont(boldFont);
-                if (tile.isDesignTile()) {
-                    g.drawString(tile.getDesignGoal().toString(), centreCoords.x, centreCoords.y);
+                if (!tile.isEmpty()) {
+                    drawImage(g, tile.getImagePath(), centreCoords.x, centreCoords.y, tileRadius * 2, tileRadius *2);
                 }
                 else {
-                    g.drawString(tile.getTileColour().toString(), centreCoords.x, centreCoords.y);
+                    // Fill the hexagon //TODO put in image here?
+                    g.setColor(new Color(40, 157, 197));
+                    Polygon tileHex = tile.getHexagon(tileRadius);
+                    g.fillPolygon(tileHex);
+                    g.setColor(Color.BLACK);
+                    g.drawPolygon(tileHex); //outline in black
+                    g.setFont(boldFont);
+                    if (tile.isDesignTile()) {
+                        g.drawString(tile.getDesignGoal().toString(), centreCoords.x, centreCoords.y);
+                    }
+                    else {
+                        g.drawString(tile.getTileColour().toString(), centreCoords.x, centreCoords.y);
+                    }
+                    g.setFont(f);
                 }
-                g.setFont(f);
 
             }
         }
 
+    }
+
+    public static void drawImage(Graphics2D g, String path, int x, int y, int width, int height) {
+        Image image = ImageIO.GetInstance().getImage(path);
+        drawImage(g, image, x, y, width, height);
+    }
+
+    public static void drawImage(Graphics2D g, Image img, int x, int y, int width, int height) {
+        int w = img.getWidth(null);
+        int h = img.getHeight(null);
+        double scaleW = width*1.0/w;
+        double scaleH = height*1.0/h;
+        g.drawImage(img, x, y, (int) (w*scaleW), (int) (h*scaleH), null);
     }
 
     //drawSettlement may be needed for buttons and cats

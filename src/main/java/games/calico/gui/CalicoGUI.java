@@ -49,7 +49,7 @@ public class CalicoGUI extends AbstractGUIManager {
         this.width = Math.max(defaultDisplayWidth, defaultItemSize * params.getBoardSize());
         this.height = defaultItemSize * params.getBoardSize();
 
-        parent.setPreferredSize(new Dimension(this.width + 200, this.height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 200));
+        parent.setPreferredSize(new Dimension(this.width + 210, this.height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 400));
 
         //JComponent actionPanel = createActionPanel(new IScreenHighlight[]{view},
         //        width, defaultActionPanelHeight);
@@ -66,9 +66,8 @@ public class CalicoGUI extends AbstractGUIManager {
         //boardPanel.add(a, BorderLayout.CENTER);
 
         for (int i = 0; i < gameState.getNPlayers(); i++) {
-            System.out.println(i + " " + borderLayout[i]);
             CalicoBoardView boardView = new CalicoBoardView(gameState.getPlayerBoards()[i], i, params.getBoardSize());
-            boardView.setPreferredSize(new Dimension(270, 220));
+            boardView.setPreferredSize(new Dimension(300, 240));
             //add extra borderlayout to center grid when i == 0 or 1 (south and north)
             if (i == 0 || i == 1) {
                 JPanel centerPanel = new JPanel();

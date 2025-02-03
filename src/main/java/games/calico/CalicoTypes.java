@@ -26,12 +26,12 @@ public class CalicoTypes {
 
     // Enums
     public enum  DesignGoalTile{
-        AAA_BBB ("data/calico/images/tiles/aaa_bbb.png", 8, 13),
-        AA_BB_CC ("data/calico/images/tiles/aa_bb_cc.png", 7, 11),
-        NOT ("data/calico/images/tiles/not.png", 10, 15),
-        AAAA_BB ("data/calico/images/tiles/aaaa_bb.png", 8, 14),
-        AAA_BB_C ("data/calico/images/tiles/aaa_bb_c.png", 7, 11),
-        AA_BB_C_D ("data/calico/images/tiles/aa_bb_c_d.png", 5, 8);
+        AAA_BBB ("data/calico/images/designTiles/aaa_bbb.png", 8, 13),
+        AA_BB_CC ("data/calico/images/designTiles/aa_bb_cc.png", 7, 11),
+        NOT ("data/calico/images/designTiles/not.png", 10, 15),
+        AAAA_BB ("data/calico/images/designTiles/aaaa_bb.png", 8, 14),
+        AAA_BB_C ("data/calico/images/designTiles/aaa_bb_c.png", 7, 11),
+        AA_BB_C_D ("data/calico/images/designTiles/aa_bb_c_d.png", 5, 8);
 
         String imagePath;
         int oneGoal;

@@ -115,6 +115,16 @@ public class CalicoBoardTile extends Component {
         return y;
     }
 
+    public String getImagePath() {
+        if (!isEmpty){
+            if (isDesignTile){
+                return designGoalTile.getImagePath();
+            }
+            return tilePlaced.getImagePath();
+        }
+        return "";
+    }
+
     //tile functions - based off catanTile's
     public Point getCentreCoords(double radius) {
         // offset used in the even-r representation

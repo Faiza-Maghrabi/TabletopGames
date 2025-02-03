@@ -66,7 +66,7 @@ public class CalicoGameParameters extends AbstractParameters {
                     }
                     else {
                         String[] tileVals = column.toString().split(",");
-                        if (tileVals[0] == "Null"){
+                        if (tileVals[0].equals("Null")){
                             board.setBoardTile(columnCounter, rowCounter);
                         }
                         else {
