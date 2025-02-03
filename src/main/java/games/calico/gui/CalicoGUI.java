@@ -49,7 +49,7 @@ public class CalicoGUI extends AbstractGUIManager {
         this.width = Math.max(defaultDisplayWidth, defaultItemSize * params.getBoardSize());
         this.height = defaultItemSize * params.getBoardSize();
 
-        parent.setPreferredSize(new Dimension(this.width + 200, this.height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 100));
+        parent.setPreferredSize(new Dimension(this.width + 200, this.height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 200));
 
         //JComponent actionPanel = createActionPanel(new IScreenHighlight[]{view},
         //        width, defaultActionPanelHeight);
@@ -59,28 +59,27 @@ public class CalicoGUI extends AbstractGUIManager {
         JPanel boardPanel = new JPanel();
         boardPanel.setLayout(new BorderLayout(10, 10));
 
-        JTextArea a = new JTextArea();
-        a.setPreferredSize(new Dimension(200, 300));
-
-        boardPanel.add(a, BorderLayout.CENTER);
-
-        System.out.println(gameState.getNPlayers());
+        //market should be held here and cats
+        JPanel a = new JPanel();
+        a.setBackground(Color.pink);
+        a.setPreferredSize(new Dimension(10, 10));
+        //boardPanel.add(a, BorderLayout.CENTER);
 
         for (int i = 0; i < gameState.getNPlayers(); i++) {
+            System.out.println(i + " " + borderLayout[i]);
             CalicoBoardView boardView = new CalicoBoardView(gameState.getPlayerBoards()[i], i, params.getBoardSize());
-            boardView.setPreferredSize(new Dimension(200, 300));
-            boardPanel.add(boardView, borderLayout[i]);
+            boardView.setPreferredSize(new Dimension(270, 220));
+            //add extra borderlayout to center grid when i == 0 or 1 (south and north)
+            if (i == 0 || i == 1) {
+                JPanel centerPanel = new JPanel();
+                centerPanel.setLayout(new FlowLayout());
+                centerPanel.add(boardView);
+                boardPanel.add(centerPanel, borderLayout[i]);
+            }
+            else {
+                boardPanel.add(boardView, borderLayout[i]);
+            }
         }
-
-        // CalicoBoardView boardView = new CalicoBoardView(gameState.getPlayerBoards()[0], 0, params.getBoardSize());
-        // boardView.setPreferredSize(new Dimension(200, 300));
-        // boardPanel.add(boardView, BorderLayout.CENTER);
-        // CalicoBoardView boardView2 = new CalicoBoardView(gameState.getPlayerBoards()[1], 1, params.getBoardSize());
-        // boardView2.setPreferredSize(new Dimension(200, 300));
-        // boardPanel.add(boardView2, BorderLayout.SOUTH);
-        // boardPanel.add(new JButton("Center"),BorderLayout.EAST);
-        // boardPanel.add(new JButton("Center"),BorderLayout.NORTH);
-        // boardPanel.add(new JButton("Center"),BorderLayout.WEST);
 
         parent.add(boardPanel);
 
@@ -93,12 +92,6 @@ public class CalicoGUI extends AbstractGUIManager {
         wrapper.setBackground(Color.white);
         wrapper.add(infoPanel);
 
-
-
-        // JPanel mainPanel = new JPanel();
-        // mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
-        // mainPanel.add(Box.createRigidArea(new Dimension(5,0)));
-        // mainPanel.add(boardView);
 
         //parent.setPreferredSize(new Dimension(width, height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 20));
         // parent.revalidate();
