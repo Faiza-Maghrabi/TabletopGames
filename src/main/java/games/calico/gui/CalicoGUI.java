@@ -67,17 +67,15 @@ public class CalicoGUI extends AbstractGUIManager {
 
         for (int i = 0; i < gameState.getNPlayers(); i++) {
             CalicoBoardView boardView = new CalicoBoardView(gameState.getPlayerBoards()[i], i, params.getBoardSize());
-            boardView.setPreferredSize(new Dimension(350, 320));
+            boardView.setPreferredSize(new Dimension(500, 320));
+
+            CalicoHandView handView = new CalicoHandView(gameState.getPlayerTiles()[i], i);
             //add extra borderlayout to center grid when i == 0 or 1 (south and north)
-            if (i == 0 || i == 1) {
-                JPanel centerPanel = new JPanel();
-                centerPanel.setLayout(new FlowLayout());
-                centerPanel.add(boardView);
-                boardPanel.add(centerPanel, borderLayout[i]);
-            }
-            else {
-                boardPanel.add(boardView, borderLayout[i]);
-            }
+                JPanel playerPanel = new JPanel();
+                playerPanel.setLayout(new FlowLayout());
+                playerPanel.add(boardView);
+                playerPanel.add(handView);
+                boardPanel.add(playerPanel, borderLayout[i]);
         }
 
         parent.add(boardPanel);

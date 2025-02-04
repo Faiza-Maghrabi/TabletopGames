@@ -86,11 +86,16 @@ public class CalicoGameParameters extends AbstractParameters {
     public Deck<CalicoTile> loadTiles(){
         Deck<CalicoTile> allTiles = new Deck<CalicoTile>("all tiles", CoreConstants.VisibilityMode.HIDDEN_TO_ALL);
         for (TileColour colour : TileColour.values()) {
-            for (TilePattern pattern : TilePattern.values()) {
-                allTiles.add(new CalicoTile(colour, pattern));
-                allTiles.add(new CalicoTile(colour, pattern));
-                allTiles.add(new CalicoTile(colour, pattern));
+            if (colour != TileColour.Null){
+                for (TilePattern pattern : TilePattern.values()) {
+                    if (pattern != TilePattern.Null) {
+                        allTiles.add(new CalicoTile(colour, pattern));
+                        allTiles.add(new CalicoTile(colour, pattern));
+                        allTiles.add(new CalicoTile(colour, pattern));
+                    }
+                }
             }
+            
         }
         return allTiles;
     }
