@@ -32,6 +32,11 @@ import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
  * https://tabletopgames.ai/wiki/games/creating/gui
  */
 public class CalicoGUI extends AbstractGUIManager {
+    final static int boardWidth = 500;
+    final static int boardHeight = 320;
+    final static int tileRadius = 26;
+    final static int deckWidth = 220;
+    final static int deckHeight = 70;
 
     public CalicoGUI(GamePanel parent, Game game, ActionController ac, Set<Integer> human) {
         super(parent, game, ac, human);
@@ -49,7 +54,7 @@ public class CalicoGUI extends AbstractGUIManager {
         this.width = Math.max(defaultDisplayWidth, defaultItemSize * params.getBoardSize());
         this.height = defaultItemSize * params.getBoardSize();
 
-        parent.setPreferredSize(new Dimension(this.width + 1000, this.height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 400));
+        parent.setPreferredSize(new Dimension(this.width + 2000, this.height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 400));
 
         //JComponent actionPanel = createActionPanel(new IScreenHighlight[]{view},
         //        width, defaultActionPanelHeight);
@@ -67,14 +72,21 @@ public class CalicoGUI extends AbstractGUIManager {
 
         for (int i = 0; i < gameState.getNPlayers(); i++) {
             CalicoBoardView boardView = new CalicoBoardView(gameState.getPlayerBoards()[i], i, params.getBoardSize());
-            boardView.setPreferredSize(new Dimension(500, 320));
+            boardView.setPreferredSize(new Dimension(boardWidth, boardHeight));
 
-            CalicoHandView handView = new CalicoHandView(gameState.getPlayerTiles()[i], i);
+            CalicoHandView handView = new CalicoHandView(i, gameState.getPlayerTiles()[i], true, "", new Rectangle(0,0, deckWidth, deckHeight));
             //add extra borderlayout to center grid when i == 0 or 1 (south and north)
                 JPanel playerPanel = new JPanel();
-                playerPanel.setLayout(new FlowLayout());
-                playerPanel.add(boardView);
-                playerPanel.add(handView);
+                playerPanel.setLayout(new FlowLayout(FlowLayout.CENTER,0, 0));
+                if (i == 3) {
+                    playerPanel.add(handView);
+                    playerPanel.add(boardView);
+                }
+                else {
+                    playerPanel.add(boardView);
+                    playerPanel.add(handView);
+                }
+
                 boardPanel.add(playerPanel, borderLayout[i]);
         }
 
