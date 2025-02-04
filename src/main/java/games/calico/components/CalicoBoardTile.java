@@ -128,22 +128,28 @@ public class CalicoBoardTile extends Component {
     //tile functions - based off catanTile's
     public Point getCentreCoords(double radius) {
         // offset used in the even-r representation
-        double offset_y;
-        double offset_x;
+        double offset_y = 0;
+        double offset_x = 0;
 
         // width and height of a hexagon in pointy rotation
         double width = Math.sqrt(3) * radius;
         double height = 2 * radius;
 
         if (y % 2 == 1) {
-            // even lines
-            offset_x = width;
+            // odd rows
+            // offset_x = width;
             offset_y = height * 0.5;
         } else {
-            // odd lines
+            // even rows
             offset_x = width * 0.5;
             offset_y = height * 0.5;
         }
+
+        if (x % 2 == 1){
+            //odd columns
+            offset_y = height * 0.1;
+        }
+
         double x_coord = offset_x + x * width;
         double y_coord = offset_y + y * height * 0.75;
         return new Point((int) x_coord, (int) y_coord);

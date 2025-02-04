@@ -57,10 +57,20 @@ public class CalicoTypes {
     }
 
     public enum BoardTypes{
-        blue,
-        green,
-        purple,
-        yellow
+        blue ("data/calico/images/tiles/board/blue.png"),
+        green ("data/calico/images/tiles/board/green.png"),
+        purple ("data/calico/images/tiles/board/purple.png"),
+        yellow ("data/calico/images/tiles/board/yellow.png");
+
+        String imagePath;
+
+        BoardTypes(String imagePath) {
+            this.imagePath = imagePath;
+        }
+
+        public String getImagePath() {
+            return imagePath;
+        }
     }
 
     public enum TileColour{

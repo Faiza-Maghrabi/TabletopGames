@@ -43,6 +43,10 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         return this.setElement(x, y, tile);
     }
 
+    public String getEmptyImagePath() {
+        return type.getImagePath();
+    }
+
     //get the locations of the neighbouring tiles
     public CalicoBoardTile[] getNeighbouringTiles(int x, int y) {
         // int parity;

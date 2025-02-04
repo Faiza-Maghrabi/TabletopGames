@@ -1,8 +1,5 @@
 package games.calico.gui;
 
-import static gui.GUI.defaultItemSize;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -11,16 +8,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import core.components.Component;
-
-import core.components.Edge;
-
 import javax.swing.JComponent;
 
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoBoardTile;
 import gui.IScreenHighlight;
-import gui.views.ComponentView;
+
 import utilities.ImageIO;
 import utilities.Pair;
 
@@ -28,7 +21,7 @@ public class CalicoBoardView extends JComponent implements IScreenHighlight {
 
     CalicoBoard board;
     int playerId;
-    int tileRadius = 22;
+    int tileRadius = 26;
     int boardSize;
 
     // Highlights from clicking on the board
@@ -97,9 +90,12 @@ public class CalicoBoardView extends JComponent implements IScreenHighlight {
 
     private void drawBoard(Graphics2D g) {
 
-        Font f = g.getFont();
-        Font boldFont = new Font(g.getFont().getName(), Font.BOLD, 12);
+        // Font f = g.getFont();
+        // Font boldFont = new Font(g.getFont().getName(), Font.BOLD, 12);
         
+
+        
+        //should i have the images preloaded somewhere or is this fine?
 
         for (int column = 0; column < boardSize; column++) {
             for (int  row = 0; row < boardSize; row++) {
@@ -117,24 +113,27 @@ public class CalicoBoardView extends JComponent implements IScreenHighlight {
                     new Rectangle(centreCoords.x - tileRadius / 2, centreCoords.y - tileRadius / 2, tileRadius, tileRadius)
                 );
 
+                //Need to add button images and cat images to board when required
+
                 if (!tile.isEmpty()) {
                     drawImage(g, tile.getImagePath(), centreCoords.x, centreCoords.y, tileRadius * 2, tileRadius *2);
                 }
                 else {
-                    // Fill the hexagon //TODO put in image here?
-                    g.setColor(new Color(40, 157, 197));
-                    Polygon tileHex = tile.getHexagon(tileRadius);
-                    g.fillPolygon(tileHex);
-                    g.setColor(Color.BLACK);
-                    g.drawPolygon(tileHex); //outline in black
-                    g.setFont(boldFont);
-                    if (tile.isDesignTile()) {
-                        g.drawString(tile.getDesignGoal().toString(), centreCoords.x, centreCoords.y);
-                    }
-                    else {
-                        g.drawString(tile.getTileColour().toString(), centreCoords.x, centreCoords.y);
-                    }
-                    g.setFont(f);
+                    drawImage(g, board.getEmptyImagePath(), centreCoords.x, centreCoords.y, tileRadius * 2, tileRadius *2);
+                    // Fill the hexagon and give name - DEBUG
+                    // g.setColor(new Color(40, 157, 197));
+                    // Polygon tileHex = tile.getHexagon(tileRadius);
+                    // g.fillPolygon(tileHex);
+                    // g.setColor(Color.BLACK);
+                    // g.drawPolygon(tileHex); //outline in black
+                    // g.setFont(boldFont);
+                    // if (tile.isDesignTile()) {
+                    //     g.drawString(tile.getDesignGoal().toString(), centreCoords.x, centreCoords.y);
+                    // }
+                    // else {
+                    //     g.drawString(tile.getTileColour().toString(), centreCoords.x, centreCoords.y);
+                    // }
+                    // g.setFont(f);
                 }
 
             }
@@ -144,15 +143,11 @@ public class CalicoBoardView extends JComponent implements IScreenHighlight {
 
     public static void drawImage(Graphics2D g, String path, int x, int y, int width, int height) {
         Image image = ImageIO.GetInstance().getImage(path);
-        drawImage(g, image, x, y, width, height);
-    }
-
-    public static void drawImage(Graphics2D g, Image img, int x, int y, int width, int height) {
-        int w = img.getWidth(null);
-        int h = img.getHeight(null);
+        int w = image.getWidth(null);
+        int h = image.getHeight(null);
         double scaleW = width*1.0/w;
         double scaleH = height*1.0/h;
-        g.drawImage(img, x, y, (int) (w*scaleW), (int) (h*scaleH), null);
+        g.drawImage(image, x, y, (int) (w*scaleW), (int) (h*scaleH), null);
     }
 
     //drawSettlement may be needed for buttons and cats
