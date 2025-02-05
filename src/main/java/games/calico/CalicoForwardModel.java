@@ -18,8 +18,6 @@ import games.calico.actions.TurnActions;
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoTile;
 
-import java.awt.SystemColor;
-import java.io.Console;
 import java.util.*;
 
 //changed from StandardForwardModelWithTurnOrder due to deprecated?

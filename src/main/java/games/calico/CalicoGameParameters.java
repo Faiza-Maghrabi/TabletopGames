@@ -128,7 +128,9 @@ public class CalicoGameParameters extends AbstractParameters {
         ArrayList<TilePattern> patternTiles = new ArrayList<TilePattern>();
 
         for (TilePattern t : TilePattern.values()) {
-            patternTiles.add(t);
+            if (TilePattern.Null != t) {
+                patternTiles.add(t);
+            }
         }
         
         Collections.shuffle(patternTiles);
@@ -149,7 +151,7 @@ public class CalicoGameParameters extends AbstractParameters {
         int tileCounter = 0;
 
         for (int i = 0; i < 3; i++){
-            catsInPlay[i] = new CalicoCatCard(allCats.get(i), patternTiles.get(tileCounter), patternTiles.get(tileCounter));
+            catsInPlay[i] = new CalicoCatCard(allCats.get(i), patternTiles.get(tileCounter), patternTiles.get(tileCounter+1));
             tileCounter+= 2;
         }
 

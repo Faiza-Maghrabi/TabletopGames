@@ -261,7 +261,7 @@ public class CalicoGameState extends AbstractGameState {
     }
 
     public Deck<CalicoTile> getTileMarket() {
-        return tileBag;
+        return tileMarket;
     }
 
     public CalicoTile getSelectedTile(){

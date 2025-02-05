@@ -10,10 +10,7 @@ import java.awt.*;
 
 import static games.calico.gui.CalicoGUI.*;
 
-public class CalicoHandView extends DeckView<CalicoTile> {
-
-    String dataPath;
-    Image backOfCard;
+public class CalicoDeckView extends DeckView<CalicoTile> {
 
     /**
      * Constructor initialising information and adding key/mouse listener for card highlight (left click or ALT + hover
@@ -22,9 +19,8 @@ public class CalicoHandView extends DeckView<CalicoTile> {
      * @param visible - true if whole deck visible
      * @param dataPath - path to assets
      */
-    public CalicoHandView(int human, Deck<CalicoTile> d, boolean visible, String dataPath, Rectangle rect) {
-        super(human, d, visible, tileRadius*2, tileRadius*2, rect);
-        this.dataPath = dataPath;
+    public CalicoDeckView(int human, Deck<CalicoTile> d, Rectangle rect) {
+        super(human, d, true, tileRadius*2, tileRadius*2, rect);
     }
 
     /**

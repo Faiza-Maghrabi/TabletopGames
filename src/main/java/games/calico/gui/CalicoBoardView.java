@@ -12,6 +12,7 @@ import javax.swing.JComponent;
 
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoBoardTile;
+import static games.calico.gui.CalicoGUI.*;
 import gui.IScreenHighlight;
 
 import utilities.ImageIO;
@@ -21,7 +22,6 @@ public class CalicoBoardView extends JComponent implements IScreenHighlight {
 
     CalicoBoard board;
     int playerId;
-    int tileRadius = 26;
     int boardSize;
 
     // Highlights from clicking on the board

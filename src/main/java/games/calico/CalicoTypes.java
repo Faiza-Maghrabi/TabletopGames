@@ -104,29 +104,35 @@ public class CalicoTypes {
     }
 
     public enum Cat{
-        Millie ("data/calico/images/cats/millie.png", 3, 3),
-        Tibbit ("data/calico/images/cats/tibbit.png", 5, 4),
-        Coconut ("data/calico/images/cats/coconut.png", 7, 5),
-        Tecolote ("data/calico/images/cats/tecolote.png", 7, 4), //in a straightline
-        Callie ("data/calico/images/cats/callie.png", 3, 3), //in a T shape
-        Rumi ("data/calico/images/cats/rumi.png", 5, 3), //in a stright line
-        Gwen ("data/calico/images/cats/gwen.png", 11, 7),
-        Cira ("data/calico/images/cats/cira.png", 9, 6),
-        Leo ("data/calico/images/cats/leo.png", 11, 5), //in a stright line
-        Almond ("data/calico/images/cats/almond.png", 9, 5); //pyramid
+        Millie ("data/calico/images/cats/millie.png", "data/calico/images/cats/token/millie.png", 3, 3),
+        Tibbit ("data/calico/images/cats/tibbit.png", "data/calico/images/cats/token/tibbit.png", 5, 4),
+        Coconut ("data/calico/images/cats/coconut.png", "data/calico/images/cats/token/coconut.png", 7, 5),
+        Tecolote ("data/calico/images/cats/tecolote.png", "data/calico/images/cats/token/tecolote.png", 7, 4), //in a straightline
+        Callie ("data/calico/images/cats/callie.png", "data/calico/images/cats/token/callie.png", 3, 3), //in a T shape
+        Rumi ("data/calico/images/cats/rumi.png", "data/calico/images/cats/token/rumi.png", 5, 3), //in a stright line
+        Gwen ("data/calico/images/cats/gwen.png", "data/calico/images/cats/token/gwen.png", 11, 7),
+        Cira ("data/calico/images/cats/cira.png", "data/calico/images/cats/token/cira.png", 9, 6),
+        Leo ("data/calico/images/cats/leo.png", "data/calico/images/cats/token/leo.png", 11, 5), //in a stright line
+        Almond ("data/calico/images/cats/almond.png", "data/calico/images/cats/token/almond.png", 9, 5); //pyramid
 
         String imagePath;
+        String tokenPath;
         int points;
         int arrangement; //TODO: figure out how the more unique arrangements are going to work
 
-        Cat(String imagePath, int points, int arrangement) {
+        Cat(String imagePath, String tokenPath, int points, int arrangement) {
             this.imagePath = imagePath;
+            this.tokenPath = tokenPath;
             this.points = points;
             this.arrangement = arrangement;
         }
 
         public String getImagePath() {
             return imagePath;
+        }
+
+        public String getTokenPath() {
+            return tokenPath;
         }
 
         public String getName() {
