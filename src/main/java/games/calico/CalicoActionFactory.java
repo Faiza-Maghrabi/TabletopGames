@@ -58,7 +58,7 @@ public class CalicoActionFactory {
         ArrayList<AbstractAction> actions = new ArrayList<>();
 
         //get an action for each tile in the market (2)
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             actions.add(new PickFromHand(i, player));
         }
 

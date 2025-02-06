@@ -54,15 +54,20 @@ public class CalicoGUI extends AbstractGUIManager {
         this.width = Math.max(defaultDisplayWidth, defaultItemSize * params.getBoardSize());
         this.height = defaultItemSize * params.getBoardSize();
 
-        parent.setPreferredSize(new Dimension(this.width + 1800, this.height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 400));
+
+
+        parent.setPreferredSize(new Dimension(this.width + 700, this.height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 400));
 
         //JComponent actionPanel = createActionPanel(new IScreenHighlight[]{view},
         //        width, defaultActionPanelHeight);
 
         parent.setLayout(new FlowLayout());
 
+        JPanel childPanel = new JPanel(new FlowLayout());
+
         JPanel boardPanel = new JPanel();
         boardPanel.setLayout(new BorderLayout(10, 10));
+
 
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
@@ -103,12 +108,12 @@ public class CalicoGUI extends AbstractGUIManager {
                 boardPanel.add(playerPanel, borderLayout[i]);
         }
 
-        parent.add(boardPanel);
+        childPanel.add(boardPanel);
 
         JPanel sidePanel = new JPanel();
         sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
         // wrapper.setBackground(Color.white);
-        parent.add(sidePanel);
+        childPanel.add(sidePanel);
 
         JPanel infoPanel = createGameStateInfoPanel("Calico", gameState, width, defaultInfoPanelHeight);
         sidePanel.add(infoPanel);
@@ -118,6 +123,13 @@ public class CalicoGUI extends AbstractGUIManager {
 
         //parent.setPreferredSize(new Dimension(width, height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 20));
         // parent.revalidate();
+
+        childPanel.setPreferredSize(new Dimension(1200, 600));
+        JScrollPane scrollPane = new JScrollPane(childPanel);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+        parent.add(scrollPane);
         parent.revalidate();
         parent.setVisible(true);
         parent.repaint();
