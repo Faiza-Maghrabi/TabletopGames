@@ -29,7 +29,7 @@ public class CalicoCatQuestView extends JComponent {
 
     //draw out each cat alongside their patterns
     private void drawQuest(Graphics2D g) {
-        int offset = Math.max((display.width - (tileRadius * 5)) / activeCats.length, 130);
+        int offset = Math.max((display.width - (tileRadius * 5)) / activeCats.length, 200);
         for (int i = 0; i < activeCats.length; i++) {
             Rectangle catRect = new Rectangle(display.x + offset * i, display.y - 2, 0, 0);
             Image catImg = ImageIO.GetInstance().getImage(activeCats[i].getImagePath());

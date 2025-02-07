@@ -40,8 +40,6 @@ public class CalicoGameParameters extends AbstractParameters {
     int boardSize = 7;
     int nActionsPerPlayer = 2; //players make 2 actions each turn - is this needed?
 
-    String[] boardLayout =  {BorderLayout.SOUTH, BorderLayout.NORTH, BorderLayout.EAST, BorderLayout.WEST};
-
     //given a colour and a board, set up the board according to the json 
     public CalicoBoard setupBoard(CalicoBoard board, BoardTypes type){
         //design tiles to be used in playerBoard
@@ -169,9 +167,5 @@ public class CalicoGameParameters extends AbstractParameters {
 
     public int getBoardSize() {
         return boardSize;
-    }
-
-    public String[] getBorderLayout() {
-        return boardLayout;
     }
 }

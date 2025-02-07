@@ -32,61 +32,55 @@ import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
  * https://tabletopgames.ai/wiki/games/creating/gui
  */
 public class CalicoGUI extends AbstractGUIManager {
-    final static int boardWidth = 350;
-    final static int boardHeight = 320;
-    final static int tileRadius = 26;
-    final static int deckWidth = 220;
+    final static int boardWidth = 470;
+    final static int boardHeight = 420;
+    final static int tileRadius = 35;
+    final static int deckWidth = 300;
     final static int deckHeight = 70;
 
     public CalicoGUI(GamePanel parent, Game game, ActionController ac, Set<Integer> human) {
         super(parent, game, ac, human);
+        // UIManager.put("TabbedPane.contentOpaque", false);
+        // UIManager.put("TabbedPane.opaque", false);
+        // UIManager.put("TabbedPane.tabsOpaque", false);
+
         if (game == null) return;
 
         CalicoGameState gameState = (CalicoGameState) game.getGameState();
         CalicoGameParameters params = (CalicoGameParameters) gameState.getGameParameters();
-
-        String [] borderLayout = params.getBorderLayout();
-
-
         //view = new Connect4BoardView(gameState.getGridBoard());
 
         // Set width/height of display
         this.width = Math.max(defaultDisplayWidth, defaultItemSize * params.getBoardSize());
         this.height = defaultItemSize * params.getBoardSize();
 
-
-
-        parent.setPreferredSize(new Dimension(this.width + 700, this.height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 400));
-
-        //JComponent actionPanel = createActionPanel(new IScreenHighlight[]{view},
-        //        width, defaultActionPanelHeight);
+        parent.setPreferredSize(new Dimension(this.width + 1100, this.height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 100));
 
         parent.setLayout(new FlowLayout());
 
-        JPanel childPanel = new JPanel(new FlowLayout());
+        JTabbedPane pane = new JTabbedPane();
 
-        JPanel boardPanel = new JPanel();
-        boardPanel.setLayout(new BorderLayout(10, 10));
+        parent.add(pane);
 
 
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.setPreferredSize(new Dimension(400, boardHeight));
+        JPanel gameInfo = new JPanel();
+        gameInfo.setLayout(new BoxLayout(gameInfo, BoxLayout.Y_AXIS));
+        gameInfo.setPreferredSize(new Dimension(700, boardHeight));
 
         //market should be held here and cats
         JLabel title = new JLabel("<html><h2>Tile Market:</h2></html>");
         title.setLocation(0, 90);
-        centerPanel.add(title);
+        gameInfo.add(title);
         CalicoDeckView market = new CalicoDeckView(-1, gameState.getTileMarket(),  new Rectangle(0,60, tileRadius*10, tileRadius*2));
-        centerPanel.add(market);
+        gameInfo.add(market);
 
         CalicoCatQuestView catQuestView = new CalicoCatQuestView(gameState.getActiveCats(), new Rectangle(0,0, deckWidth, deckHeight));
-        centerPanel.add(catQuestView);
+        gameInfo.add(catQuestView);
 
-        boardPanel.add(centerPanel, BorderLayout.CENTER);
+        parent.add(gameInfo);
 
-        
-
+        // JPanel boardPanel = new JPanel();
+        // boardPanel.setLayout(new BorderLayout(10, 10));
 
         for (int i = 0; i < gameState.getNPlayers(); i++) {
             CalicoBoardView boardView = new CalicoBoardView(gameState.getPlayerBoards()[i], i, params.getBoardSize());
@@ -94,26 +88,22 @@ public class CalicoGUI extends AbstractGUIManager {
 
             CalicoDeckView handView = new CalicoDeckView(i, gameState.getPlayerTiles()[i], new Rectangle(0,0, deckWidth, deckHeight));
             //add extra borderlayout to center grid when i == 0 or 1 (south and north)
-                JPanel playerPanel = new JPanel();
-                playerPanel.setLayout(new FlowLayout(FlowLayout.CENTER,0, 0));
-                if (i == 3) {
-                    playerPanel.add(handView);
-                    playerPanel.add(boardView);
-                }
-                else {
-                    playerPanel.add(boardView);
-                    playerPanel.add(handView);
-                }
+            JPanel playerPanel = new JPanel();
+            playerPanel.setLayout(new FlowLayout(FlowLayout.CENTER,0, 0));
+            playerPanel.add(boardView);
+            playerPanel.add(handView);
 
-                boardPanel.add(playerPanel, borderLayout[i]);
+            pane.add("Player "+ i, playerPanel);
+
+            // boardPanel.add(playerPanel, borderLayout[i]);
         }
 
-        childPanel.add(boardPanel);
+        // parent.add(boardPanel);
 
         JPanel sidePanel = new JPanel();
         sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
         // wrapper.setBackground(Color.white);
-        childPanel.add(sidePanel);
+        parent.add(sidePanel);
 
         JPanel infoPanel = createGameStateInfoPanel("Calico", gameState, width, defaultInfoPanelHeight);
         sidePanel.add(infoPanel);
@@ -124,12 +114,6 @@ public class CalicoGUI extends AbstractGUIManager {
         //parent.setPreferredSize(new Dimension(width, height + defaultActionPanelHeight + defaultInfoPanelHeight + defaultCardHeight + 20));
         // parent.revalidate();
 
-        childPanel.setPreferredSize(new Dimension(1200, 600));
-        JScrollPane scrollPane = new JScrollPane(childPanel);
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-
-        parent.add(scrollPane);
         parent.revalidate();
         parent.setVisible(true);
         parent.repaint();
