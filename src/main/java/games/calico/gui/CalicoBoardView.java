@@ -90,10 +90,8 @@ public class CalicoBoardView extends JComponent implements IScreenHighlight {
 
     private void drawBoard(Graphics2D g) {
 
-        // Font f = g.getFont();
-        // Font boldFont = new Font(g.getFont().getName(), Font.BOLD, 12);
-        
-
+        Font f = g.getFont();
+        // Font boldFont = new Font(g.getFont().getName(), Font.BOLD, 12);  
         
         //should i have the images preloaded somewhere or is this fine?
 
@@ -120,6 +118,9 @@ public class CalicoBoardView extends JComponent implements IScreenHighlight {
                 }
                 else {
                     drawImage(g, board.getEmptyImagePath(), centreCoords.x, centreCoords.y, tileRadius * 2, tileRadius *2);
+                    g.setColor(Color.BLACK);
+                    g.drawString("["+column+","+row+"]", centreCoords.x + tileRadius, centreCoords.y + tileRadius);
+                    g.setFont(f);
                     // Fill the hexagon and give name - DEBUG
                     // g.setColor(new Color(40, 157, 197));
                     // Polygon tileHex = tile.getHexagon(tileRadius);

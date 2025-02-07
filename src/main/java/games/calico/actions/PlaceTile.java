@@ -5,6 +5,8 @@ import java.util.Objects;
 import core.AbstractGameState;
 import core.actions.AbstractAction;
 import games.calico.CalicoGameState;
+import games.calico.CalicoTypes.TileColour;
+import games.calico.CalicoTypes.TilePattern;
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoTile;
 
@@ -12,13 +14,15 @@ public class PlaceTile extends AbstractAction {
 
     public final int x;
     public final int y;
-    public final CalicoTile placedTile;
+    public final TileColour colour;
+    public final TilePattern pattern;
     public final int playerId;
 
-    public PlaceTile(int x, int y, CalicoTile placedTile, int playerId) {
+    public PlaceTile(int x, int y, TileColour colour, TilePattern pattern, int playerId) {
         this.x = x;
         this.y = y;
-        this.placedTile = placedTile;
+        this.colour = colour;
+        this.pattern = pattern;
         this.playerId = playerId;
     }
 
@@ -29,7 +33,8 @@ public class PlaceTile extends AbstractAction {
     public boolean execute(AbstractGameState gs) {
         CalicoGameState cgs = (CalicoGameState) gs;
         CalicoBoard calicoBoard = cgs.getPlayerBoards()[playerId];
-        calicoBoard.setBoardTilePatch(x, y, placedTile);
+        CalicoTile newTile = new CalicoTile(colour, pattern);
+        calicoBoard.setBoardTilePatch(x, y, newTile);
         return true;
     }
 
@@ -43,17 +48,17 @@ public class PlaceTile extends AbstractAction {
         if (this == o) return true;
         if (!(o instanceof PlaceTile)) return false;
         PlaceTile that = (PlaceTile) o;
-        return x == that.x && y == that.y && placedTile == that.placedTile && playerId == that.playerId;
+        return x == that.x && y == that.y && colour == that.colour && pattern == that.pattern && playerId == that.playerId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y, placedTile, playerId);
+        return Objects.hash(x, y, colour, pattern, playerId);
     }
 
     @Override
     public String getString(AbstractGameState gameState) {
-        return String.format("p%d places a tile (colour=%s pattern=%s) at board tile (x=%d y=%d)",playerId, placedTile.getColour(), placedTile.getPattern(), x, y);
+        return String.format("p%d places a tile (colour=%s pattern=%s) at board tile (x=%d y=%d)",playerId, colour, pattern, x, y);
     }
     
 }

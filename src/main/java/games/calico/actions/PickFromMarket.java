@@ -61,6 +61,9 @@ public class PickFromMarket extends AbstractAction {
 
     @Override
     public String getString(AbstractGameState gameState) {
-        return String.format("p%d picks the tile %d from the tile market",playerId, index);
+        CalicoGameState cgs = (CalicoGameState) gameState;
+        CalicoTile pickedTile = cgs.getTileMarket().get(index);
+
+        return String.format("p%d picks the tile %d (colour=%s pattern=%s) from the tile market",playerId, index, pickedTile.getColour(), pickedTile.getPattern());
     }
 }

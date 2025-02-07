@@ -51,6 +51,8 @@ public class PickFromHand extends AbstractAction {
 
     @Override
     public String getString(AbstractGameState gameState) {
-        return String.format("p%d picks the tile %d from their hand",playerId, index);
+        CalicoGameState cgs = (CalicoGameState) gameState;
+        CalicoTile pickedTile = cgs.getPlayerTiles()[playerId].get(index);
+        return String.format("p%d picks the tile %d (colour=%s pattern=%s) from their hand",playerId, index, pickedTile.getColour(), pickedTile.getPattern());
     }
 }

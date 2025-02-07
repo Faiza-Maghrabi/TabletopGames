@@ -28,7 +28,7 @@ public class CalicoActionFactory {
                 //check if tile is empty
                 if (tile.isEmpty()){
                     //add in new tile action
-                    actions.add(new PlaceTile(x, y, gs.getSelectedTile(), player));
+                    actions.add(new PlaceTile(x, y, gs.getSelectedTile().getColour(), gs.getSelectedTile().getPattern(), player));
                 }
                 //else move onto next board tile
             }
