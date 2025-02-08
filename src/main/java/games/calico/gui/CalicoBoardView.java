@@ -119,8 +119,8 @@ public class CalicoBoardView extends JComponent implements IScreenHighlight {
                 else {
                     drawImage(g, board.getEmptyImagePath(), centreCoords.x, centreCoords.y, tileRadius * 2, tileRadius *2);
                     g.setColor(Color.BLACK);
-                    g.drawString("["+column+","+row+"]", centreCoords.x + tileRadius, centreCoords.y + tileRadius);
                     g.setFont(f);
+                    g.drawString("["+column+","+row+"]", centreCoords.x + tileRadius, centreCoords.y + tileRadius);
                     // Fill the hexagon and give name - DEBUG
                     // g.setColor(new Color(40, 157, 197));
                     // Polygon tileHex = tile.getHexagon(tileRadius);
