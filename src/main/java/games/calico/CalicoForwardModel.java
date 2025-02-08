@@ -14,6 +14,7 @@ import games.calico.CalicoTypes.Cat;
 import games.calico.CalicoTypes.DesignGoalTile;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
+import games.calico.actions.PickFromMarket;
 import games.calico.actions.TurnActions;
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoTile;
@@ -95,13 +96,18 @@ public class CalicoForwardModel extends StandardForwardModel {
     //use _beforeAction if needed to add logic before this
     @Override
     protected void _afterAction(AbstractGameState currentState, AbstractAction action) {
+        if (currentState.isActionInProgress()) return;
         CalicoGameState gs = (CalicoGameState) currentState;
 
         // Check game end after each turn
         //no actions at turn 23 -> game should end
-        if (gs.getTurn() == 23) {
-            endGame(gs);
-            return;
+        if (action instanceof PickFromMarket) {
+            if (gs.getTurn() == 23) {
+                endGame(gs);
+                return;
+            }
+            System.out.println("end player turn");
+            super.endPlayerTurn(gs);
         }
     }
 

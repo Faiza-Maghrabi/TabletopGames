@@ -137,7 +137,7 @@ public class CalicoBoardTile extends Component {
 
         if (y % 2 == 1) {
             // odd rows
-            // offset_x = width;
+            offset_x = width;
             offset_y = height * 0.5;
         } else {
             // even rows

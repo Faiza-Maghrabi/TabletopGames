@@ -32,7 +32,7 @@ import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
  * https://tabletopgames.ai/wiki/games/creating/gui
  */
 public class CalicoGUI extends AbstractGUIManager {
-    final static int boardWidth = 470;
+    final static int boardWidth = 500;
     final static int boardHeight = 420;
     final static int tileRadius = 35;
     final static int deckWidth = 300;
@@ -119,13 +119,16 @@ public class CalicoGUI extends AbstractGUIManager {
         parent.repaint();
     }
     
+    //one action for each spot on the board
     @Override
     public int getMaxActionSpace() {
-        return 5000;
+        return 25;
     }
 
     @Override
     protected void _update(AbstractPlayer player, AbstractGameState gameState) {
+        parent.revalidate();
+        parent.setVisible(true);
         parent.repaint();
     }
 

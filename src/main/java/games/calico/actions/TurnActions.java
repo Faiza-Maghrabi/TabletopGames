@@ -24,8 +24,6 @@ public class TurnActions extends AbstractAction implements IExtendedSequence {
         this.playerId = playerId;
     }
 
-
-    //TODO: is the false here needed?
     public boolean pickedTilefromHand = false;
     public boolean putTileOnBoard = false;
     public boolean pickedTilefromMarket = false;
@@ -88,6 +86,7 @@ public class TurnActions extends AbstractAction implements IExtendedSequence {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) return true;
         if (obj instanceof TurnActions) {
             TurnActions other = (TurnActions) obj;
             return other.playerId == playerId && other.pickedTilefromHand == pickedTilefromHand && other.putTileOnBoard == putTileOnBoard && other.pickedTilefromMarket == pickedTilefromMarket; 
