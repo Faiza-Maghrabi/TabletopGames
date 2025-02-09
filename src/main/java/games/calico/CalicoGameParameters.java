@@ -12,7 +12,6 @@ import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoCatCard;
 import games.calico.components.CalicoTile;
 
-import java.awt.BorderLayout;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ public class CalicoGameParameters extends AbstractParameters {
     }};
 
     int boardSize = 7;
-    int nActionsPerPlayer = 2; //players make 2 actions each turn - is this needed?
+    int[][] designLoc = {{3,2}, {4,3}, {2,4}};
 
     //given a colour and a board, set up the board according to the json 
     public CalicoBoard setupBoard(CalicoBoard board, BoardTypes type){

@@ -76,6 +76,17 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         return returnArr;
     }
 
+    private int calculateDesignTokenPoints(int x, int y){
+
+    }
+
+    //returns the design points for that board at the end of the game
+    public int getDesignPoints(int[][] designLoc){
+        for (int i = 0; i < designLoc.length; i++){
+
+        }
+    }
+
     @Override
     public CalicoBoard copy() {
         GridBoard<CalicoBoardTile> board = super.copy();

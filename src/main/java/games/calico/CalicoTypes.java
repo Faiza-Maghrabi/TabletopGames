@@ -26,25 +26,31 @@ public class CalicoTypes {
 
     // Enums
     public enum  DesignGoalTile{
-        AAA_BBB ("data/calico/images/designTiles/aaa_bbb.png", 8, 13),
-        AA_BB_CC ("data/calico/images/designTiles/aa_bb_cc.png", 7, 11),
-        NOT ("data/calico/images/designTiles/not.png", 10, 15),
-        AAAA_BB ("data/calico/images/designTiles/aaaa_bb.png", 8, 14),
-        AAA_BB_C ("data/calico/images/designTiles/aaa_bb_c.png", 7, 11),
-        AA_BB_C_D ("data/calico/images/designTiles/aa_bb_c_d.png", 5, 8);
+        AAA_BBB ("data/calico/images/designTiles/aaa_bbb.png", new int[]{3,3}, 8, 13),
+        AA_BB_CC ("data/calico/images/designTiles/aa_bb_cc.png", new int[]{2,2,2}, 7, 11),
+        NOT ("data/calico/images/designTiles/not.png", new int[]{1,1,1,1,1,1}, 10, 15),
+        AAAA_BB ("data/calico/images/designTiles/aaaa_bb.png", new int[]{4,2}, 8, 14),
+        AAA_BB_C ("data/calico/images/designTiles/aaa_bb_c.png", new int[]{3,2,1}, 7, 11),
+        AA_BB_C_D ("data/calico/images/designTiles/aa_bb_c_d.png", new int[]{2,2,1,1}, 5, 8);
 
         String imagePath;
+        int[] orderArr;
         int oneGoal;
         int twoGoal;
 
-        DesignGoalTile(String imagePath, int oneGoal, int twoGoal) {
+        DesignGoalTile(String imagePath, int[] orderArr, int oneGoal, int twoGoal) {
             this.imagePath = imagePath;
+            this.orderArr = orderArr;
             this.oneGoal = oneGoal;
             this.twoGoal = twoGoal;
         }
 
         public String getImagePath() {
             return imagePath;
+        }
+
+        public int[] getOrderArr() {
+            return orderArr;
         }
 
         public int getGoalOne() {

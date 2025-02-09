@@ -103,6 +103,7 @@ public class CalicoForwardModel extends StandardForwardModel {
         //no actions at turn 23 -> game should end
         if (action instanceof PickFromMarket) {
             if (gs.getTurn() == 23) {
+                //count up designToken points for all boards and then end
                 endGame(gs);
                 return;
             }

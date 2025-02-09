@@ -26,9 +26,6 @@ public class CalicoGUI extends AbstractGUIManager {
 
     public CalicoGUI(GamePanel parent, Game game, ActionController ac, Set<Integer> human) {
         super(parent, game, ac, human);
-        // UIManager.put("TabbedPane.contentOpaque", false);
-        // UIManager.put("TabbedPane.opaque", false);
-        // UIManager.put("TabbedPane.tabsOpaque", false);
 
         if (game == null) return;
 
