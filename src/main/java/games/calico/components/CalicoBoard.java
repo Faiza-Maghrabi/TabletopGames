@@ -1,10 +1,13 @@
 package games.calico.components;
 
+import java.util.HashMap;
+
 import core.components.GridBoard;
 import games.calico.CalicoTypes;
 import games.calico.CalicoTypes.BoardTypes;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
+import games.calico.CalicoTypes.DesignGoalTile;
 
 //Exstension of Gridboard to include more functions needed in Calico
 public class CalicoBoard extends GridBoard<CalicoBoardTile> {
@@ -54,8 +57,9 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
             int parity = y & 1;
             CalicoBoardTile[] tileArr = new CalicoBoardTile[6];
             for(int j = 0; j < 6; j++) {
-                var direction = CalicoTypes.neighbor_directions[parity][0];
-                tileArr[j] = this.getElement(direction);
+                var direction = CalicoTypes.neighbor_directions[parity][j];
+                //System.out.println(new Vector2D(direction.getX() + x, direction.getY() + y));
+                tileArr[j] = this.getElement(direction.getX() + x, direction.getY() + y).copy();
             }
             return tileArr;
         }
@@ -76,15 +80,87 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         return returnArr;
     }
 
+    /*
+     * Use results from getNeighbouringTiles to create a hashmap of each colour and pattern occurances
+     * Use these hashmaps to create the 2nd hashmap of unique occurances - 2 pairs of 2 etc
+     * Compare against the designTile's objective
+     */
     private int calculateDesignTokenPoints(int x, int y){
+        DesignGoalTile designGoalTile = getElement(x, y).getDesignGoal();
+        if (designGoalTile == null) return 0;
 
+        CalicoBoardTile[] surroundingTiles = getNeighbouringTiles(x, y);
+            // System.out.println("surroundingTiles for "+ x + ", " + y + " = " + surroundingTiles);
+        HashMap<TileColour, Integer> colourMap = new HashMap<TileColour, Integer>();
+        HashMap<TilePattern, Integer> patternMap = new HashMap<TilePattern, Integer>();
+        //step 1: find the number of times a tile attribute appears
+        //System.out.println("----------------------------------------");
+        //System.out.println(designGoalTile);
+        for (CalicoBoardTile tile : surroundingTiles) {
+            //System.out.println(" "+ tile.getTileColour() + ", " + tile.getTilePattern());
+            TileColour tileColour = tile.getTileColour();
+            TilePattern tilePattern = tile.getTilePattern();
+            int val = colourMap.containsKey(tileColour) ? colourMap.get(tileColour) : 0;
+            colourMap.put(tileColour, val + 1);
+            val = patternMap.containsKey(tilePattern) ? patternMap.get(tilePattern) : 0;
+            patternMap.put(tilePattern, val + 1);
+        }
+        //step 2: count occurances - accounting for null colour and null pattern - eventhough everything should be filled by this stage anyway
+        HashMap<Integer, Integer> colourOccuranceMap = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> patternOccuranceMap = new HashMap<Integer, Integer>();
+        for (TileColour c: TileColour.values()){
+            if (c != TileColour.Null){
+                Integer occurances = colourMap.get(c);
+                if (occurances != null) {
+                    int val = colourOccuranceMap.containsKey(occurances) ? colourOccuranceMap.get(occurances) : 0;
+                    colourOccuranceMap.put(occurances, val +1);
+                }
+            }
+        }
+        for (TilePattern p: TilePattern.values()){
+            if (p != TilePattern.Null){
+                Integer occurances = patternMap.get(p);
+                if (occurances != null) {
+                    int val = patternOccuranceMap.containsKey(occurances) ? patternOccuranceMap.get(occurances) : 0;
+                    patternOccuranceMap.put(occurances, val +1);
+                }
+            }
+        }
+        //step 3: make sure it supports the designTile objectives
+        int colourMatchCount = 0;
+        int patternMatchCount = 0;
+        int[] designGoalOrder = designGoalTile.getOrderArr();
+        for (int i = 0; i< designGoalOrder.length; i++) {
+            int colourCount = colourOccuranceMap.containsKey(designGoalOrder[i]) ? colourOccuranceMap.get(designGoalOrder[i]) : 0;
+            int patternCount = patternOccuranceMap.containsKey(designGoalOrder[i]) ? patternOccuranceMap.get(designGoalOrder[i]) : 0;
+            if (colourCount > 0) colourMatchCount++; colourOccuranceMap.put(designGoalOrder[i], colourCount -= 1);
+            if (patternCount > 0) patternMatchCount++; patternOccuranceMap.put(designGoalOrder[i], patternCount -= 1);
+        }
+        
+        // System.out.println("colourMatchCount: "+ colourMatchCount);
+        // System.out.println("patternMatchCount: "+ patternMatchCount);
+        // System.out.println("orderLength : "+ designGoalOrder.length);
+        int score = 0;
+        if (colourMatchCount == designGoalOrder.length) score = designGoalTile.getGoalOne();
+        if (patternMatchCount == designGoalOrder.length) {
+            if (score > 0) {return designGoalTile.getGoalTwo();}
+            else {
+                score = designGoalTile.getGoalOne();
+            }
+        }
+        return score;
     }
 
     //returns the design points for that board at the end of the game
     public int getDesignPoints(int[][] designLoc){
+        int totalPoints = 0;
         for (int i = 0; i < designLoc.length; i++){
-
+            // int a = calculateDesignTokenPoints(designLoc[i][0], designLoc[i][1]);
+            // totalPoints += a;
+            // System.out.println("points for "+ designLoc[i][0] + ", " + designLoc[i][1] + " = " + a);
+            totalPoints += calculateDesignTokenPoints(designLoc[i][0], designLoc[i][1]);
         }
+        return totalPoints;
     }
 
     @Override

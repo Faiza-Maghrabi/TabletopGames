@@ -11,7 +11,6 @@ import core.components.Deck;
 import games.calico.CalicoTypes.BoardTypes;
 import games.calico.CalicoTypes.Button;
 import games.calico.CalicoTypes.Cat;
-import games.calico.CalicoTypes.DesignGoalTile;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
 import games.calico.actions.PickFromMarket;
@@ -52,7 +51,6 @@ public class CalicoForwardModel extends StandardForwardModel {
 
         gs.playerCatScore = new HashMap[gs.getNPlayers()];
         gs.playerButtonScore = new HashMap[gs.getNPlayers()];
-        gs.playerGoalScore = new HashMap[gs.getNPlayers()];
         gs.playerFinalPoints = new Counter[gs.getNPlayers()];
 
         gs.playerTiles = new Deck[gs.getNPlayers()];
@@ -74,11 +72,6 @@ public class CalicoForwardModel extends StandardForwardModel {
             gs.playerButtonScore[i] = new HashMap<Button, Counter>();
             for (Button b : Button.values()) {
                 gs.playerButtonScore[i].put(b, new Counter(0,"player" + i +"'s button points for " + b));
-            }
-
-            gs.playerGoalScore[i] = new HashMap<DesignGoalTile, Counter>();
-            for (DesignGoalTile g : DesignGoalTile.values()) {
-                gs.playerGoalScore[i].put(g, new Counter(0,"player" + i +"'s goal tile points for " + g));
             }
 
             gs.playerTiles[i] = new Deck<CalicoTile>("player" + i +"'s tiles on hand", i, CoreConstants.VisibilityMode.VISIBLE_TO_OWNER);

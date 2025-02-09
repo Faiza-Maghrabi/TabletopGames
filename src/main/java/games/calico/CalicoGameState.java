@@ -6,7 +6,6 @@ import core.components.*;
 import games.GameType;
 import games.calico.CalicoTypes.Button;
 import games.calico.CalicoTypes.Cat;
-import games.calico.CalicoTypes.DesignGoalTile;
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoCatCard;
 import games.calico.components.CalicoTile;
@@ -29,14 +28,10 @@ public class CalicoGameState extends AbstractGameState {
     //selected tile to place on board in a turn
     CalicoTile selectedTile;
 
-    // Effects and actions played - to be updated when actions are added
-    // HashSet<TMAction>[] playerExtraActions;
-
     // Player-specific values
     CalicoBoard[] playerBoards;  //are design token points going to be stored here?
     HashMap<Cat, Counter>[] playerCatScore; //number of that cat tokens
     HashMap<Button, Counter>[] playerButtonScore; //number of those buttons
-    HashMap<DesignGoalTile, Counter>[] playerGoalScore; //score acheived by each design goal tile: 1 - one goal / 2 - two goals
     Counter[] playerFinalPoints;  // Points calculated at the end of the game
     // Player tiles on hand
     Deck<CalicoTile>[] playerTiles;
@@ -81,7 +76,6 @@ public class CalicoGameState extends AbstractGameState {
                 add(playerFinalPoints[i]);
                 addAll(playerCatScore[i].values());
                 addAll(playerButtonScore[i].values());
-                addAll(playerGoalScore[i].values());
             }
         }};
     }
@@ -109,7 +103,6 @@ public class CalicoGameState extends AbstractGameState {
         copy.playerBoards = new CalicoBoard[getNPlayers()];
         copy.playerCatScore = new HashMap[getNPlayers()];
         copy.playerButtonScore = new HashMap[getNPlayers()];
-        copy.playerGoalScore = new HashMap[getNPlayers()];
         copy.playerFinalPoints = new Counter[getNPlayers()];
         copy.playerTiles = new Deck[getNPlayers()];
 
@@ -128,10 +121,6 @@ public class CalicoGameState extends AbstractGameState {
                 copy.playerButtonScore[i].put(b, playerButtonScore[i].get(b).copy());
             }
 
-            copy.playerGoalScore[i] = new HashMap<DesignGoalTile, Counter>();
-            for (DesignGoalTile g : playerGoalScore[i].keySet()) {
-                copy.playerGoalScore[i].put(g, playerGoalScore[i].get(g).copy());
-            }
         }
         return copy;
     }
@@ -154,6 +143,7 @@ public class CalicoGameState extends AbstractGameState {
      */
     @Override
     public double getGameScore(int playerId) {
+        //System.out.println("getting player score");
        return countPoints(playerId);
     }
 
@@ -175,8 +165,7 @@ public class CalicoGameState extends AbstractGameState {
                 && Arrays.equals(playerBoards, that.playerBoards)
                 && Arrays.equals(playerFinalPoints, that.playerFinalPoints)
                 && Arrays.equals(playerCatScore, that.playerCatScore)
-                && Arrays.equals(playerButtonScore, that.playerButtonScore)
-                && Arrays.equals(playerGoalScore, that.playerGoalScore);
+                && Arrays.equals(playerButtonScore, that.playerButtonScore);
     }
 
     /*
@@ -189,7 +178,6 @@ public class CalicoGameState extends AbstractGameState {
         result = 31 * result + Arrays.hashCode(playerBoards);
         result = 31 * result + Arrays.hashCode(playerCatScore);
         result = 31 * result + Arrays.hashCode(playerButtonScore);
-        result = 31 * result + Arrays.hashCode(playerGoalScore);
         result = 31 * result + Arrays.hashCode(playerFinalPoints);
         result = 31 * result + Arrays.hashCode(playerTiles);
         return result;
@@ -227,10 +215,8 @@ public class CalicoGameState extends AbstractGameState {
         sb.append(result).append("|7|");
         result = 31 * result + Arrays.hashCode(playerButtonScore);
         sb.append(result).append("|8|");
-        result = 31 * result + Arrays.hashCode(playerGoalScore);
-        sb.append(result).append("|9|");
         result = Arrays.hashCode(playerFinalPoints);
-        sb.append(result).append("|10|");
+        sb.append(result).append("|9|");
         result = Arrays.hashCode(playerTiles);
         sb.append(result);
         return sb.toString();
@@ -284,10 +270,6 @@ public class CalicoGameState extends AbstractGameState {
         return playerButtonScore;
     }
 
-    public HashMap<DesignGoalTile, Counter>[] getPlayerGoalScore() {
-        return playerGoalScore;
-    }
-
     public Counter[] getPlayerFinalPoints() {
         return playerFinalPoints;
     }
@@ -299,8 +281,10 @@ public class CalicoGameState extends AbstractGameState {
     /*
     * count up all points for a player and returns the sum 
     * includes butons, cats, and design tiles
+    * this is running during human player turns too? is that normal?
     */
     public int countPoints(int player) {
+        //System.out.println("PLAYER: " +player);
         int points = 0;
         // Add button points
         points += countButtons(player);
@@ -308,6 +292,8 @@ public class CalicoGameState extends AbstractGameState {
         points += countCats(player);
         // Add design points
         points += countDesign(player);
+        //System.out.println(points);
+    
         return points;
     }
 
@@ -328,12 +314,9 @@ public class CalicoGameState extends AbstractGameState {
         return catPoints;
     }
 
+    //calculate design points in a player's board
     private int countDesign(int player) {
-        int designPoints = 0;
-        for (DesignGoalTile g : DesignGoalTile.values()) {
-            designPoints += playerGoalScore[player].get(g).getValueIdx();
-        }
-        return designPoints;
+        return playerBoards[player].getDesignPoints(CalicoTypes.designLoc);
     }
 
 }

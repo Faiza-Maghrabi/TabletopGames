@@ -37,7 +37,6 @@ public class CalicoGameParameters extends AbstractParameters {
     }};
 
     int boardSize = 7;
-    int[][] designLoc = {{3,2}, {4,3}, {2,4}};
 
     //given a colour and a board, set up the board according to the json 
     public CalicoBoard setupBoard(CalicoBoard board, BoardTypes type){
@@ -154,6 +153,9 @@ public class CalicoGameParameters extends AbstractParameters {
 
         return catsInPlay;
     }
+
+
+    //TODO THIS NEEDS WORK
     @Override
     protected AbstractParameters _copy() {
         return new CalicoGameParameters();

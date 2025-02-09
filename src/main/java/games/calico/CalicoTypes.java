@@ -24,6 +24,8 @@ public class CalicoTypes {
         }
     };
 
+    public static int[][] designLoc = {{3,2}, {4,3}, {2,4}};
+
     // Enums
     public enum  DesignGoalTile{
         AAA_BBB ("data/calico/images/designTiles/aaa_bbb.png", new int[]{3,3}, 8, 13),
