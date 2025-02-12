@@ -3,7 +3,7 @@ package games.calico.gui;
 import core.*;
 import games.calico.CalicoGameParameters;
 import games.calico.CalicoGameState;
-
+import games.calico.CalicoTypes.Button;
 import gui.AbstractGUIManager;
 import gui.GamePanel;
 import gui.IScreenHighlight;
@@ -51,7 +51,7 @@ public class CalicoGUI extends AbstractGUIManager {
         gameInfo.setPreferredSize(new Dimension(700, boardHeight+100));
 
         //market should be held here and cats
-        CalicoDeckView market = new CalicoDeckView(-1, gameState.getTileMarket(),  new Rectangle(0,boardHeight/2, deckWidth, deckHeight), "Tile Market:");
+        CalicoDeckView market = new CalicoDeckView(-1, gameState.getTileMarket(),  new Rectangle(0,boardHeight/2, deckWidth, deckHeight), "Tile Market:", null);
         gameInfo.add(market);
 
         CalicoCatQuestView catQuestView = new CalicoCatQuestView(gameState.getActiveCats(), new Rectangle(0,0, deckWidth, deckHeight));
@@ -65,13 +65,21 @@ public class CalicoGUI extends AbstractGUIManager {
         for (int i = 0; i < gameState.getNPlayers(); i++) {
             CalicoBoardView boardView = new CalicoBoardView(gameState.getPlayerBoards()[i], i, params.getBoardSize());
             boardView.setPreferredSize(new Dimension(boardWidth, boardHeight));
+            //System.out.println(gameState.getPlayerButtonScore()[i].get(Button.Rainbow).getValueIdx());
+            CalicoDeckView handView = new CalicoDeckView(i, gameState.getPlayerTiles()[i], new Rectangle(0,60, deckWidth, deckHeight*3), "Hand:", gameState.getPlayerButtonScore()[i]);
+            //CalicoRainbowButtons rainbowView = new CalicoRainbowButtons(, new Rectangle(0,0, tileRadius, tileRadius));
 
-            CalicoDeckView handView = new CalicoDeckView(i, gameState.getPlayerTiles()[i], new Rectangle(0,60, deckWidth, deckHeight*2), "Hand:");
-            //add extra borderlayout to center grid when i == 0 or 1 (south and north)
             JPanel playerPanel = new JPanel();
             playerPanel.setLayout(new FlowLayout(FlowLayout.CENTER,0, 0));
+            JPanel playerSidePanel = new JPanel();
+            playerSidePanel.setLayout(new BoxLayout(playerSidePanel, BoxLayout.Y_AXIS));
+            //playerSidePanel.add(new JLabel("<html><h1>Rainbow buttons:</h1></html>"));
+            //playerSidePanel.add(rainbowView);
+            playerSidePanel.add(handView);
+            //playerSidePanel.add(new TextArea("adsadsadsa"));
+
             playerPanel.add(boardView);
-            playerPanel.add(handView);
+            playerPanel.add(playerSidePanel);
 
             pane.add("Player "+ i, playerPanel);
 

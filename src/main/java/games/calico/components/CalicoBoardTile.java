@@ -60,6 +60,10 @@ public class CalicoBoardTile extends Component {
         return hasButton;
     }
 
+    public boolean hasButtonGUI() {
+        return hasButtonGUI;
+    }
+
     public boolean hasCat() {
         return hasCat;
     }

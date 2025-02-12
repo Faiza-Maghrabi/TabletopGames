@@ -95,6 +95,10 @@ public class CalicoTypes {
         TileColour(Button colourButton) {
             this.button = colourButton;
         }
+
+        public Button getButton(){
+            return button;
+        }
     }
 
     public enum TilePattern{
@@ -120,6 +124,10 @@ public class CalicoTypes {
 
         Button(String imagePath) {
             this.imagePath = imagePath;
+        }
+
+        public String getImagePath() {
+            return imagePath;
         }
     }
 

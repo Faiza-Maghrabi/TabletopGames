@@ -1,18 +1,23 @@
 package games.calico.gui;
 
 import core.components.Deck;
+import core.components.Counter;
+import games.calico.CalicoTypes;
+import games.calico.CalicoTypes.Button;
 import games.calico.components.CalicoTile;
 import gui.views.CardView;
 import gui.views.DeckView;
 import utilities.ImageIO;
 
 import java.awt.*;
+import java.util.HashMap;
 
 import static games.calico.gui.CalicoGUI.*;
 
 public class CalicoDeckView extends DeckView<CalicoTile> {
 
     String title;
+    HashMap<CalicoTypes.Button,Counter> playerButtons;
 
     /**
      * Constructor initialising information and adding key/mouse listener for card highlight (left click or ALT + hover
@@ -21,9 +26,10 @@ public class CalicoDeckView extends DeckView<CalicoTile> {
      * @param visible - true if whole deck visible
      * @param dataPath - path to assets
      */
-    public CalicoDeckView(int human, Deck<CalicoTile> d, Rectangle rect, String title) {
+    public CalicoDeckView(int human, Deck<CalicoTile> d, Rectangle rect, String title, HashMap<CalicoTypes.Button,Counter> playerButtons) {
         super(human, d, true, tileRadius*2, tileRadius*2, rect);
         this.title = title;
+        this.playerButtons = playerButtons;
     }
 
     /**
@@ -49,6 +55,14 @@ public class CalicoDeckView extends DeckView<CalicoTile> {
         g.drawString(title, rect.x, rect.y - 10);
         g.setFont(ogFont);
         super.drawDeck(g);
+        if (playerButtons == null) return;
+        for (int i = 0; i < playerButtons.get(Button.Rainbow).getValueIdx(); i++) {
+            System.out.println(i);
+            Rectangle buttonRect = new Rectangle(rect.x + tileRadius * i, rect.y + tileRadius*2, 0, 0);
+            Image buttonImg = ImageIO.GetInstance().getImage("data/calico/images/buttons/rainbow.png");
+            g.drawImage(buttonImg, buttonRect.x, buttonRect.y, (int)(tileRadius*1.5), (int)(tileRadius), null);
+            
+        }
     }
 
 }

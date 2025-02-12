@@ -13,8 +13,6 @@ import games.calico.components.CalicoTile;
 
 import java.util.*;
 
-// import static games.calico.CalicoGameState.TMPhase.CorporationSelect;
-
 //changed from AbstractGameStateWithTurnOrder due to deprecation
 public class CalicoGameState extends AbstractGameState {
 
@@ -37,8 +35,6 @@ public class CalicoGameState extends AbstractGameState {
     // Player tiles on hand
     Deck<CalicoTile>[] playerTiles;
 
-
-    //TODO: Add in button colour hashmap
     /**
      * Constructor. Initialises some generic game state variables.
      *
@@ -47,11 +43,6 @@ public class CalicoGameState extends AbstractGameState {
     public CalicoGameState(AbstractParameters gameParameters, int nPlayers) {
         super(gameParameters, nPlayers);
     }
-
-    // @Override
-    // protected TurnOrder _createTurnOrder(int nPlayers) {
-    //     return new TMTurnOrder(nPlayers, ((CalicoGameParameters) gameParameters).nActionsPerPlayer);
-    // }
 
     @Override
     protected GameType _getGameType() {
@@ -267,7 +258,7 @@ public class CalicoGameState extends AbstractGameState {
         return playerCatScore;
     }
 
-    public HashMap<Button, Counter>[] gePlayerButtonScore() {
+    public HashMap<Button, Counter>[] getPlayerButtonScore() {
         return playerButtonScore;
     }
 
@@ -282,7 +273,7 @@ public class CalicoGameState extends AbstractGameState {
     /*
     * count up all points for a player and returns the sum 
     * includes butons, cats, and design tiles
-    * this is running during human player turns too? is that normal?
+    * this is running all the time for everyone, is that normal?
     */
     public int countPoints(int player) {
         //System.out.println("PLAYER: " +player);
@@ -326,18 +317,17 @@ public class CalicoGameState extends AbstractGameState {
 
     //add button to player and add in additional rainbow if applicable
     public void addButtonPoint(int player, TileColour colour){
-        System.out.println("ADDING A BUTTON");
         HashMap<Button, Counter> playerButtons = playerButtonScore[player];
-        playerButtons.get(colour.button).increment(1);
-        System.out.println(playerButtons.get(colour.button).getValueIdx());
+        playerButtons.get(colour.button).increment();
         //check if a rainbow can be added
         int rainbowNum = playerButtons.get(Button.Rainbow).getValueIdx();
         for (Button b : Button.values()){
-            if (playerButtons.get(b).getValueIdx() <= rainbowNum){
+            if (b != Button.Rainbow && playerButtons.get(b).getValueIdx() <= rainbowNum){
                 return;
             }
         }
-        playerButtons.get(Button.Rainbow).increment(1);
+        //System.out.println("ADDING RAINBOW");
+        playerButtons.get(Button.Rainbow).increment();
     }
 
 }

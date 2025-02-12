@@ -66,12 +66,12 @@ public class CalicoForwardModel extends StandardForwardModel {
             gs.playerCatScore[i] = new HashMap<Cat, Counter>();
             for (int j = 0; j < gs.activeCats.length; j++) {
                 Cat c = gs.activeCats[j].getCat();
-                gs.playerCatScore[i].put(c, new Counter(0,"player" + i +"'s cat points for " + c.getName()));
+                gs.playerCatScore[i].put(c, new Counter(100,"player" + i +"'s cat points for " + c.getName()));
             }
 
             gs.playerButtonScore[i] = new HashMap<Button, Counter>();
             for (Button b : Button.values()) {
-                gs.playerButtonScore[i].put(b, new Counter(0,"player" + i +"'s button points for " + b));
+                gs.playerButtonScore[i].put(b, new Counter(100,"player" + i +"'s button points for " + b));
             }
 
             gs.playerTiles[i] = new Deck<CalicoTile>("player" + i +"'s tiles on hand", i, CoreConstants.VisibilityMode.VISIBLE_TO_OWNER);
@@ -79,7 +79,7 @@ public class CalicoForwardModel extends StandardForwardModel {
             gs.playerTiles[i].add(gs.tileBag.draw());
             gs.playerTiles[i].add(gs.tileBag.draw());
 
-            gs.playerFinalPoints[i] = new Counter("point counter for player " + i);
+            gs.playerFinalPoints[i] = new Counter(100, "point counter for player " + i);
 
         }
     }
