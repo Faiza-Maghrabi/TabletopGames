@@ -6,6 +6,7 @@ import core.components.*;
 import games.GameType;
 import games.calico.CalicoTypes.Button;
 import games.calico.CalicoTypes.Cat;
+import games.calico.CalicoTypes.TileColour;
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoCatCard;
 import games.calico.components.CalicoTile;
@@ -285,6 +286,7 @@ public class CalicoGameState extends AbstractGameState {
     */
     public int countPoints(int player) {
         //System.out.println("PLAYER: " +player);
+        //System.out.println("------------------");
         int points = 0;
         // Add button points
         points += countButtons(player);
@@ -298,9 +300,12 @@ public class CalicoGameState extends AbstractGameState {
     }
 
     private int countButtons(int player) {
+        //System.out.println("countButtons");
         int buttonPoints = 0;
         for (Button b : Button.values()){
-            buttonPoints += playerButtonScore[player].get(b).getValueIdx();
+            //System.out.println(b);
+            //System.out.println(playerButtonScore[player].get(b).getValueIdx());
+            buttonPoints += playerButtonScore[player].get(b).getValueIdx() * 3;
         }
         return buttonPoints;
     }
@@ -317,6 +322,22 @@ public class CalicoGameState extends AbstractGameState {
     //calculate design points in a player's board
     private int countDesign(int player) {
         return playerBoards[player].getDesignPoints(CalicoTypes.designLoc);
+    }
+
+    //add button to player and add in additional rainbow if applicable
+    public void addButtonPoint(int player, TileColour colour){
+        System.out.println("ADDING A BUTTON");
+        HashMap<Button, Counter> playerButtons = playerButtonScore[player];
+        playerButtons.get(colour.button).increment(1);
+        System.out.println(playerButtons.get(colour.button).getValueIdx());
+        //check if a rainbow can be added
+        int rainbowNum = playerButtons.get(Button.Rainbow).getValueIdx();
+        for (Button b : Button.values()){
+            if (playerButtons.get(b).getValueIdx() <= rainbowNum){
+                return;
+            }
+        }
+        playerButtons.get(Button.Rainbow).increment(1);
     }
 
 }

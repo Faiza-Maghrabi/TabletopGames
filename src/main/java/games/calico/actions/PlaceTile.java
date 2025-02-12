@@ -34,7 +34,12 @@ public class PlaceTile extends AbstractAction {
         CalicoGameState cgs = (CalicoGameState) gs;
         CalicoBoard calicoBoard = cgs.getPlayerBoards()[playerId];
         CalicoTile newTile = new CalicoTile(colour, pattern);
-        calicoBoard.setBoardTilePatch(x, y, newTile);
+        boolean buttonPlaced = calicoBoard.setBoardTilePatch(x, y, newTile);
+        System.out.println(buttonPlaced);
+        if (buttonPlaced){
+            //add point to player
+            cgs.addButtonPoint(playerId, colour);
+        }
         return true;
     }
 

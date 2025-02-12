@@ -82,13 +82,19 @@ public class CalicoTypes {
     }
 
     public enum TileColour{
-        DBlue,
-        Green,
-        LBlue,
-        Yellow,
-        Magenta,
-        Purple,
-        Null
+        DBlue (Button.Blueberry),
+        Green (Button.Leaf),
+        LBlue (Button.Drop),
+        Yellow (Button.Moon),
+        Magenta (Button.Flower),
+        Purple (Button.Mushroom),
+        Null (Button.Rainbow); //prevent errors
+
+        Button button;
+
+        TileColour(Button colourButton) {
+            this.button = colourButton;
+        }
     }
 
     public enum TilePattern{
@@ -102,13 +108,19 @@ public class CalicoTypes {
     }
 
     public enum Button{
-        Blueberry,
-        Drop,
-        Leaf,
-        Flower,
-        Moon,
-        Mushroom,
-        Rainbow
+        Blueberry ("data/calico/images/buttons/blueberry.png"),
+        Drop ("data/calico/images/buttons/drop.png"),
+        Leaf ("data/calico/images/buttons/leaf.png"),
+        Flower ("data/calico/images/buttons/flower.png"),
+        Moon ("data/calico/images/buttons/moon.png"),
+        Mushroom ("data/calico/images/buttons/mushroom.png"),
+        Rainbow ("data/calico/images/buttons/rainbow.png");
+
+        String imagePath;
+
+        Button(String imagePath) {
+            this.imagePath = imagePath;
+        }
     }
 
     public enum Cat{

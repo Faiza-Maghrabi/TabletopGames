@@ -115,6 +115,11 @@ public class CalicoBoardView extends JComponent implements IScreenHighlight {
 
                 if (!tile.isEmpty()) {
                     drawImage(g, tile.getImagePath(), centreCoords.x, centreCoords.y, tileRadius * 2, tileRadius *2);
+                    if (tile.hasButton()){ //TODO: DRAW BUTTON
+                        g.setColor(Color.BLACK);
+                        g.setFont(f);
+                        g.drawString("BUTTON", centreCoords.x + tileRadius, centreCoords.y + tileRadius);
+                    }
                 }
                 else {
                     drawImage(g, board.getEmptyImagePath(), centreCoords.x, centreCoords.y, tileRadius * 2, tileRadius *2);

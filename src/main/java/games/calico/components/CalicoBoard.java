@@ -34,10 +34,14 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         CalicoBoardTile tile = new CalicoBoardTile(x, y, colour, pattern);
         return this.setElement(x, y, tile);
     }
-        //setting a tile with a known tile
+    //setting a tile with a known tile and look for buttons
     public boolean setBoardTilePatch(int x, int y, CalicoTile tile){
         CalicoBoardTile boardtile = new CalicoBoardTile(x, y, tile.getColour(), tile.getPattern());
-        return this.setElement(x, y, boardtile);
+        CalicoBoardTile[] buttonTiles = new CalicoBoardTile[3];
+        buttonTiles[0] = boardtile;
+        boolean buttonPlaced = lookForButton(boardtile, buttonTiles, 1, -1);
+        this.setElement(x, y, boardtile);
+        return buttonPlaced;
     }
 
     //setting a tile with a design goal
@@ -59,7 +63,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
             for(int j = 0; j < 6; j++) {
                 var direction = CalicoTypes.neighbor_directions[parity][j];
                 //System.out.println(new Vector2D(direction.getX() + x, direction.getY() + y));
-                tileArr[j] = this.getElement(direction.getX() + x, direction.getY() + y).copy();
+                tileArr[j] = this.getElement(direction.getX() + x, direction.getY() + y);
             }
             return tileArr;
         }
@@ -161,6 +165,50 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
             totalPoints += calculateDesignTokenPoints(designLoc[i][0], designLoc[i][1]);
         }
         return totalPoints;
+    }
+
+
+    /*
+     * Recursive function to find tiles on a player's board that is applicable for a button
+     * Find surrounding tiles, and travel through array to find tiles with the correct colour and are not part of a button group already
+     * prevPatch is used in recursive calls to make sure the previous patch was not counted again - not likely to be an issue for buttons
+     * due to max of 3 tiles needed.
+     * if 3 tiles were found, then apply buttons and add in points
+     */
+    public boolean lookForButton(CalicoBoardTile searchTile, CalicoBoardTile[] buttonTiles, int counter, int prevPatch){
+        //System.out.println("look for Button function called");
+        boolean result = false;
+        CalicoBoardTile[] surroundingTiles = getNeighbouringTiles(searchTile.getX(), searchTile.getY());
+        CalicoBoardTile expandTile = null;
+        for (int i = 0; i< surroundingTiles.length; i++) {
+            if (surroundingTiles[i] != null) {
+                if (surroundingTiles[i].getTileColour() == searchTile.getTileColour() && !surroundingTiles[i].getHasButton() && surroundingTiles[i].getComponentID() != prevPatch) {
+                    //System.out.println("Match Found");
+                    buttonTiles[counter] = surroundingTiles[i];
+                    counter++;
+                    expandTile = surroundingTiles[i];
+                    if (counter == 3){
+                        //System.out.println("Applying Buttons");
+                        applyButtons(buttonTiles);
+                        result = true;
+                        return result;
+                    }
+                }   //TODO test the result part a bit more
+            }
+        }
+        if (expandTile != null){
+            //System.out.println("recursion call");
+            result = lookForButton(expandTile, buttonTiles, counter, searchTile.getComponentID());
+        }
+        return result;
+    }
+
+    public void applyButtons(CalicoBoardTile[] buttonTiles){
+        //System.out.println("applyButtons function");
+        for (CalicoBoardTile t : buttonTiles) {
+            t.addButton();
+        }
+        buttonTiles[0].addButtonGUI();
     }
 
     @Override

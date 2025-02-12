@@ -13,15 +13,16 @@ import static core.CoreConstants.ComponentType.BOARD_NODE;
 
 //Odd-r grid for GridBoard
 public class CalicoBoardTile extends Component {
-    int x, y;
-    CalicoTile tilePlaced;
-    boolean isEmpty = true;
+    private int x, y;
+    private CalicoTile tilePlaced;
+    private boolean isEmpty = true;
 
-    boolean isDesignTile = false;
-    CalicoTypes.DesignGoalTile designGoalTile;
+    private boolean isDesignTile = false;
+    private CalicoTypes.DesignGoalTile designGoalTile;
 
-    boolean hasButton = false;
-    boolean hasCat = false;
+    private boolean hasButton = false;
+    private boolean hasButtonGUI = false;
+    private boolean hasCat = false;
 
     public CalicoBoardTile(int x, int y) {
         super(BOARD_NODE, "Tile");
@@ -82,6 +83,10 @@ public class CalicoBoardTile extends Component {
         this.hasButton = true;
     }
 
+    public void addButtonGUI(){
+        this.hasButtonGUI = true;
+    }
+
     public void addCat(){
         this.hasCat = true;
     }
@@ -113,6 +118,10 @@ public class CalicoBoardTile extends Component {
 
     public int getY() {
         return y;
+    }
+
+    public boolean getHasButton() {
+        return hasButton;
     }
 
     public String getImagePath() {

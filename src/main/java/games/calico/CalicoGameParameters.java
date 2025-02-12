@@ -4,7 +4,6 @@ import core.AbstractParameters;
 import core.CoreConstants;
 import core.components.Deck;
 import games.calico.CalicoTypes.BoardTypes;
-import games.calico.CalicoTypes.Button;
 import games.calico.CalicoTypes.DesignGoalTile;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
@@ -16,25 +15,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-// import static games.terraformingmars.TMTypes.Expansion.*;
-
 public class CalicoGameParameters extends AbstractParameters {
-
-    public HashMap<TileColour, Button> colourButtonMap = new HashMap<TileColour, Button>() {{
-        put(TileColour.DBlue, Button.Blueberry);
-        put(TileColour.Green, Button.Leaf);
-        put(TileColour.LBlue, Button.Drop);
-        put(TileColour.Yellow, Button.Moon);
-        put(TileColour.Magenta, Button.Flower);
-        put(TileColour.Purple, Button.Mushroom);
-    }};
 
     int boardSize = 7;
 
