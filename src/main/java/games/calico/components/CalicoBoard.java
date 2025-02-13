@@ -1,6 +1,8 @@
 package games.calico.components;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import core.components.GridBoard;
 import games.calico.CalicoTypes;
@@ -39,7 +41,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         CalicoBoardTile boardtile = new CalicoBoardTile(x, y, tile.getColour(), tile.getPattern());
         CalicoBoardTile[] buttonTiles = new CalicoBoardTile[3];
         buttonTiles[0] = boardtile;
-        boolean buttonPlaced = lookForButton(boardtile, buttonTiles, 1, -1);
+        boolean buttonPlaced = lookForButton(boardtile, buttonTiles, 1, new HashSet<Integer>());
         this.setElement(x, y, boardtile);
         return buttonPlaced;
     }
@@ -175,32 +177,27 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
      * due to max of 3 tiles needed.
      * if 3 tiles were found, then apply buttons and add in points
      */
-    public boolean lookForButton(CalicoBoardTile searchTile, CalicoBoardTile[] buttonTiles, int counter, int prevPatch){
+    public boolean lookForButton(CalicoBoardTile searchTile, CalicoBoardTile[] buttonTiles, int counter, Set<Integer> visitedPatches){
         //System.out.println("look for Button function called");
-        boolean result = false;
         CalicoBoardTile[] surroundingTiles = getNeighbouringTiles(searchTile.getX(), searchTile.getY());
-        CalicoBoardTile expandTile = null;
         for (int i = 0; i< surroundingTiles.length; i++) {
             if (surroundingTiles[i] != null) {
-                if (surroundingTiles[i].getTileColour() == searchTile.getTileColour() && !surroundingTiles[i].getHasButton() && surroundingTiles[i].getComponentID() != prevPatch) {
+                //System.out.println(surroundingTiles[i].getTileColour() + "," + surroundingTiles[i].getTilePattern());
+                if (surroundingTiles[i].getTileColour() == searchTile.getTileColour() && !surroundingTiles[i].getHasButton() && !visitedPatches.contains(surroundingTiles[i].getComponentID())) {
                     //System.out.println("Match Found");
                     buttonTiles[counter] = surroundingTiles[i];
                     counter++;
-                    expandTile = surroundingTiles[i];
                     if (counter == 3){
-                        //System.out.println("Applying Buttons");
                         applyButtons(buttonTiles);
-                        result = true;
-                        return result;
+                        return true;
                     }
+                    visitedPatches.add(searchTile.getComponentID());
+                    //System.out.println(visitedPatches);
+                    if (lookForButton(surroundingTiles[i], buttonTiles, counter, visitedPatches)) return true;
                 }   //TODO test the result part a bit more
             }
         }
-        if (expandTile != null){
-            //System.out.println("recursion call");
-            result = lookForButton(expandTile, buttonTiles, counter, searchTile.getComponentID());
-        }
-        return result;
+        return false;
     }
 
     public void applyButtons(CalicoBoardTile[] buttonTiles){
