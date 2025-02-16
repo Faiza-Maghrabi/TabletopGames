@@ -181,4 +181,44 @@ public class CalicoTypes {
             return patchVer;
         }
     }
+
+    //hard coding in non-patch cat arrangements 
+
+    private int[][][] RumiArrangement = new int[][][] {
+        {{0,0}, {-1, 0}, {-2, 0}},
+        {{0, 0}, {1, 0}, {2, 0}},
+        {{0, 0}, {1, 0}, {-1, 0}}
+    };
+
+    private int[][][] TecoloteArrangement = new int[][][] {
+        {{0,0}, {-1, 0}, {-2, 0}, {1, 0}},
+        {{0, 0}, {1, 0}, {2, 0}, {3, 0}},
+        {{0, 0}, {1, 0}, {-1, 0}, {2, 0}},
+        {{0, 0}, {-1, 0}, {-2, 0}, {-3, 0}}
+    };
+
+    //needs to be updated - identical to tecolote rn
+    private int[][][] LeoArrangement = new int[][][] {
+        {{0,0}, {-1, 0}, {-2, 0}, {1, 0}},
+        {{0, 0}, {1, 0}, {2, 0}, {3, 0}},
+        {{0, 0}, {1, 0}, {-1, 0}, {2, 0}},
+        {{0, 0}, {-1, 0}, {-2, 0}, {-3, 0}}
+    };
+
+    ///two variants - even and odd - all need to be checked
+    private int[][][][] CallieArrangement = new int[][][][] {
+        //even
+        {
+            {{0, 0}, {0,-1}, {-1, -1}},
+            {{0, 0}, {0, 1}, {-1, 0}},
+            {{0, 0}, {1, 0}, {1, 1}}
+        },
+        //odd
+        {
+            {{0, 0}, {0, -1}, {1, -1}},
+            {{0, 0}, {-1, 1}, {-1, 0}},
+            {{0, 0}, {1, 0}, {0, 1}}
+        }
+    };
+
 }
