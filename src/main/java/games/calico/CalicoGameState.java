@@ -305,7 +305,7 @@ public class CalicoGameState extends AbstractGameState {
         int catPoints = 0;
         for (int j = 0; j < activeCats.length; j++) {
             Cat c = activeCats[j].getCat();
-            catPoints += playerCatScore[player].get(c).getValueIdx();
+            catPoints += playerCatScore[player].get(c).getValueIdx() * c.getPoints();
         }
         return catPoints;
     }
@@ -328,6 +328,11 @@ public class CalicoGameState extends AbstractGameState {
         }
         //System.out.println("ADDING RAINBOW");
         playerButtons.get(Button.Rainbow).increment();
+    }
+
+    public void addCatPoint(int player, Cat cat){
+        System.out.println("ADDING CAT POINT " + cat.getName());
+        playerCatScore[player].get(cat).increment();
     }
 
 }

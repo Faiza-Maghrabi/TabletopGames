@@ -30,12 +30,20 @@ public class CalicoCatCard extends Card{
         return cat.getPoints();
     }
 
-    public int getArrangement(){
+    public int[] getArrangement(){
         return cat.getArrangement();
+    }
+    
+    public boolean getPatchVer(){
+        return cat.getPatchVer();
     }
 
     public String getImagePath() {
         return cat.getImagePath();
+    }
+
+    public String getTokenImagePath() {
+        return cat.getTokenPath();
     }
 
     public TilePattern[] getPatches(){

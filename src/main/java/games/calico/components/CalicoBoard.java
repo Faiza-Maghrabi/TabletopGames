@@ -7,6 +7,7 @@ import java.util.Set;
 import core.components.GridBoard;
 import games.calico.CalicoTypes;
 import games.calico.CalicoTypes.BoardTypes;
+import games.calico.CalicoTypes.Cat;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
 import games.calico.CalicoTypes.DesignGoalTile;
@@ -39,11 +40,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
     //setting a tile with a known tile and look for buttons
     public boolean setBoardTilePatch(int x, int y, CalicoTile tile){
         CalicoBoardTile boardtile = new CalicoBoardTile(x, y, tile.getColour(), tile.getPattern());
-        CalicoBoardTile[] buttonTiles = new CalicoBoardTile[3];
-        buttonTiles[0] = boardtile;
-        boolean buttonPlaced = lookForButton(boardtile, buttonTiles, 1, new HashSet<Integer>());
-        this.setElement(x, y, boardtile);
-        return buttonPlaced;
+        return this.setElement(x, y, boardtile);
     }
 
     //setting a tile with a design goal
@@ -169,6 +166,35 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         return totalPoints;
     }
 
+    public boolean lookForButton(int x, int y){
+        CalicoBoardTile focusTile = getElement(x, y);
+        CalicoBoardTile[] buttonTiles = new CalicoBoardTile[3];
+        buttonTiles[0] = focusTile;
+        return lookForPatches(focusTile, buttonTiles, 1, new HashSet<Integer>(), focusTile.getTileColour(), null, 3);
+    }
+
+    //go through activeCats and check if a cat criteria has been met to add a cat token to the board
+    public CalicoCatCard lookForCat(int x, int y, CalicoCatCard[] activeCats){
+        CalicoBoardTile focusTile = getElement(x, y);
+        for (CalicoCatCard catCard : activeCats){
+            System.out.println("Looking for " + catCard.getName());
+            if (catCard.getPatchVer()){    //check if the cat card is for a patch instead of specific shape
+                System.out.println("Cat is patch ver");
+                for (TilePattern pattern : catCard.getPatches()){
+                    if (pattern == focusTile.getTilePattern()){
+                        System.out.println("looking at pattern: " + pattern.name());
+                        CalicoBoardTile[] buttonTiles = new CalicoBoardTile[catCard.getArrangement()[0]];
+                        buttonTiles[0] = focusTile;
+                        boolean found = lookForPatches(focusTile, buttonTiles, 1, new HashSet<Integer>(), null, pattern, catCard.getArrangement()[0]);
+                        System.out.println("found:"  + found);
+                        if (found) return catCard;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
 
     /*
      * Recursive function to find tiles on a player's board that is applicable for a button
@@ -177,36 +203,87 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
      * due to max of 3 tiles needed.
      * if 3 tiles were found, then apply buttons and add in points
      */
-    public boolean lookForButton(CalicoBoardTile searchTile, CalicoBoardTile[] buttonTiles, int counter, Set<Integer> visitedPatches){
-        //System.out.println("look for Button function called");
+    private boolean lookForPatches(CalicoBoardTile searchTile, CalicoBoardTile[] patchTiles, int counter, Set<Integer> visitedPatches, TileColour findColour, TilePattern findPattern, int patchSize){
+        System.out.println("look for function called");
+        System.out.println("colour: " + findColour);
+        System.out.println("pattern: " + findPattern);
         CalicoBoardTile[] surroundingTiles = getNeighbouringTiles(searchTile.getX(), searchTile.getY());
         for (int i = 0; i< surroundingTiles.length; i++) {
             if (surroundingTiles[i] != null) {
                 //System.out.println(surroundingTiles[i].getTileColour() + "," + surroundingTiles[i].getTilePattern());
-                if (surroundingTiles[i].getTileColour() == searchTile.getTileColour() && !surroundingTiles[i].getHasButton() && !visitedPatches.contains(surroundingTiles[i].getComponentID())) {
-                    //System.out.println("Match Found");
-                    buttonTiles[counter] = surroundingTiles[i];
-                    counter++;
-                    if (counter == 3){
-                        applyButtons(buttonTiles);
-                        return true;
-                    }
-                    visitedPatches.add(searchTile.getComponentID());
-                    //System.out.println(visitedPatches);
-                    if (lookForButton(surroundingTiles[i], buttonTiles, counter, visitedPatches)) return true;
-                }   //TODO test the result part a bit more
+                if (findColour != null) {
+                    if (surroundingTiles[i].getTileColour() == findColour && !surroundingTiles[i].hasButton() && !visitedPatches.contains(surroundingTiles[i].getComponentID())) {
+                        //System.out.println("Match Found");
+                        patchTiles[counter] = surroundingTiles[i];
+                        counter++;
+                        if (counter == patchSize){
+                            applyButtons(patchTiles);
+                            return true;
+                        }
+                        visitedPatches.add(searchTile.getComponentID());
+                        //System.out.println(visitedPatches);
+                        if (lookForPatches(surroundingTiles[i], patchTiles, counter, visitedPatches, findColour, findPattern, patchSize)) return true;
+                    }   //TODO test the result part a bit more
+                }
+                else {
+                    System.out.println("looking for a CAT!!");
+                    if (surroundingTiles[i].getTilePattern() == findPattern && !surroundingTiles[i].hasCat() && !visitedPatches.contains(surroundingTiles[i].getComponentID())) {
+                        //System.out.println("Match Found");
+                        patchTiles[counter] = surroundingTiles[i];
+                        counter++;
+                        if (counter == patchSize){
+                            applyCats(patchTiles);
+                            return true;
+                        }
+                        visitedPatches.add(searchTile.getComponentID());
+                        //System.out.println(visitedPatches);
+                        if (lookForPatches(surroundingTiles[i], patchTiles, counter, visitedPatches, findColour, findPattern, patchSize)) return true;
+                    }   //TODO test the result part a bit more
+                }
+                
             }
         }
         return false;
     }
 
-    public void applyButtons(CalicoBoardTile[] buttonTiles){
+    private void applyButtons(CalicoBoardTile[] buttonTiles){
         //System.out.println("applyButtons function");
         for (CalicoBoardTile t : buttonTiles) {
             t.addButton();
         }
         buttonTiles[0].addButtonGUI();
     }
+
+    private void applyCats(CalicoBoardTile[] patternTiles){
+        //System.out.println("applyButtons function");
+        for (CalicoBoardTile t : patternTiles) {
+            t.addCat();
+        }
+        patternTiles[0].addCatGUI();
+    }
+    
+    // public boolean lookForButton(CalicoBoardTile searchTile, CalicoBoardTile[] buttonTiles, int counter, Set<Integer> visitedPatches){
+    //     //System.out.println("look for Button function called");
+    //     CalicoBoardTile[] surroundingTiles = getNeighbouringTiles(searchTile.getX(), searchTile.getY());
+    //     for (int i = 0; i< surroundingTiles.length; i++) {
+    //         if (surroundingTiles[i] != null) {
+    //             //System.out.println(surroundingTiles[i].getTileColour() + "," + surroundingTiles[i].getTilePattern());
+    //             if (surroundingTiles[i].getTileColour() == searchTile.getTileColour() && !surroundingTiles[i].hasButton() && !visitedPatches.contains(surroundingTiles[i].getComponentID())) {
+    //                 //System.out.println("Match Found");
+    //                 buttonTiles[counter] = surroundingTiles[i];
+    //                 counter++;
+    //                 if (counter == 3){
+    //                     applyButtons(buttonTiles);
+    //                     return true;
+    //                 }
+    //                 visitedPatches.add(searchTile.getComponentID());
+    //                 //System.out.println(visitedPatches);
+    //                 if (lookForButton(surroundingTiles[i], buttonTiles, counter, visitedPatches)) return true;
+    //             }   //TODO test the result part a bit more
+    //         }
+    //     }
+    //     return false;
+    // }
 
     @Override
     public CalicoBoard copy() {

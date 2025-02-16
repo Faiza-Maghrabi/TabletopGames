@@ -8,6 +8,7 @@ import games.calico.CalicoGameState;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
 import games.calico.components.CalicoBoard;
+import games.calico.components.CalicoCatCard;
 import games.calico.components.CalicoTile;
 
 public class PlaceTile extends AbstractAction {
@@ -34,11 +35,17 @@ public class PlaceTile extends AbstractAction {
         CalicoGameState cgs = (CalicoGameState) gs;
         CalicoBoard calicoBoard = cgs.getPlayerBoards()[playerId];
         CalicoTile newTile = new CalicoTile(colour, pattern);
-        boolean buttonPlaced = calicoBoard.setBoardTilePatch(x, y, newTile);
-        System.out.println(buttonPlaced);
+        calicoBoard.setBoardTilePatch(x, y, newTile);
+        boolean buttonPlaced = calicoBoard.lookForButton(x, y);
         if (buttonPlaced){
             //add point to player
             cgs.addButtonPoint(playerId, colour);
+        }
+        CalicoCatCard catPlaced = calicoBoard.lookForCat(x, y, cgs.getActiveCats());
+        System.out.println("result: " + catPlaced);
+        if (catPlaced != null){
+            System.out.println(catPlaced.getName());
+            cgs.addCatPoint(playerId, catPlaced.getCat());
         }
         return true;
     }

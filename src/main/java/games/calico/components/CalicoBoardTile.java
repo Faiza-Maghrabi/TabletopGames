@@ -2,6 +2,7 @@ package games.calico.components;
 
 import core.components.Component;
 import games.calico.CalicoTypes;
+import games.calico.CalicoTypes.Cat;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
 
@@ -23,6 +24,7 @@ public class CalicoBoardTile extends Component {
     private boolean hasButton = false;
     private boolean hasButtonGUI = false;
     private boolean hasCat = false;
+    private boolean hasCatGUI = false;
 
     public CalicoBoardTile(int x, int y) {
         super(BOARD_NODE, "Tile");
@@ -64,6 +66,10 @@ public class CalicoBoardTile extends Component {
         return hasButtonGUI;
     }
 
+    public boolean hasCatGUI() {
+        return hasCatGUI;
+    }
+
     public boolean hasCat() {
         return hasCat;
     }
@@ -95,6 +101,14 @@ public class CalicoBoardTile extends Component {
         this.hasCat = true;
     }
 
+    public void addCatGUI(){
+        this.hasCatGUI = true;
+    }
+
+    // public TilePattern getTileCatPattern(){
+    //     return hasCat;
+    // }
+
     public TileColour getTileColour() {
         if (!isDesignTile) {
             return tilePlaced.getColour();
@@ -122,10 +136,6 @@ public class CalicoBoardTile extends Component {
 
     public int getY() {
         return y;
-    }
-
-    public boolean getHasButton() {
-        return hasButton;
     }
 
     public String getImagePath() {
@@ -184,6 +194,8 @@ public class CalicoBoardTile extends Component {
         return polygon;
     }
     
+
+    //TODO: Definitely needs updating
 
     @Override
     public CalicoBoardTile copy() {

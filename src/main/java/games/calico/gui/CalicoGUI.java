@@ -63,7 +63,7 @@ public class CalicoGUI extends AbstractGUIManager {
         // boardPanel.setLayout(new BorderLayout(10, 10));
 
         for (int i = 0; i < gameState.getNPlayers(); i++) {
-            CalicoBoardView boardView = new CalicoBoardView(gameState.getPlayerBoards()[i], i, params.getBoardSize());
+            CalicoBoardView boardView = new CalicoBoardView(gameState.getPlayerBoards()[i], i, params.getBoardSize(), gameState.getActiveCats());
             boardView.setPreferredSize(new Dimension(boardWidth, boardHeight));
             //System.out.println(gameState.getPlayerButtonScore()[i].get(Button.Rainbow).getValueIdx());
             CalicoDeckView handView = new CalicoDeckView(i, gameState.getPlayerTiles()[i], new Rectangle(0,60, deckWidth, deckHeight*3), "Hand:", gameState.getPlayerButtonScore()[i]);
