@@ -131,25 +131,85 @@ public class CalicoTypes {
         }
     }
 
+        //hard coding in non-patch cat arrangements 
+
+        private static int[][][][] RumiArrangement = new int[][][][] {
+            {   //even
+                {{0,0}, {-1, 0}, {-2, 0}},
+                {{0, 0}, {1, 0}, {2, 0}},
+                {{0, 0}, {1, 0}, {-1, 0}}
+            }
+        };
+    
+        //TODO: NEEDS MORE? I THINK MAYBE ROTATION WOULD HANDLE IT? LOOK OVER
+        private static int[][][][] TecoloteArrangement = new int[][][][] {
+            //even?
+            {
+                {{0,0}, {-1, 0}, {-2, 0}, {1, 0}},
+                {{0, 0}, {1, 0}, {2, 0}, {3, 0}},
+                {{0, 0}, {1, 0}, {-1, 0}, {2, 0}},
+                {{0, 0}, {-1, 0}, {-2, 0}, {-3, 0}}
+            }
+        };
+    
+        //TODO: needs to be updated - identical to tecolote rn
+        private static int[][][][] LeoArrangement = new int[][][][] {
+            //even - check
+            {
+                {{0,0}, {-1, 0}, {-2, 0}, {1, 0}},
+                {{0, 0}, {1, 0}, {2, 0}, {3, 0}},
+                {{0, 0}, {1, 0}, {-1, 0}, {2, 0}},
+                {{0, 0}, {-1, 0}, {-2, 0}, {-3, 0}}
+            }
+    
+        };
+    
+        ///two variants - even and odd - all need to be checked
+        /// using this for testing rotations
+        public static int[][][][] CallieArrangement = new int[][][][] {
+            //even
+            {
+                {{0, 0}, {0,-1}, {-1, -1}},
+            },
+            { //odd
+    
+                {{0, 0}, {0, -1}, {1, -1}}
+            }
+    
+        };
+
+        //TODO: UPDATE CORRECTLTY
+        private static int[][][][] AlmondArrangement = new int[][][][] {
+            //even
+            {
+                {{0, 0}, {0,-1}, {-1, -1}},
+            },
+            { //odd
+    
+                {{0, 0}, {0, -1}, {1, -1}}
+            }
+    
+        };
+
     public enum Cat{
-        Millie ("data/calico/images/cats/millie.png", "data/calico/images/cats/token/millie.png", 3, new int[] {3}, true),
-        Tibbit ("data/calico/images/cats/tibbit.png", "data/calico/images/cats/token/tibbit.png", 5, new int[] {4}, true),
-        Coconut ("data/calico/images/cats/coconut.png", "data/calico/images/cats/token/coconut.png", 7, new int[] {5}, true),
-        Tecolote ("data/calico/images/cats/tecolote.png", "data/calico/images/cats/token/tecolote.png", 7, new int[] {4}, false), //in a straightline
-        Callie ("data/calico/images/cats/callie.png", "data/calico/images/cats/token/callie.png", 3, new int[] {3}, false), //in a T shape
-        Rumi ("data/calico/images/cats/rumi.png", "data/calico/images/cats/token/rumi.png", 5, new int[] {3}, false), //in a stright line
-        Gwen ("data/calico/images/cats/gwen.png", "data/calico/images/cats/token/gwen.png", 11, new int[] {7}, true),
-        Cira ("data/calico/images/cats/cira.png", "data/calico/images/cats/token/cira.png", 9, new int[] {6}, true),
-        Leo ("data/calico/images/cats/leo.png", "data/calico/images/cats/token/leo.png", 11, new int[] {5}, false), //in a stright line
-        Almond ("data/calico/images/cats/almond.png", "data/calico/images/cats/token/almond.png", 9, new int[] {5}, false); //pyramid
+        Millie ("data/calico/images/cats/millie.png", "data/calico/images/cats/token/millie.png", 3, new int[][][][] {{{{3}}}}, true),
+        Tibbit ("data/calico/images/cats/tibbit.png", "data/calico/images/cats/token/tibbit.png", 5,new int[][][][] {{{{4}}}}, true),
+        Coconut ("data/calico/images/cats/coconut.png", "data/calico/images/cats/token/coconut.png", 7, new int[][][][] {{{{5}}}}, true),
+        Tecolote ("data/calico/images/cats/tecolote.png", "data/calico/images/cats/token/tecolote.png", 7, TecoloteArrangement, false), //in a straightline
+        Callie ("data/calico/images/cats/callie.png", "data/calico/images/cats/token/callie.png", 3, CallieArrangement, false), //in a T shape
+        Rumi ("data/calico/images/cats/rumi.png", "data/calico/images/cats/token/rumi.png", 5, RumiArrangement, false), //in a stright line
+        Gwen ("data/calico/images/cats/gwen.png", "data/calico/images/cats/token/gwen.png", 11, new int[][][][] {{{{7}}}}, true),
+        Cira ("data/calico/images/cats/cira.png", "data/calico/images/cats/token/cira.png", 9, new int[][][][] {{{{6}}}}, true),
+        Leo ("data/calico/images/cats/leo.png", "data/calico/images/cats/token/leo.png", 11, LeoArrangement, false), //in a stright line
+        Almond ("data/calico/images/cats/almond.png", "data/calico/images/cats/token/almond.png", 9, AlmondArrangement, false); //pyramid
 
         String imagePath;
         String tokenPath;
         int points;
-        int[] arrangement; //TODO: figure out how the more unique arrangements are going to work
+        int[][][][] arrangement; //TODO: figure out how the more unique arrangements are going to work
         boolean patchVer; //is a patch count or specific shape
 
-        Cat(String imagePath, String tokenPath, int points, int[] arrangement, boolean patchVer) {
+        Cat(String imagePath, String tokenPath, int points, int[][][][] arrangement, boolean patchVer) {
             this.imagePath = imagePath;
             this.tokenPath = tokenPath;
             this.points = points;
@@ -173,7 +233,7 @@ public class CalicoTypes {
             return points;
         }
 
-        public int[] getArrangement() {
+        public int[][][][] getArrangement() {
             return arrangement;
         }
 
@@ -181,44 +241,5 @@ public class CalicoTypes {
             return patchVer;
         }
     }
-
-    //hard coding in non-patch cat arrangements 
-
-    private int[][][] RumiArrangement = new int[][][] {
-        {{0,0}, {-1, 0}, {-2, 0}},
-        {{0, 0}, {1, 0}, {2, 0}},
-        {{0, 0}, {1, 0}, {-1, 0}}
-    };
-
-    private int[][][] TecoloteArrangement = new int[][][] {
-        {{0,0}, {-1, 0}, {-2, 0}, {1, 0}},
-        {{0, 0}, {1, 0}, {2, 0}, {3, 0}},
-        {{0, 0}, {1, 0}, {-1, 0}, {2, 0}},
-        {{0, 0}, {-1, 0}, {-2, 0}, {-3, 0}}
-    };
-
-    //needs to be updated - identical to tecolote rn
-    private int[][][] LeoArrangement = new int[][][] {
-        {{0,0}, {-1, 0}, {-2, 0}, {1, 0}},
-        {{0, 0}, {1, 0}, {2, 0}, {3, 0}},
-        {{0, 0}, {1, 0}, {-1, 0}, {2, 0}},
-        {{0, 0}, {-1, 0}, {-2, 0}, {-3, 0}}
-    };
-
-    ///two variants - even and odd - all need to be checked
-    private int[][][][] CallieArrangement = new int[][][][] {
-        //even
-        {
-            {{0, 0}, {0,-1}, {-1, -1}},
-            {{0, 0}, {0, 1}, {-1, 0}},
-            {{0, 0}, {1, 0}, {1, 1}}
-        },
-        //odd
-        {
-            {{0, 0}, {0, -1}, {1, -1}},
-            {{0, 0}, {-1, 1}, {-1, 0}},
-            {{0, 0}, {1, 0}, {0, 1}}
-        }
-    };
 
 }

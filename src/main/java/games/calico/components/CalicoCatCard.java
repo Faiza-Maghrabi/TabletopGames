@@ -30,7 +30,7 @@ public class CalicoCatCard extends Card{
         return cat.getPoints();
     }
 
-    public int[] getArrangement(){
+    public int[][][][] getArrangement(){
         return cat.getArrangement();
     }
     

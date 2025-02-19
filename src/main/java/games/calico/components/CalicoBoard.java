@@ -68,20 +68,32 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         }
         return null;
     }
-    //axial oddr conversions for grid calculations col is x and row is y
-    public int[] oddr_to_axial(int col, int row){
-        var q = col - (row - (row&1)) / 2;
-        var r = row;
-        int[] returnArr = {q, r};
-        return returnArr;
+    //axial evenr conversions for grid calculations col is x and row is y
+    //^grid uses oddr but the calculations work with evenr values - could use some optimisation
+    public int[] evenr_to_axial(int col, int row) {
+        int q = col - (row + (row & 1)) / 2;
+        int r = row;  // Adjust for even/odd columns
+        return new int[]{q, r};
+    }
+    
+    public int[] axial_to_evenr(int q, int r) {
+        int col = q + (r + (r & 1)) / 2;
+        int row = r;  // Reverse the adjustment
+        return new int[]{col, row};
     }
 
-    public int[] axial_to_oddr(int q, int r) {
-        int col = q + (r - (r&1)) / 2;
-        int row = r;
-        int[] returnArr = {col, row};
-        return returnArr;
+    public int[] oddr_to_axial(int col, int row) {
+        int q = col - (row - (row & 1)) / 2;
+        int r = row;  // Adjust for even/odd columns
+        return new int[]{q, r};
     }
+    
+    public int[] axial_to_oddr(int q, int r) {
+        int col = q + (r - (r & 1)) / 2;
+        int row = r;  // Reverse the adjustment
+        return new int[]{col, row};
+    }
+    
 
     /*
      * Use results from getNeighbouringTiles to create a hashmap of each colour and pattern occurances
@@ -177,23 +189,105 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
     public CalicoCatCard lookForCat(int x, int y, CalicoCatCard[] activeCats){
         CalicoBoardTile focusTile = getElement(x, y);
         for (CalicoCatCard catCard : activeCats){
-            System.out.println("Looking for " + catCard.getName());
-            if (catCard.getPatchVer()){    //check if the cat card is for a patch instead of specific shape
-                System.out.println("Cat is patch ver");
-                for (TilePattern pattern : catCard.getPatches()){
-                    if (pattern == focusTile.getTilePattern()){
-                        System.out.println("looking at pattern: " + pattern.name());
-                        CalicoBoardTile[] buttonTiles = new CalicoBoardTile[catCard.getArrangement()[0]];
+            //System.out.println("Looking for " + catCard.getName());
+            for (TilePattern pattern : catCard.getPatches()){
+                if (pattern == focusTile.getTilePattern()){    //check if the cat card is for a patch instead of specific shape
+                    //System.out.println("Cat is patch ver");
+                    if (catCard.getPatchVer()){
+                        //System.out.println("looking at pattern: " + pattern.name());
+                        int patchSize = catCard.getArrangement()[0][0][0][0];
+                        CalicoBoardTile[] buttonTiles = new CalicoBoardTile[patchSize];
                         buttonTiles[0] = focusTile;
-                        boolean found = lookForPatches(focusTile, buttonTiles, 1, new HashSet<Integer>(), null, pattern, catCard.getArrangement()[0]);
-                        System.out.println("found:"  + found);
+                        boolean found = lookForPatches(focusTile, buttonTiles, 1, new HashSet<Integer>(), null, pattern, patchSize);
+                        //System.out.println("found:"  + found);
                         if (found) return catCard;
+                    }
+                    else {  //use the cat arrangements to find matches
+                        System.out.println("looking for arrangement");
+                        if (lookForCatArrangement(focusTile, catCard.getArrangement())) return catCard;
                     }
                 }
             }
         }
         return null;
     }
+
+
+    private boolean lookForCatArrangement(CalicoBoardTile focusTile, int[][][][] fullArrangement){
+        int[][][] arrangement = fullArrangement[focusTile.getY() & 1];
+        for (int i = 0; i < arrangement.length; i++){
+            System.out.println("arrangement num " + i);
+            if (rotateAndFindArrangement(focusTile, arrangement[i])){return true;};
+        }
+        return false;
+    }
+
+    //given an arrangement, rotate and look for matches
+    private boolean rotateAndFindArrangement(CalicoBoardTile focusTile, int[][] pattern){ 
+        // int[][][] arrangement = CalicoTypes.CallieArrangement;
+        // int[][] pattern = arrangement[y & 1];
+        //check initial rotation and then rotate til a match is found or loop ends
+        if (findMatchArrangement(focusTile, pattern)) {return true;}
+        for (int i = 1; i < 6; i++) {
+            System.out.println("arrangement checking " + i * 60 + " degrees");
+            pattern = rotate60(pattern, focusTile.getY() & 1);
+
+            
+            StringBuilder sb = new StringBuilder();
+            for (int[] coords : pattern) {
+                sb.append("[").append(coords[0] + focusTile.getX()).append(",").append(coords[1] + focusTile.getY()).append("] ");
+            }
+            System.out.println(sb.toString().trim());
+
+            if (findMatchArrangement(focusTile, pattern)) {return true;}
+        }
+        return false;
+
+    }
+
+    private int[][] rotate60(int[][] pattern, int parity) {
+        int[][] rotated = new int[pattern.length][2];
+        for (int i = 0; i < pattern.length; i++) {
+            //if parity == 1 then use evenr, if == 0 then odd-r
+            int[] axial_coords;
+            if (parity == 1) axial_coords = evenr_to_axial(pattern[i][0], pattern[i][1]);
+            else axial_coords = oddr_to_axial(pattern[i][0], pattern[i][1]);
+            int q = axial_coords[0];
+            int r = axial_coords[1];
+            int [] odd_coords;
+            if (parity == 1) odd_coords  = axial_to_evenr(q+r, -q);
+            else odd_coords  = axial_to_oddr(q+r, -q);
+            rotated[i][0] = odd_coords[0];
+            rotated[i][1] = odd_coords[1];
+        }
+        return rotated;
+    }
+
+    //look through a given pattern and return if a match is found
+    private boolean findMatchArrangement(CalicoBoardTile focusTile, int[][] pattern) {
+        System.out.println("finding matches in pattern!");
+        CalicoBoardTile[] arrangeTiles = new CalicoBoardTile[pattern.length];
+        for (int i = 0; i< pattern.length; i++){
+            System.out.println((focusTile.getX()+ pattern[i][0]) + "," + (focusTile.getY()+ pattern[i][1]));
+            System.out.println((pattern[i][0]) + "," + (pattern[i][1]));
+            if (pattern[i][0] == 0 && pattern[i][1] == 0){
+                System.out.println("add base tile");
+                arrangeTiles[i] = focusTile;
+            }
+            else {
+                CalicoBoardTile iTile = getElement(focusTile.getX() + pattern[i][0], focusTile.getY() + pattern[i][1]);
+                System.out.println(iTile.getTilePattern());
+                System.out.println(iTile.getTileColour());
+                if (iTile.getTilePattern() != focusTile.getTilePattern() || iTile.hasCat()){return false;}
+                arrangeTiles[i] = iTile;
+
+            }
+        }
+        System.out.println("applying cats! MATCH FOUND");
+        applyCats(arrangeTiles);
+        return true;
+    }
+
 
 
     /*
@@ -204,9 +298,9 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
      * if 3 tiles were found, then apply buttons and add in points
      */
     private boolean lookForPatches(CalicoBoardTile searchTile, CalicoBoardTile[] patchTiles, int counter, Set<Integer> visitedPatches, TileColour findColour, TilePattern findPattern, int patchSize){
-        System.out.println("look for function called");
-        System.out.println("colour: " + findColour);
-        System.out.println("pattern: " + findPattern);
+        //System.out.println("look for function called");
+        //System.out.println("colour: " + findColour);
+        //System.out.println("pattern: " + findPattern);
         CalicoBoardTile[] surroundingTiles = getNeighbouringTiles(searchTile.getX(), searchTile.getY());
         for (int i = 0; i< surroundingTiles.length; i++) {
             if (surroundingTiles[i] != null) {
@@ -226,7 +320,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
                     }   //TODO test the result part a bit more
                 }
                 else {
-                    System.out.println("looking for a CAT!!");
+                    //System.out.println("looking for a CAT!!");
                     if (surroundingTiles[i].getTilePattern() == findPattern && !surroundingTiles[i].hasCat() && !visitedPatches.contains(surroundingTiles[i].getComponentID())) {
                         //System.out.println("Match Found");
                         patchTiles[counter] = surroundingTiles[i];
@@ -261,29 +355,6 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         }
         patternTiles[0].addCatGUI();
     }
-    
-    // public boolean lookForButton(CalicoBoardTile searchTile, CalicoBoardTile[] buttonTiles, int counter, Set<Integer> visitedPatches){
-    //     //System.out.println("look for Button function called");
-    //     CalicoBoardTile[] surroundingTiles = getNeighbouringTiles(searchTile.getX(), searchTile.getY());
-    //     for (int i = 0; i< surroundingTiles.length; i++) {
-    //         if (surroundingTiles[i] != null) {
-    //             //System.out.println(surroundingTiles[i].getTileColour() + "," + surroundingTiles[i].getTilePattern());
-    //             if (surroundingTiles[i].getTileColour() == searchTile.getTileColour() && !surroundingTiles[i].hasButton() && !visitedPatches.contains(surroundingTiles[i].getComponentID())) {
-    //                 //System.out.println("Match Found");
-    //                 buttonTiles[counter] = surroundingTiles[i];
-    //                 counter++;
-    //                 if (counter == 3){
-    //                     applyButtons(buttonTiles);
-    //                     return true;
-    //                 }
-    //                 visitedPatches.add(searchTile.getComponentID());
-    //                 //System.out.println(visitedPatches);
-    //                 if (lookForButton(surroundingTiles[i], buttonTiles, counter, visitedPatches)) return true;
-    //             }   //TODO test the result part a bit more
-    //         }
-    //     }
-    //     return false;
-    // }
 
     @Override
     public CalicoBoard copy() {
