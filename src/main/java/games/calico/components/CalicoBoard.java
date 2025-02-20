@@ -213,33 +213,38 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
     }
 
 
+    //TODO: patternMap does not work!!!
     private boolean lookForCatArrangement(CalicoBoardTile focusTile, int[][][][] fullArrangement){
         int[][][] arrangement = fullArrangement[focusTile.getY() & 1];
+        HashMap<int[][], Boolean> patternMap = new HashMap<int[][], Boolean>();
         for (int i = 0; i < arrangement.length; i++){
             System.out.println("arrangement num " + i);
-            if (rotateAndFindArrangement(focusTile, arrangement[i])){return true;};
+            if (rotateAndFindArrangement(focusTile, arrangement[i], patternMap)){return true;};
         }
         return false;
     }
 
     //given an arrangement, rotate and look for matches
-    private boolean rotateAndFindArrangement(CalicoBoardTile focusTile, int[][] pattern){ 
+    private boolean rotateAndFindArrangement(CalicoBoardTile focusTile, int[][] pattern, HashMap<int[][], Boolean> patternMap){ 
         // int[][][] arrangement = CalicoTypes.CallieArrangement;
         // int[][] pattern = arrangement[y & 1];
         //check initial rotation and then rotate til a match is found or loop ends
         if (findMatchArrangement(focusTile, pattern)) {return true;}
+        patternMap.put(pattern, true);
         for (int i = 1; i < 6; i++) {
             System.out.println("arrangement checking " + i * 60 + " degrees");
             pattern = rotate60(pattern, focusTile.getY() & 1);
+            if (patternMap.get(pattern) == null) {
+                patternMap.put(pattern, true);
+                StringBuilder sb = new StringBuilder();
+                for (int[] coords : pattern) {
+                    sb.append("[").append(coords[0] + focusTile.getX()).append(",").append(coords[1] + focusTile.getY()).append("] ");
+                }
+                System.out.println(sb.toString().trim());
 
-            
-            StringBuilder sb = new StringBuilder();
-            for (int[] coords : pattern) {
-                sb.append("[").append(coords[0] + focusTile.getX()).append(",").append(coords[1] + focusTile.getY()).append("] ");
+                if (findMatchArrangement(focusTile, pattern)) {return true;}
             }
-            System.out.println(sb.toString().trim());
 
-            if (findMatchArrangement(focusTile, pattern)) {return true;}
         }
         return false;
 
@@ -276,6 +281,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
             }
             else {
                 CalicoBoardTile iTile = getElement(focusTile.getX() + pattern[i][0], focusTile.getY() + pattern[i][1]);
+                if (iTile == null)return false;
                 System.out.println(iTile.getTilePattern());
                 System.out.println(iTile.getTileColour());
                 if (iTile.getTilePattern() != focusTile.getTilePattern() || iTile.hasCat()){return false;}
