@@ -193,15 +193,22 @@ public class CalicoTypes {
     
         };
 
-        //TODO: UPDATE CORRECTLTY
         private static int[][][][] AlmondArrangement = new int[][][][] {
             //even
             {
-                {{0, 0}, {0,-1}, {-1, -1}},
+                {{0, 0}, {1,0}, {-1, 1}, {0,1}, {1,1}},  
+                {{0,0}, {-1, 0}, {-2,1}, {-1,1}, {0,1}},
+                {{0, 0}, {0,-1}, {1, -1}, {1,0}, {2,0}},
+                {{0, 0}, {-1,0}, {-1, -1}, {0,-1}, {1,0}},
+                {{0, 0}, {-1,-1}, {-1, 0}, {-2, -1}, {-2,0}},
+                
             },
             { //odd
-    
-                {{0, 0}, {0, -1}, {1, -1}}
+                {{0, 0}, {1,0}, {0, 1}, {1,1}, {2,1}},
+                {{0, 0}, {-1,0}, {-1, 1}, {0,1}, {1,1}},
+                {{0, 0}, {1,-1}, {1, 0}, {2,-1}, {2,0}},
+                {{0, 0}, {0,-1}, {-1, 0}, {1,-1}, {1,0}},
+                {{0, 0}, {-1,0}, {-2, 0}, {0,-1}, {-1,-1}},
             }
     
         };
@@ -221,7 +228,7 @@ public class CalicoTypes {
         String imagePath;
         String tokenPath;
         int points;
-        int[][][][] arrangement; //TODO: figure out how the more unique arrangements are going to work
+        int[][][][] arrangement; //arrangement or size of patches
         boolean patchVer; //is a patch count or specific shape
 
         Cat(String imagePath, String tokenPath, int points, int[][][][] arrangement, boolean patchVer) {

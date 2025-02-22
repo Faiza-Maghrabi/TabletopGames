@@ -7,7 +7,6 @@ import java.util.Set;
 import core.components.GridBoard;
 import games.calico.CalicoTypes;
 import games.calico.CalicoTypes.BoardTypes;
-import games.calico.CalicoTypes.Cat;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
 import games.calico.CalicoTypes.DesignGoalTile;
@@ -203,7 +202,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
                         if (found) return catCard;
                     }
                     else {  //use the cat arrangements to find matches
-                        System.out.println("looking for arrangement");
+                        //System.out.println("looking for arrangement");
                         if (lookForCatArrangement(focusTile, catCard.getArrangement())) return catCard;
                     }
                 }
@@ -213,12 +212,12 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
     }
 
 
-    //TODO: patternMap does not work!!!
+    //TODO: patternMap does not work!!! - optimisation is not priority right now
     private boolean lookForCatArrangement(CalicoBoardTile focusTile, int[][][][] fullArrangement){
         int[][][] arrangement = fullArrangement[focusTile.getY() & 1];
         HashMap<int[][], Boolean> patternMap = new HashMap<int[][], Boolean>();
         for (int i = 0; i < arrangement.length; i++){
-            System.out.println("arrangement num " + i);
+            //System.out.println("arrangement num " + i);
             if (rotateAndFindArrangement(focusTile, arrangement[i], patternMap)){return true;};
         }
         return false;
@@ -226,21 +225,24 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
 
     //given an arrangement, rotate and look for matches
     private boolean rotateAndFindArrangement(CalicoBoardTile focusTile, int[][] pattern, HashMap<int[][], Boolean> patternMap){ 
-        // int[][][] arrangement = CalicoTypes.CallieArrangement;
-        // int[][] pattern = arrangement[y & 1];
         //check initial rotation and then rotate til a match is found or loop ends
+        // StringBuilder sp = new StringBuilder();
+        //         for (int[] coords : pattern) {
+        //             sp.append("[").append(coords[0] + focusTile.getX()).append(",").append(coords[1] + focusTile.getY()).append("] ");
+        //         }
+        // System.out.println(sp.toString().trim());
         if (findMatchArrangement(focusTile, pattern)) {return true;}
         patternMap.put(pattern, true);
         for (int i = 1; i < 6; i++) {
-            System.out.println("arrangement checking " + i * 60 + " degrees");
+            // System.out.println("arrangement checking " + i * 60 + " degrees");
             pattern = rotate60(pattern, focusTile.getY() & 1);
             if (patternMap.get(pattern) == null) {
                 patternMap.put(pattern, true);
-                StringBuilder sb = new StringBuilder();
-                for (int[] coords : pattern) {
-                    sb.append("[").append(coords[0] + focusTile.getX()).append(",").append(coords[1] + focusTile.getY()).append("] ");
-                }
-                System.out.println(sb.toString().trim());
+                // StringBuilder sb = new StringBuilder();
+                // for (int[] coords : pattern) {
+                //     sb.append("[").append(coords[0] + focusTile.getX()).append(",").append(coords[1] + focusTile.getY()).append("] ");
+                // }
+                // System.out.println(sb.toString().trim());
 
                 if (findMatchArrangement(focusTile, pattern)) {return true;}
             }
@@ -270,26 +272,26 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
 
     //look through a given pattern and return if a match is found
     private boolean findMatchArrangement(CalicoBoardTile focusTile, int[][] pattern) {
-        System.out.println("finding matches in pattern!");
+        //System.out.println("finding matches in pattern!");
         CalicoBoardTile[] arrangeTiles = new CalicoBoardTile[pattern.length];
         for (int i = 0; i< pattern.length; i++){
-            System.out.println((focusTile.getX()+ pattern[i][0]) + "," + (focusTile.getY()+ pattern[i][1]));
-            System.out.println((pattern[i][0]) + "," + (pattern[i][1]));
+            // System.out.println((focusTile.getX()+ pattern[i][0]) + "," + (focusTile.getY()+ pattern[i][1]));
+            // System.out.println((pattern[i][0]) + "," + (pattern[i][1]));
             if (pattern[i][0] == 0 && pattern[i][1] == 0){
-                System.out.println("add base tile");
+                //System.out.println("add base tile");
                 arrangeTiles[i] = focusTile;
             }
             else {
                 CalicoBoardTile iTile = getElement(focusTile.getX() + pattern[i][0], focusTile.getY() + pattern[i][1]);
                 if (iTile == null)return false;
-                System.out.println(iTile.getTilePattern());
-                System.out.println(iTile.getTileColour());
+                // System.out.println(iTile.getTilePattern());
+                // System.out.println(iTile.getTileColour());
                 if (iTile.getTilePattern() != focusTile.getTilePattern() || iTile.hasCat()){return false;}
                 arrangeTiles[i] = iTile;
 
             }
         }
-        System.out.println("applying cats! MATCH FOUND");
+        //System.out.println("applying cats! MATCH FOUND");
         applyCats(arrangeTiles);
         return true;
     }
