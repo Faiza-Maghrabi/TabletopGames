@@ -214,27 +214,29 @@ public class CalicoTypes {
         };
 
     public enum Cat{
-        Millie ("data/calico/images/cats/millie.png", "data/calico/images/cats/token/millie.png", 3, new int[][][][] {{{{3}}}}, true),
-        Tibbit ("data/calico/images/cats/tibbit.png", "data/calico/images/cats/token/tibbit.png", 5,new int[][][][] {{{{4}}}}, true),
-        Coconut ("data/calico/images/cats/coconut.png", "data/calico/images/cats/token/coconut.png", 7, new int[][][][] {{{{5}}}}, true),
-        Tecolote ("data/calico/images/cats/tecolote.png", "data/calico/images/cats/token/tecolote.png", 7, TecoloteArrangement, false), //in a straightline
-        Callie ("data/calico/images/cats/callie.png", "data/calico/images/cats/token/callie.png", 3, CallieArrangement, false), //in a T shape
-        Rumi ("data/calico/images/cats/rumi.png", "data/calico/images/cats/token/rumi.png", 5, RumiArrangement, false), //in a stright line
-        Gwen ("data/calico/images/cats/gwen.png", "data/calico/images/cats/token/gwen.png", 11, new int[][][][] {{{{7}}}}, true),
-        Cira ("data/calico/images/cats/cira.png", "data/calico/images/cats/token/cira.png", 9, new int[][][][] {{{{6}}}}, true),
-        Leo ("data/calico/images/cats/leo.png", "data/calico/images/cats/token/leo.png", 11, LeoArrangement, false), //in a stright line
-        Almond ("data/calico/images/cats/almond.png", "data/calico/images/cats/token/almond.png", 9, AlmondArrangement, false); //pyramid
+        Millie ("data/calico/images/cats/millie.png", "data/calico/images/cats/token/millie.png", 3, 3, new int[][][][] {{{{3}}}}, true),
+        Tibbit ("data/calico/images/cats/tibbit.png", "data/calico/images/cats/token/tibbit.png", 5, 4, new int[][][][] {{{{4}}}}, true),
+        Coconut ("data/calico/images/cats/coconut.png", "data/calico/images/cats/token/coconut.png", 7, 5,  new int[][][][] {{{{5}}}}, true),
+        Tecolote ("data/calico/images/cats/tecolote.png", "data/calico/images/cats/token/tecolote.png", 7, 4, TecoloteArrangement, false), //in a straightline
+        Callie ("data/calico/images/cats/callie.png", "data/calico/images/cats/token/callie.png", 3, 3, CallieArrangement, false), //in a T shape
+        Rumi ("data/calico/images/cats/rumi.png", "data/calico/images/cats/token/rumi.png", 5, 3, RumiArrangement, false), //in a stright line
+        Gwen ("data/calico/images/cats/gwen.png", "data/calico/images/cats/token/gwen.png", 11, 7, new int[][][][] {{{{7}}}}, true),
+        Cira ("data/calico/images/cats/cira.png", "data/calico/images/cats/token/cira.png", 9, 6, new int[][][][] {{{{6}}}}, true),
+        Leo ("data/calico/images/cats/leo.png", "data/calico/images/cats/token/leo.png", 11, 5, LeoArrangement, false), //in a stright line
+        Almond ("data/calico/images/cats/almond.png", "data/calico/images/cats/token/almond.png", 9, 5, AlmondArrangement, false); //pyramid
 
         String imagePath;
         String tokenPath;
         int points;
+        int size;
         int[][][][] arrangement; //arrangement or size of patches
         boolean patchVer; //is a patch count or specific shape
 
-        Cat(String imagePath, String tokenPath, int points, int[][][][] arrangement, boolean patchVer) {
+        Cat(String imagePath, String tokenPath, int points, int size, int[][][][] arrangement, boolean patchVer) {
             this.imagePath = imagePath;
             this.tokenPath = tokenPath;
             this.points = points;
+            this.size = size;
             this.arrangement = arrangement;
             this.patchVer = patchVer;
         }
@@ -255,6 +257,10 @@ public class CalicoTypes {
             return points;
         }
 
+        public int getSize() {
+            return size;
+        }
+
         public int[][][][] getArrangement() {
             return arrangement;
         }
@@ -263,5 +269,4 @@ public class CalicoTypes {
             return patchVer;
         }
     }
-
 }

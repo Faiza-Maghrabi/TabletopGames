@@ -5,6 +5,7 @@ import java.util.Objects;
 import core.AbstractGameState;
 import core.actions.AbstractAction;
 import games.calico.CalicoGameState;
+import games.calico.CalicoLookForCatReturn;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
 import games.calico.components.CalicoBoard;
@@ -36,16 +37,17 @@ public class PlaceTile extends AbstractAction {
         CalicoBoard calicoBoard = cgs.getPlayerBoards()[playerId];
         CalicoTile newTile = new CalicoTile(colour, pattern);
         calicoBoard.setBoardTilePatch(x, y, newTile);
-        boolean buttonPlaced = calicoBoard.lookForButton(x, y);
+        boolean buttonPlaced = calicoBoard.lookForButton(x, y) == 3;
         if (buttonPlaced){
             //add point to player
             cgs.addButtonPoint(playerId, colour);
         }
-        CalicoCatCard catPlaced = calicoBoard.lookForCat(x, y, cgs.getActiveCats());
-        System.out.println("result: " + catPlaced);
-        if (catPlaced != null){
-            System.out.println(catPlaced.getName());
-            cgs.addCatPoint(playerId, catPlaced.getCat());
+        CalicoLookForCatReturn catPlaced = calicoBoard.lookForCat(x, y, cgs.getActiveCats());
+        if (catPlaced.getCatCard() != null){
+            //System.out.println("result: " + catPlaced.getCatCard().getName() + " size: " + catPlaced.getsizeFound());
+            if (catPlaced.getCatCard().getSize() == catPlaced.getsizeFound()){
+                cgs.addCatPoint(playerId, catPlaced.getCatCard().getCat());
+            }
         }
         return true;
     }

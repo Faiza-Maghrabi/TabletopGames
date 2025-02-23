@@ -30,6 +30,10 @@ public class CalicoCatCard extends Card{
         return cat.getPoints();
     }
 
+    public int getSize(){
+        return cat.getSize();
+    }
+
     public int[][][][] getArrangement(){
         return cat.getArrangement();
     }

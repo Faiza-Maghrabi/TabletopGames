@@ -8,6 +8,7 @@ import games.calico.CalicoTypes.Button;
 import games.calico.CalicoTypes.Cat;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.components.CalicoBoard;
+import games.calico.components.CalicoBoardTile;
 import games.calico.components.CalicoCatCard;
 import games.calico.components.CalicoTile;
 
@@ -128,6 +129,58 @@ public class CalicoGameState extends AbstractGameState {
 //        return new TMHeuristic().evaluateState(this, playerId);
 //        return getGameScore(playerId);
         return countPoints(playerId);
+    }
+
+
+    //Evaluate how good the board is for the player
+    private double evaluateBoard(int playerId) {
+        CalicoBoard board = playerBoards[playerId];
+        CalicoGameParameters params = (CalicoGameParameters) gameParameters;
+        int total_score = 0;
+        //TODO: FIND THIS WITH CURRENT CATS, DESIGN TILES AND SPACE FOR BUTTONS KEEPING INTO ACCOUNT THE TILES THAT HAVENT BEEN PLACED
+        int max_possible_score = 0;  // Used for normalization 
+
+        //calcuate how useful a Tile is on the board for each type of Tile
+        //ignore designTiles?
+        for (int x = 1; x < params.boardSize - 1; x++) {
+            for (int y = 1; y < params.boardSize -1; y++) {
+                CalicoBoardTile tile = board.getElement(max_possible_score, playerId);
+                if (!tile.isDesignTile()) {
+                    int tileScore = 0;
+
+                    //buttons
+                    // if (tile.hasButton())
+                }
+            }
+        }
+
+        return 1.0;
+
+        //TODO: PLAN:
+        // //check for rainbow button points and design Token points
+    
+        // // 1. Button Contribution
+        //     if tile.contributes_to_button():
+        //         tile_score += 1 // Adjust weights as needed
+
+        //     // 2. Cat Contribution
+        //     if tile.contributes_to_cat():
+        //         tile_score += 2  // Cat patterns are worth more
+
+        //     // 3. Design Goal Contribution
+        //     if tile.contributes_to_design_goal():
+        //         tile_score += 3  // Strong influence on final score
+
+        //     // 4. Blocking (Negative Impact)
+        //     if tile.blocks_a_goal():
+        //         tile_score -= 1  // Penalize bad moves
+
+        //     // Add to total score
+        //     total_score += tile_score
+        //     max_possible_score += 3  // Assuming 3 is the max per tile
+
+        // // Normalize to range [-1, 1]
+        // return (total_score / max_possible_score) * 2.0 - 1.0;
     }
 
     /*
