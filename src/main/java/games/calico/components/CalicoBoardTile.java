@@ -30,6 +30,7 @@ public class CalicoBoardTile extends Component {
         super(BOARD_NODE, "Tile");
         this.x = x;
         this.y = y;
+        this.hasButton = false;
         this.tilePlaced = new CalicoTile(TileColour.Null, TilePattern.Null);
     }
 
@@ -46,6 +47,7 @@ public class CalicoBoardTile extends Component {
         super(BOARD_NODE, "Tile");
         this.x = x;
         this.y = y;
+        this.hasButton = false;
         this.tilePlaced = new CalicoTile(colour, pattern);
         this.isEmpty = false;
     }
@@ -90,6 +92,7 @@ public class CalicoBoardTile extends Component {
 
 
     public void addButton(){
+        System.out.println("ADDING BUTTON: " + x + "," + y);
         this.hasButton = true;
     }
 
@@ -201,6 +204,10 @@ public class CalicoBoardTile extends Component {
     public CalicoBoardTile copy() {
         CalicoBoardTile copy = new CalicoBoardTile(x, y);
         copyComponentTo(copy);
+        copy.hasButton = hasButton;
+        copy.hasButtonGUI = hasButtonGUI;
+        copy.hasCat = hasCat;
+        copy.hasCatGUI = hasCatGUI;
         copy.tilePlaced = tilePlaced;
         copy.isEmpty = isEmpty;
         copy.isDesignTile = isDesignTile;
@@ -208,18 +215,20 @@ public class CalicoBoardTile extends Component {
         return copy;
     }
 
+    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof CalicoBoardTile)) return false;
         if (!super.equals(o)) return false;
         CalicoBoardTile calicoMapTile = (CalicoBoardTile) o;
-        return x == calicoMapTile.x && y == calicoMapTile.y && tilePlaced == calicoMapTile.tilePlaced && isEmpty == calicoMapTile.isEmpty && isDesignTile == calicoMapTile.isDesignTile && designGoalTile == calicoMapTile.designGoalTile && hasButton == calicoMapTile.hasButton && hasCat == calicoMapTile.hasCat;
+        return x == calicoMapTile.x && y == calicoMapTile.y && tilePlaced == calicoMapTile.tilePlaced && isEmpty == calicoMapTile.isEmpty && isDesignTile == calicoMapTile.isDesignTile && designGoalTile == calicoMapTile.designGoalTile && hasButton == calicoMapTile.hasButton && hasButtonGUI == calicoMapTile.hasButtonGUI && hasCat == calicoMapTile.hasCat && hasCatGUI == calicoMapTile.hasCatGUI;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(super.hashCode(), ownerId, x, y, tilePlaced, type, isEmpty, isDesignTile, designGoalTile, hasButton, hasCat);
+        int result = Objects.hash(super.hashCode(), ownerId, x, y, tilePlaced, type, isEmpty, isDesignTile, designGoalTile, hasButton, hasButtonGUI, hasCat, hasCatGUI);
         result = 31 * result;
         return result;
     }

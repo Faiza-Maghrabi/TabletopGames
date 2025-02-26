@@ -100,7 +100,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
      * Use these hashmaps to create the 2nd hashmap of unique occurances - 2 pairs of 2 etc
      * Compare against the designTile's objective
      */
-    private int calculateDesignTokenPoints(int x, int y){
+    public int calculateDesignTokenPoints(int x, int y){
         DesignGoalTile designGoalTile = getElement(x, y).getDesignGoal();
         if (designGoalTile == null) return 0;
 
@@ -328,24 +328,26 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
      * Returns the largest valid patch size found, for use in heuristic calculations, if counter = patchSize then the patch is valid
      */
     private int lookForPatches(CalicoBoardTile searchTile, CalicoBoardTile[] patchTiles, int counter, Set<Integer> visitedPatches, TileColour findColour, TilePattern findPattern, int patchSize){
-        //System.out.println("look for function called");
-        //System.out.println("colour: " + findColour);
-        //System.out.println("pattern: " + findPattern);
+        // System.out.println("look for function called");
+        // System.out.println("colour: " + findColour);
+        // System.out.println("pattern: " + findPattern);
+        // System.out.println("counter: " + counter);
         CalicoBoardTile[] surroundingTiles = getNeighbouringTiles(searchTile.getX(), searchTile.getY());
         for (int i = 0; i< surroundingTiles.length; i++) {
             if (surroundingTiles[i] != null) {
-                //System.out.println(surroundingTiles[i].getTileColour() + "," + surroundingTiles[i].getTilePattern());
+                System.out.println(surroundingTiles[i].getTileColour() + "," + surroundingTiles[i].getTilePattern());
                 if (findColour != null) {
                     if (surroundingTiles[i].getTileColour() == findColour && !surroundingTiles[i].hasButton() && !visitedPatches.contains(surroundingTiles[i].getComponentID())) {
-                        //System.out.println("Match Found");
+                        // System.out.println("Match Found");
                         patchTiles[counter] = surroundingTiles[i];
                         counter++;
                         if (counter == patchSize){
                             applyButtons(patchTiles);
+
                             return counter;
                         }
                         visitedPatches.add(searchTile.getComponentID());
-                        //System.out.println(visitedPatches);
+                        System.out.println(visitedPatches);
                         if (lookForPatches(surroundingTiles[i], patchTiles, counter, visitedPatches, findColour, findPattern, patchSize) == patchSize) return patchSize;
                     }
                 }
@@ -367,6 +369,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
                 
             }
         }
+        //System.out.println("before return counter: " + counter);
         return counter;
     }
 

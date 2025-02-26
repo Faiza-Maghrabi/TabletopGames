@@ -101,6 +101,8 @@ public class CalicoForwardModel extends StandardForwardModel {
                 return;
             }
             System.out.println("end player turn");
+            //testing
+            gs.evaluateBoard(((PickFromMarket)action).playerId);
             super.endPlayerTurn(gs);
         }
     }

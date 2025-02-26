@@ -7,6 +7,7 @@ import games.GameType;
 import games.calico.CalicoTypes.Button;
 import games.calico.CalicoTypes.Cat;
 import games.calico.CalicoTypes.TileColour;
+import games.calico.CalicoTypes.TilePattern;
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoBoardTile;
 import games.calico.components.CalicoCatCard;
@@ -126,61 +127,89 @@ public class CalicoGameState extends AbstractGameState {
      */
     @Override
     protected double _getHeuristicScore(int playerId) {
-//        return new TMHeuristic().evaluateState(this, playerId);
-//        return getGameScore(playerId);
-        return countPoints(playerId);
+        return evaluateBoard(playerId);
+        //return countPoints(playerId);
     }
 
 
     //Evaluate how good the board is for the player
-    private double evaluateBoard(int playerId) {
+    public double evaluateBoard(int playerId) {
         CalicoBoard board = playerBoards[playerId];
         CalicoGameParameters params = (CalicoGameParameters) gameParameters;
-        int total_score = 0;
+        float totalScore = 0;
         //TODO: FIND THIS WITH CURRENT CATS, DESIGN TILES AND SPACE FOR BUTTONS KEEPING INTO ACCOUNT THE TILES THAT HAVENT BEEN PLACED
-        int max_possible_score = 0;  // Used for normalization 
+        float maxPossibleScore = 0;  // Used for normalization 
 
         //calcuate how useful a Tile is on the board for each type of Tile
         //ignore designTiles?
         for (int x = 1; x < params.boardSize - 1; x++) {
             for (int y = 1; y < params.boardSize -1; y++) {
-                CalicoBoardTile tile = board.getElement(max_possible_score, playerId);
-                if (!tile.isDesignTile()) {
-                    int tileScore = 0;
+                CalicoBoardTile tile = board.getElement(x, y);
+                if (!tile.isEmpty()){
+                    float tileScore = 0;
+                    if (!tile.isDesignTile()) {
 
-                    //buttons
-                    // if (tile.hasButton())
+                        //buttons
+                        if (tile.hasButton()){
+                            tileScore++;
+                            System.out.println("button added: " + 1);
+                        } //+1
+                        else {
+                            if (board.lookForButton(x, y) > 1){
+                                tileScore++;
+                                System.out.println("part button added: " + 1);
+                            }
+                        }
+                        maxPossibleScore++;
+                        //cats
+                        if (tile.hasCat()) {
+                            Cat cat = findCatForPattern(tile.getTilePattern());
+                            float addScore = cat.getPoints()/cat.getSize();
+                            tileScore+= addScore;
+                            maxPossibleScore+=addScore;
+                            System.out.println("cat score added: " + addScore);
+                        }
+                        else {
+                            CalicoLookForCatReturn lookReturn = board.lookForCat(x, y, activeCats);
+                            if (lookReturn.getsizeFound() > 1){
+                                Cat cat = lookReturn.getCatCard().getCat();
+                                float addScore = cat.getPoints()/cat.getSize();
+                                System.out.println("maxPossibleScore and tileScore added with > ONE matches: " + addScore);
+                                tileScore +=addScore;
+                                maxPossibleScore+=addScore;
+                            }
+                            else if (lookReturn.getsizeFound() == 1){
+                                Cat cat = lookReturn.getCatCard().getCat();
+                                float addScore = cat.getPoints()/cat.getSize();
+                                System.out.println("maxPossibleScore added with NO matches: " + addScore);
+                                maxPossibleScore+=addScore;
+                            }
+                        }
+                    }   //use calculateDesignTokenPoints for evaluating these?
+                    else {
+                        int maxDesignScore = board.getElement(x, y).getDesignGoal().getGoalTwo();
+                        int designScore = board.calculateDesignTokenPoints(x,y);
+                        System.out.println("designScore is: " + designScore);
+                        System.out.println("maxDesignScore is: " + maxDesignScore);
+                        tileScore += designScore;
+                        maxPossibleScore += maxDesignScore;
+                    }
+                    totalScore +=tileScore;
                 }
             }
         }
 
-        return 1.0;
+        //add in points for rainbow buttons - increase to total is same as maxPossibleScore
+        int rainbowNum = playerButtonScore[playerId].get(Button.Rainbow).getValueIdx();
+        System.out.println("rainbowNum is: " + rainbowNum);
+        totalScore += (rainbowNum * 3);
+        maxPossibleScore += (rainbowNum * 3);
 
-        //TODO: PLAN:
-        // //check for rainbow button points and design Token points
-    
-        // // 1. Button Contribution
-        //     if tile.contributes_to_button():
-        //         tile_score += 1 // Adjust weights as needed
 
-        //     // 2. Cat Contribution
-        //     if tile.contributes_to_cat():
-        //         tile_score += 2  // Cat patterns are worth more
-
-        //     // 3. Design Goal Contribution
-        //     if tile.contributes_to_design_goal():
-        //         tile_score += 3  // Strong influence on final score
-
-        //     // 4. Blocking (Negative Impact)
-        //     if tile.blocks_a_goal():
-        //         tile_score -= 1  // Penalize bad moves
-
-        //     // Add to total score
-        //     total_score += tile_score
-        //     max_possible_score += 3  // Assuming 3 is the max per tile
-
-        // // Normalize to range [-1, 1]
-        // return (total_score / max_possible_score) * 2.0 - 1.0;
+        System.out.println("FINAL totalScore is: " + totalScore);
+        System.out.println("FINAL maxPossibleScore is: " + maxPossibleScore);
+        System.out.println((totalScore / maxPossibleScore) * 2.0 - 1.0);
+        return (totalScore / maxPossibleScore) * 2.0 - 1.0;
     }
 
     /*
@@ -228,9 +257,6 @@ public class CalicoGameState extends AbstractGameState {
         return result;
     }
 
-    /*
-     * TODO: check over this
-     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -323,6 +349,15 @@ public class CalicoGameState extends AbstractGameState {
         return playerTiles;
     }
 
+    //returns the cat associated with a pattern if found
+    public Cat findCatForPattern(TilePattern pattern) {
+        for (CalicoCatCard catCard : activeCats){
+            TilePattern[] catPatterns = catCard.getPatches();
+            if (pattern == catPatterns[0] || pattern == catPatterns[1]) return catCard.getCat();
+        }
+        return null;
+    }
+
     /*
     * count up all points for a player and returns the sum 
     * includes butons, cats, and design tiles
@@ -384,7 +419,7 @@ public class CalicoGameState extends AbstractGameState {
     }
 
     public void addCatPoint(int player, Cat cat){
-        System.out.println("ADDING CAT POINT " + cat.getName());
+        //System.out.println("ADDING CAT POINT " + cat.getName());
         playerCatScore[player].get(cat).increment();
     }
 
