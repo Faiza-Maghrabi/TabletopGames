@@ -198,8 +198,6 @@ public class CalicoBoardTile extends Component {
     }
     
 
-    //TODO: Definitely needs updating
-
     @Override
     public CalicoBoardTile copy() {
         CalicoBoardTile copy = new CalicoBoardTile(x, y);

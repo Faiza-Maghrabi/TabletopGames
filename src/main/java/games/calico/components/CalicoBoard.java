@@ -335,7 +335,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         CalicoBoardTile[] surroundingTiles = getNeighbouringTiles(searchTile.getX(), searchTile.getY());
         for (int i = 0; i< surroundingTiles.length; i++) {
             if (surroundingTiles[i] != null) {
-                System.out.println(surroundingTiles[i].getTileColour() + "," + surroundingTiles[i].getTilePattern());
+                //System.out.println(surroundingTiles[i].getTileColour() + "," + surroundingTiles[i].getTilePattern());
                 if (findColour != null) {
                     if (surroundingTiles[i].getTileColour() == findColour && !surroundingTiles[i].hasButton() && !visitedPatches.contains(surroundingTiles[i].getComponentID())) {
                         // System.out.println("Match Found");
@@ -347,7 +347,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
                             return counter;
                         }
                         visitedPatches.add(searchTile.getComponentID());
-                        System.out.println(visitedPatches);
+                        //System.out.println(visitedPatches);
                         if (lookForPatches(surroundingTiles[i], patchTiles, counter, visitedPatches, findColour, findPattern, patchSize) == patchSize) return patchSize;
                     }
                 }
@@ -394,8 +394,14 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         GridBoard<CalicoBoardTile> board = super.copy();
         CalicoBoard copy = new CalicoBoard(board, this.type);
         copyComponentTo(copy);
+        for (int x = 0; x < 7; x++) {
+            for (int y = 0; y < 7; y++) {
+                copy.setElement(x, y, this.getElement(x, y).copy());
+            }
+        }
         return copy;
     }
+
 
     @Override
     public boolean equals(Object o) {

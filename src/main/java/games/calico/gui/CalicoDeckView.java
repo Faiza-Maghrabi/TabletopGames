@@ -57,7 +57,6 @@ public class CalicoDeckView extends DeckView<CalicoTile> {
         super.drawDeck(g);
         if (playerButtons == null) return;
         for (int i = 0; i < playerButtons.get(Button.Rainbow).getValueIdx(); i++) {
-            System.out.println(i);
             Rectangle buttonRect = new Rectangle(rect.x + tileRadius * i, rect.y + tileRadius*2, 0, 0);
             Image buttonImg = ImageIO.GetInstance().getImage("data/calico/images/buttons/rainbow.png");
             g.drawImage(buttonImg, buttonRect.x, buttonRect.y, (int)(tileRadius*1.5), (int)(tileRadius), null);

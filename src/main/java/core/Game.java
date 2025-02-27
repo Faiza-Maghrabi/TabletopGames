@@ -839,9 +839,10 @@ public class Game {
         players.add(new HumanGUIPlayer(ac));
         // players.add(new RandomPlayer());
         players.add(new RandomPlayer());
-        players.add(new RandomPlayer());
-        players.add(new RandomPlayer());
-        //players.add(new BasicMCTSPlayer());
+        // players.add(new RandomPlayer());
+        // players.add(new RandomPlayer());
+        players.add(new OSLAPlayer());
+        players.add(new BasicMCTSPlayer());
 
 //        RMHCParams params = new RMHCParams();
 //        params.horizon = 15;
