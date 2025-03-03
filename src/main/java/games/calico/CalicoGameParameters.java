@@ -131,18 +131,26 @@ public class CalicoGameParameters extends AbstractParameters {
         }
         Collections.shuffle(allCats);
 
+        int iterator = 0;
         int tileCounter = 0;
-
-        for (int i = 0; i < 3; i++){
-            catsInPlay[i] = new CalicoCatCard(allCats.get(i), patternTiles.get(tileCounter), patternTiles.get(tileCounter+1));
-            tileCounter+= 2;
+        int addedCats = 0;
+        
+        //make sure the locations 0, 1, and 2 in catsInPlay are filled with random cats of difficulty 1, 2, and 3 respectively
+        while (addedCats < 3) {
+            int fetchedDiff = allCats.get(iterator).getDifficulty();
+            if (catsInPlay[fetchedDiff-1] == null){
+                catsInPlay[fetchedDiff-1] = new CalicoCatCard(allCats.get(iterator), patternTiles.get(tileCounter), patternTiles.get(tileCounter+1));
+                tileCounter+= 2;
+                addedCats++;
+            }
+            iterator++;
         }
 
         return catsInPlay;
     }
 
 
-    //TODO THIS NEEDS WORK
+    //TODO THIS NEEDS WORK - does this already work?
     @Override
     protected AbstractParameters _copy() {
         return new CalicoGameParameters();
