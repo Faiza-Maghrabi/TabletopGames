@@ -178,6 +178,15 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         return totalPoints;
     }
 
+    public String[] getBoardDesignGoalReached(int[] designLoc){
+        //get type of design tile and return the goal score that was reached
+        DesignGoalTile designGoalTile = getElement(designLoc[0], designLoc[1]).getDesignGoal();
+        int points = calculateDesignTokenPoints(designLoc[0], designLoc[1]);
+        if (points == designGoalTile.getGoalOne()) return new String[] {designGoalTile.name(), "1"};
+        else if (points == designGoalTile.getGoalTwo()) return new String[] {designGoalTile.name(), "2"};
+        return new String[] {designGoalTile.name(), "0"};
+    }
+
     public int lookForButton(int x, int y){
         CalicoBoardTile focusTile = getElement(x, y);
         CalicoBoardTile[] buttonTiles = new CalicoBoardTile[3];

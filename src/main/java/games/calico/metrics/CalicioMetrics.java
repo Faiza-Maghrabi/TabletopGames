@@ -15,12 +15,13 @@ import evaluation.metrics.IMetricsCollection;
 import games.calico.CalicoGameState;
 import games.calico.CalicoTypes.Button;
 import games.calico.CalicoTypes.Cat;
+import games.calico.CalicoTypes.DesignGoalTile;
 import games.calico.components.CalicoCatCard;
 
 
 public class CalicioMetrics implements IMetricsCollection {
     /**
-     * How many times a cat was collected by a player
+     * How many cats were achieved by players and its type
      */
     public static class CatsAchievedCount extends AbstractMetric {
 
@@ -58,6 +59,9 @@ public class CalicioMetrics implements IMetricsCollection {
 
     }
 
+    /*
+     * How many buttons were achieved by players and its type
+     */
     public static class ButtonsAchievedCount extends AbstractMetric {
 
         @Override
@@ -92,19 +96,19 @@ public class CalicioMetrics implements IMetricsCollection {
 
     }
 
-    public static class DesignTokensAchievedCount extends AbstractMetric {
+    /*
+     * Design Tiles and the levels achieved by players
+     */
+    public static class DesignTokensAchievedLevel extends AbstractMetric {
 
         @Override
         protected boolean _run(MetricsGameListener listener, Event e, Map<String, Object> records) {
             CalicoGameState gs = (CalicoGameState) e.state;
-            CalicoCatCard[] activeCats = gs.getActiveCats();
-            HashMap<Cat, Counter>[] playerCatScore = gs.getPlayerCatScore();
 
             for (int i = 0; i < gs.getNPlayers(); i++) {
-                for (int j = 0; j < gs.getActiveCats().length; j++) {
-                    Cat c = activeCats[j].getCat();
-                    int catCount = playerCatScore[i].get(c).getValueIdx();
-                    records.put("Player " + i + ": " +c.toString() + " Count = ", catCount);
+                for (int j = 0; j < 3; j++) {
+                    String[] goalVals = gs.getPlayerDesignGoalReached(i, j);
+                    records.put("Player " + i + ": " + goalVals[0] + " Count = ", goalVals[1]);
                 }
             }
             return true;
@@ -114,8 +118,8 @@ public class CalicioMetrics implements IMetricsCollection {
         public Map<String, Class<?>> getColumns(int nPlayersPerGame, Set<String> playerNames) {
             Map<String, Class<?>> columns = new HashMap<>();
             for (int i = 0; i < nPlayersPerGame; i++){
-                for (Cat c: Cat.values()) {
-                    columns.put("Player " + i + ": " +c.toString() + " Count = ", Integer.class);
+                for (DesignGoalTile d: DesignGoalTile.values()) {
+                    columns.put("Player " + i + ": " +d.toString() + " Goal = ", Integer.class);
                 }
             }
             return columns;

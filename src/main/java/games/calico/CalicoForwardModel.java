@@ -100,7 +100,7 @@ public class CalicoForwardModel extends StandardForwardModel {
                 endGame(gs);
                 return;
             }
-            System.out.println("end player turn");
+            //System.out.println("end player turn");
             //testing
             //gs.evaluateBoard(((PickFromMarket)action).playerId);
             super.endPlayerTurn(gs);

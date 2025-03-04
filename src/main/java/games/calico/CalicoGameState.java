@@ -154,12 +154,12 @@ public class CalicoGameState extends AbstractGameState {
                         //buttons
                         if (tile.hasButton()){
                             tileScore+=1.5;
-                            System.out.println("button added: " + 1.5);
+                            //System.out.println("button added: " + 1.5);
                         } //+1
                         else {
                             if (board.lookForButton(x, y) > 1){
                                 tileScore++;
-                                System.out.println("part button added: " + 1);
+                                //System.out.println("part button added: " + 1);
                             }
                         }
                         maxPossibleScore+=1.5;
@@ -203,7 +203,7 @@ public class CalicoGameState extends AbstractGameState {
 
         //add in points for rainbow buttons - increase to total is same as maxPossibleScore
         int rainbowNum = playerButtonScore[playerId].get(Button.Rainbow).getValueIdx();
-        System.out.println("rainbowNum is: " + rainbowNum);
+        //System.out.println("rainbowNum is: " + rainbowNum);
         totalScore += (rainbowNum * 3);
         maxPossibleScore += (rainbowNum * 3);
 
@@ -423,6 +423,11 @@ public class CalicoGameState extends AbstractGameState {
     public void addCatPoint(int player, Cat cat){
         //System.out.println("ADDING CAT POINT " + cat.getName());
         playerCatScore[player].get(cat).increment();
+    }
+
+    //get the design String to be output in the GUI
+    public String[] getPlayerDesignGoalReached(int player, int locNum) {
+        return playerBoards[player].getBoardDesignGoalReached(CalicoTypes.designLoc[locNum]);
     }
 
 }

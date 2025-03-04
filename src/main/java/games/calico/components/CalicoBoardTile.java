@@ -92,7 +92,7 @@ public class CalicoBoardTile extends Component {
 
 
     public void addButton(){
-        System.out.println("ADDING BUTTON: " + x + "," + y);
+        //System.out.println("ADDING BUTTON: " + x + "," + y);
         this.hasButton = true;
     }
 
