@@ -68,20 +68,6 @@ public class CalicoBoardView extends JComponent {
                     g.setColor(Color.BLACK);
                     g.setFont(f);
                     g.drawString("["+column+","+row+"]", centreCoords.x + tileRadius, centreCoords.y + tileRadius);
-                    // Fill the hexagon and give name - DEBUG
-                    // g.setColor(new Color(40, 157, 197));
-                    // Polygon tileHex = tile.getHexagon(tileRadius);
-                    // g.fillPolygon(tileHex);
-                    // g.setColor(Color.BLACK);
-                    // g.drawPolygon(tileHex); //outline in black
-                    // g.setFont(boldFont);
-                    // if (tile.isDesignTile()) {
-                    //     g.drawString(tile.getDesignGoal().toString(), centreCoords.x, centreCoords.y);
-                    // }
-                    // else {
-                    //     g.drawString(tile.getTileColour().toString(), centreCoords.x, centreCoords.y);
-                    // }
-                    // g.setFont(f);
                 }
 
             }

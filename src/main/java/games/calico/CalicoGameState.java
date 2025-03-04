@@ -79,6 +79,7 @@ public class CalicoGameState extends AbstractGameState {
      * https://tabletopgames.ai/wiki/conventions/info_hiding
      * All of the components in the observation should be copies of those in the game state
      */
+    @SuppressWarnings("unchecked")
     @Override
     protected AbstractGameState _copy(int playerId) {
         CalicoGameState copy = new CalicoGameState(gameParameters.copy(), getNPlayers());
