@@ -19,7 +19,7 @@ import games.calico.CalicoTypes.DesignGoalTile;
 import games.calico.components.CalicoCatCard;
 
 
-public class CalicioMetrics implements IMetricsCollection {
+public class CalicoMetrics implements IMetricsCollection {
     /**
      * How many cats were achieved by players and its type
      */
@@ -30,25 +30,30 @@ public class CalicioMetrics implements IMetricsCollection {
             CalicoGameState gs = (CalicoGameState) e.state;
             CalicoCatCard[] activeCats = gs.getActiveCats();
             HashMap<Cat, Counter>[] playerCatScore = gs.getPlayerCatScore();
-
+            //System.out.println("CatsAchievedCount run");
             for (int i = 0; i < gs.getNPlayers(); i++) {
                 for (int j = 0; j < gs.getActiveCats().length; j++) {
                     Cat c = activeCats[j].getCat();
                     int catCount = playerCatScore[i].get(c).getValueIdx();
-                    records.put("Player " + i + ": " +c.toString() + " Count = ", catCount);
+                    //System.out.println("Player " + i + ": " +c.toString());
+                    records.put("Player " + i + ": " +c.toString(), catCount);
                 }
             }
+            //System.out.println("--------------------------------------------------------");
             return true;
         }
 
         @Override
         public Map<String, Class<?>> getColumns(int nPlayersPerGame, Set<String> playerNames) {
             Map<String, Class<?>> columns = new HashMap<>();
+            System.out.println("CatsAchievedCount getColumns");
             for (int i = 0; i < nPlayersPerGame; i++){
                 for (Cat c: Cat.values()) {
-                    columns.put("Player " + i + ": " +c.toString() + " Count = ", Integer.class);
+                    System.out.println("Player " + i + ": " +c.toString());
+                    columns.put("Player " + i + ": " +c.toString(), Integer.class);
                 }
             }
+            System.out.println("--------------------------------------------------------");
             return columns;
         }
 
@@ -72,7 +77,7 @@ public class CalicioMetrics implements IMetricsCollection {
             for (int i = 0; i < gs.getNPlayers(); i++) {
                 for (Button b : Button.values()) {
                     int buttonCount = playerButtonScore[i].get(b).getValueIdx();
-                    records.put("Player " + i + ": " +b.toString() + " Count = ", buttonCount);
+                    records.put("Player " + i + ": " +b.toString(), buttonCount);
                 }
             }
             return true;
@@ -83,7 +88,7 @@ public class CalicioMetrics implements IMetricsCollection {
             Map<String, Class<?>> columns = new HashMap<>();
             for (int i = 0; i < nPlayersPerGame; i++){
                 for (Button b : Button.values()){
-                    columns.put("Player " + i + ": " +b.toString() + " Count = ", Integer.class);
+                    columns.put("Player " + i + ": " +b.toString(), Integer.class);
                 }
             }
             return columns;
@@ -108,7 +113,7 @@ public class CalicioMetrics implements IMetricsCollection {
             for (int i = 0; i < gs.getNPlayers(); i++) {
                 for (int j = 0; j < 3; j++) {
                     String[] goalVals = gs.getPlayerDesignGoalReached(i, j);
-                    records.put("Player " + i + ": " + goalVals[0] + " Count = ", goalVals[1]);
+                    records.put("Player " + i + ": " + goalVals[0], Integer.valueOf(goalVals[1]));
                 }
             }
             return true;
@@ -119,7 +124,7 @@ public class CalicioMetrics implements IMetricsCollection {
             Map<String, Class<?>> columns = new HashMap<>();
             for (int i = 0; i < nPlayersPerGame; i++){
                 for (DesignGoalTile d: DesignGoalTile.values()) {
-                    columns.put("Player " + i + ": " +d.toString() + " Goal = ", Integer.class);
+                    columns.put("Player " + i + ": " +d.toString(), Integer.class);
                 }
             }
             return columns;

@@ -210,7 +210,7 @@ public class CalicoGameState extends AbstractGameState {
 
         // System.out.println("FINAL totalScore is: " + totalScore);
         // System.out.println("FINAL maxPossibleScore is: " + maxPossibleScore);
-        System.out.println((totalScore / maxPossibleScore) * 2.0 - 1.0);
+        //System.out.println((totalScore / maxPossibleScore) * 2.0 - 1.0);
         return (totalScore / maxPossibleScore) * 2.0 - 1.0;
     }
 

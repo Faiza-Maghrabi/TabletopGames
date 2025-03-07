@@ -46,6 +46,8 @@ public class RunGames implements IGameRunner {
      */
     @SuppressWarnings({"ConstantConditions"})
     public static void main(String[] args) {
+        //not optimal way to do this
+        args = new String[] {"config=json/experiments/rungamesCalico.json"};
         List<String> argsList = Arrays.asList(args);
         if (argsList.contains("--help") || argsList.contains("-h")) {
             RunArg.printHelp(Usage.RunGames);
@@ -84,7 +86,8 @@ public class RunGames implements IGameRunner {
        //     agents.add(new MCTSPlayer());
             agents.add(new BasicMCTSPlayer());
             agents.add(new RandomPlayer());
-            agents.add(new RMHCPlayer());
+            agents.add(new RandomPlayer());
+            //agents.add(new RMHCPlayer());
             agents.add(new OSLAPlayer());
         }
         runGames.agents = agents;

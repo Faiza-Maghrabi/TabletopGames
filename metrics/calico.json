@@ -1,9 +1,6 @@
 {
     "class": "evaluation.listeners.MetricsGameListener",
     "args": [
-      {
-        "class" : "evaluation.loggers.SummaryLogger"
-      },
       [
         {"class": "evaluation.metrics.GameMetrics$GameScore" },
         {"class": "evaluation.metrics.GameMetrics$FinalScore" },
@@ -11,9 +8,9 @@
         {"class": "evaluation.metrics.GameMetrics$ComputationTimes" },
         {"class": "evaluation.metrics.GameMetrics$Decisions" },
         {"class": "evaluation.metrics.GameMetrics$Actions" },
-        {"class": "games.Calico.metrics.CalicoMetrics$CatsAchievedCount"},
-        {"class": "games.Calico.metrics.CalicoMetrics$ButtonsAchievedCount"},
-        {"class": "games.Calico.metrics.CalicoMetrics$DesignTokensAchievedLevel"}
+        {"class": "games.calico.metrics.CalicoMetrics$CatsAchievedCount"},
+        {"class": "games.calico.metrics.CalicoMetrics$ButtonsAchievedCount"},
+        {"class": "games.calico.metrics.CalicoMetrics$DesignTokensAchievedLevel"}
       ]
     ]
   }
