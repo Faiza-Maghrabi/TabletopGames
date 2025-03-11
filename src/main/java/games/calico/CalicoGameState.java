@@ -12,6 +12,7 @@ import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoBoardTile;
 import games.calico.components.CalicoCatCard;
 import games.calico.components.CalicoTile;
+import games.calico.types.CalicoLookForCatReturn;
 
 import java.util.*;
 
@@ -185,6 +186,12 @@ public class CalicoGameState extends AbstractGameState {
                                 float addScore = cat.getPoints()/cat.getSize();
                                 //System.out.println("maxPossibleScore added with NO matches: " + addScore);
                                 maxPossibleScore+=addScore;
+                            }
+                            //if there is a cat for the pattern and there is no valid arrangement on the board, discourage from placing tile there
+                            if (lookReturn.getCatCard() != null && !lookReturn.getvalidArrangement()){
+                                Cat cat = lookReturn.getCatCard().getCat();
+                                float removeScore = cat.getPoints()/(cat.getSize() / 2);
+                                tileScore -=removeScore;
                             }
                         }
                     }   //use calculateDesignTokenPoints for evaluating these?

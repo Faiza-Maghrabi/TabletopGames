@@ -5,12 +5,12 @@ import java.util.Objects;
 import core.AbstractGameState;
 import core.actions.AbstractAction;
 import games.calico.CalicoGameState;
-import games.calico.CalicoLookForCatReturn;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
 import games.calico.components.CalicoBoard;
 import games.calico.components.CalicoCatCard;
 import games.calico.components.CalicoTile;
+import games.calico.types.CalicoLookForCatReturn;
 
 public class PlaceTile extends AbstractAction {
 
