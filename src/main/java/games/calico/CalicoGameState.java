@@ -181,7 +181,7 @@ public class CalicoGameState extends AbstractGameState {
                                 maxPossibleScore+=addScore;
                             }
                             //if there is a cat for the pattern and there is no valid arrangement on the board, discourage from placing tile there
-                            if (lookReturn.getCatCard() != null && !lookReturn.getvalidArrangement()){
+                            if (lookReturn.getCatCard() != null && !lookReturn.getvalidPlacement()){
                                 Cat cat = lookReturn.getCatCard().getCat();
                                 double removeScore = cat.getPoints()/(cat.getSize() / 2);
                                 tileScore -=removeScore;

@@ -9,7 +9,7 @@ import games.calico.CalicoTypes;
 import games.calico.CalicoTypes.BoardTypes;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
-import games.calico.types.CalicoCatArrangementStatus;
+import games.calico.types.CalicoPlacementStatus;
 import games.calico.types.CalicoLookForCatReturn;
 import games.calico.CalicoTypes.DesignGoalTile;
 
@@ -179,7 +179,6 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         if (designTokenMultiplier != 0.0){
             score = heuristicDesignTokenPoints(score, designGoalTile, colourMatchCount, patternMatchCount, designTokenMultiplier);
         }
-        System.out.println(score);
         return score;
     }
 
@@ -262,11 +261,11 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
                     }
                     else {  //use the cat arrangements to find matches
                         //System.out.println("looking for arrangement");
-                        CalicoCatArrangementStatus foundArrangementStatus = lookForCatArrangement(focusTile, catCard.getArrangement());
+                        CalicoPlacementStatus foundArrangementStatus = lookForCatArrangement(focusTile, catCard.getArrangement());
                         int foundSize = foundArrangementStatus.getsizeFound();
                         //System.out.println("found:"  + foundSize + " for " + catCard.getName());
-                        if (foundSize == catCard.getSize()) return new CalicoLookForCatReturn(catCard, foundSize, foundArrangementStatus.getvalidArrangement());
-                        if (foundSize > returnVals.getsizeFound()){returnVals.updateParams(catCard, foundSize, returnVals.getvalidArrangement() || foundArrangementStatus.getvalidArrangement());}
+                        if (foundSize == catCard.getSize()) return new CalicoLookForCatReturn(catCard, foundSize, foundArrangementStatus.getvalidPlacement());
+                        if (foundSize > returnVals.getsizeFound()){returnVals.updateParams(catCard, foundSize, returnVals.getvalidPlacement() || foundArrangementStatus.getvalidPlacement());}
                     }
                 }
             }
@@ -275,23 +274,23 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
     }
 
 
-    private CalicoCatArrangementStatus lookForCatArrangement(CalicoBoardTile focusTile, int[][][][] fullArrangement){
+    private CalicoPlacementStatus lookForCatArrangement(CalicoBoardTile focusTile, int[][][][] fullArrangement){
         int[][][] arrangement = fullArrangement[focusTile.getY() & 1];
         boolean validArrangement = false;
         int maxMatchSize = 0;
         for (int i = 0; i < arrangement.length; i++){
             //System.out.println("arrangement num " + i);
-            CalicoCatArrangementStatus foundArrangementStatus = rotateAndFindArrangement(focusTile, arrangement[i]);
+            CalicoPlacementStatus foundArrangementStatus = rotateAndFindArrangement(focusTile, arrangement[i]);
             int foundMatchSize = foundArrangementStatus.getsizeFound();
-            validArrangement = validArrangement || foundArrangementStatus.getvalidArrangement();
+            validArrangement = validArrangement || foundArrangementStatus.getvalidPlacement();
             if (foundMatchSize == arrangement[i].length){return foundArrangementStatus;}
             if (foundMatchSize > maxMatchSize) {maxMatchSize = foundMatchSize;}
         }
-        return new CalicoCatArrangementStatus(maxMatchSize, validArrangement);
+        return new CalicoPlacementStatus(maxMatchSize, validArrangement);
     }
 
     //given an arrangement, rotate and look for matches
-    private CalicoCatArrangementStatus rotateAndFindArrangement(CalicoBoardTile focusTile, int[][] pattern){ 
+    private CalicoPlacementStatus rotateAndFindArrangement(CalicoBoardTile focusTile, int[][] pattern){ 
         //check initial rotation and then rotate til a match is found or loop ends
         // StringBuilder sp = new StringBuilder();
         //         for (int[] coords : pattern) {
@@ -299,9 +298,9 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         //         }
         // System.out.println(sp.toString().trim());
 
-        CalicoCatArrangementStatus firstArrangementStatus = findMatchArrangement(focusTile, pattern);
+        CalicoPlacementStatus firstArrangementStatus = findMatchArrangement(focusTile, pattern);
         int maxMatchSize = firstArrangementStatus.getsizeFound();
-        boolean validArrangement = firstArrangementStatus.getvalidArrangement();
+        boolean validArrangement = firstArrangementStatus.getvalidPlacement();
 
         if (maxMatchSize == pattern.length) {return firstArrangementStatus;}
         for (int i = 1; i < 6; i++) {
@@ -312,14 +311,14 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
             //     sb.append("[").append(coords[0] + focusTile.getX()).append(",").append(coords[1] + focusTile.getY()).append("] ");
             // }
             // System.out.println(sb.toString().trim());
-            CalicoCatArrangementStatus newArrangementCheck = findMatchArrangement(focusTile, pattern);
-            validArrangement = validArrangement || newArrangementCheck.getvalidArrangement();
+            CalicoPlacementStatus newArrangementCheck = findMatchArrangement(focusTile, pattern);
+            validArrangement = validArrangement || newArrangementCheck.getvalidPlacement();
             int newMatchCheck = newArrangementCheck.getsizeFound();
 
             if (newMatchCheck == pattern.length) {return newArrangementCheck;}
             if (newMatchCheck > maxMatchSize) {maxMatchSize = newMatchCheck;}
         }
-        return new CalicoCatArrangementStatus(maxMatchSize, validArrangement);
+        return new CalicoPlacementStatus(maxMatchSize, validArrangement);
 
     }
 
@@ -347,7 +346,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
      * returns max size of arrangement found for heuristics
      * the old version returned false when a match wasn't found for a location, less computation
      */
-    private CalicoCatArrangementStatus findMatchArrangement(CalicoBoardTile focusTile, int[][] pattern) {
+    private CalicoPlacementStatus findMatchArrangement(CalicoBoardTile focusTile, int[][] pattern) {
         //System.out.println("finding matches in pattern!");
         CalicoBoardTile[] arrangeTiles = new CalicoBoardTile[pattern.length];
         int count = 0;
@@ -379,7 +378,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         }
         //System.out.println("applying cats! MATCH FOUND");
         if (count == pattern.length) {applyCats(arrangeTiles);}
-        return new CalicoCatArrangementStatus(count, validArrangement);
+        return new CalicoPlacementStatus(count, validArrangement);
     }
 
 

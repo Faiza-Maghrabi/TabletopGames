@@ -6,7 +6,7 @@ import games.calico.components.CalicoCatCard;
 //made as I need both size found and the catCard as return values
 public class CalicoLookForCatReturn {
     CalicoCatCard catCard;
-    CalicoCatArrangementStatus arrangementStatus;
+    CalicoPlacementStatus placementStatus;
 
     //for init
     public CalicoLookForCatReturn (CalicoCatCard catCard, int sizeFound, boolean validArrangement) {
@@ -16,7 +16,7 @@ public class CalicoLookForCatReturn {
     //updating value
     public void updateParams(CalicoCatCard catCard, int sizeFound, boolean validArrangement) {
         this.catCard = catCard;
-        this.arrangementStatus = new CalicoCatArrangementStatus(sizeFound, validArrangement);
+        this.placementStatus = new CalicoPlacementStatus(sizeFound, validArrangement);
     }
 
     public CalicoCatCard getCatCard() {
@@ -24,10 +24,10 @@ public class CalicoLookForCatReturn {
     }
 
     public int getsizeFound() {
-        return arrangementStatus.getsizeFound();
+        return placementStatus.getsizeFound();
     }
 
-    public boolean getvalidArrangement() {
-        return arrangementStatus.getvalidArrangement();
+    public boolean getvalidPlacement() {
+        return placementStatus.getvalidPlacement();
     }
 }
