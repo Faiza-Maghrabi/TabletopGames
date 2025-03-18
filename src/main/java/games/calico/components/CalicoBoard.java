@@ -100,8 +100,9 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
      * Use results from getNeighbouringTiles to create a hashmap of each colour and pattern occurances
      * Use these hashmaps to create the 2nd hashmap of unique occurances - 2 pairs of 2 etc
      * Compare against the designTile's objective
+     * designTokenMultiplier is only passed in properly from evaluateBoard, otherwise it will be 0.0
      */
-    public int calculateDesignTokenPoints(int x, int y){
+    public double calculateDesignTokenPoints(int x, int y, double designTokenMultiplier){
         DesignGoalTile designGoalTile = getElement(x, y).getDesignGoal();
         if (designGoalTile == null) return 0;
 
@@ -121,7 +122,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
             val = patternMap.containsKey(tilePattern) ? patternMap.get(tilePattern) : 0;
             patternMap.put(tilePattern, val + 1);
         }
-        //step 2: count occurances - accounting for null colour and null pattern - eventhough everything should be filled by this stage anyway
+        //step 2: count occurances - accounting for null colour and null pattern
         HashMap<Integer, Integer> colourOccuranceMap = new HashMap<Integer, Integer>();
         HashMap<Integer, Integer> patternOccuranceMap = new HashMap<Integer, Integer>();
         for (TileColour c: TileColour.values()){
@@ -156,14 +157,57 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         // System.out.println("colourMatchCount: "+ colourMatchCount);
         // System.out.println("patternMatchCount: "+ patternMatchCount);
         // System.out.println("orderLength : "+ designGoalOrder.length);
-        int score = 0;
+        double score = 0;
         if (colourMatchCount == designGoalOrder.length) score = designGoalTile.getGoalOne();
         if (patternMatchCount == designGoalOrder.length) {
-            if (score > 0) {return designGoalTile.getGoalTwo();}
+            if (score > 0) {
+                if (designTokenMultiplier != 0.0) {
+                    return designGoalTile.getGoalTwo() * (2.0 - designTokenMultiplier);
+                }
+                return designGoalTile.getGoalTwo();
+            }
             else {
-                score = designGoalTile.getGoalOne();
+                if (designTokenMultiplier != 0.0) {
+                    score = designGoalTile.getGoalOne() *  (2.0 - designTokenMultiplier);
+                }
+                else {
+                    score = designGoalTile.getGoalOne();
+                }
             }
         }
+
+        if (designTokenMultiplier != 0.0){
+            score = heuristicDesignTokenPoints(score, designGoalTile, colourMatchCount, patternMatchCount, designTokenMultiplier);
+        }
+        System.out.println(score);
+        return score;
+    }
+
+    private double heuristicDesignTokenPoints(double score, DesignGoalTile designGoalTile, int colourMatchCount, int patternMatchCount, double designTokenMultiplier) {
+        int goalOne = designGoalTile.getGoalOne();
+        int goalTwo = designGoalTile.getGoalTwo();
+        int designGoalOrderLength = designGoalTile.getOrderArr().length;
+
+        //if one goal was fulfilled
+        //multiplier of params.designTokenMultiplier added - prevents ai from believing its the actual score
+        if (score > 0.0){
+            //System.out.println("Score is NOT 0");
+            double goalDifValue = (double) ((goalTwo - goalOne) * designTokenMultiplier);
+            if (colourMatchCount == designGoalOrderLength) {
+                score += (double)(patternMatchCount/designGoalOrderLength) * goalDifValue;
+            }
+            else {
+                score += (double)(colourMatchCount/designGoalOrderLength) * goalDifValue;
+            }
+        }   //no goals have been fulfilled
+        else {
+            score += ((double)patternMatchCount/(double)designGoalOrderLength) * (goalOne * designTokenMultiplier);
+            score += ((double)colourMatchCount/(double)designGoalOrderLength) * (goalOne * designTokenMultiplier);
+            score = Math.min(goalTwo-1, score); //prevent from going over the limit (goalTwo) and appearing as 'complete'
+        }
+
+        //System.out.println("Score for " + designGoalTile.name() + " is: " + score);
+
         return score;
     }
 
@@ -174,7 +218,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
             // int a = calculateDesignTokenPoints(designLoc[i][0], designLoc[i][1]);
             // totalPoints += a;
             // System.out.println("points for "+ designLoc[i][0] + ", " + designLoc[i][1] + " = " + a);
-            totalPoints += calculateDesignTokenPoints(designLoc[i][0], designLoc[i][1]);
+            totalPoints += (int) calculateDesignTokenPoints(designLoc[i][0], designLoc[i][1], 0.0);
         }
         return totalPoints;
     }
@@ -182,7 +226,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
     public String[] getBoardDesignGoalReached(int[] designLoc){
         //get type of design tile and return the goal score that was reached
         DesignGoalTile designGoalTile = getElement(designLoc[0], designLoc[1]).getDesignGoal();
-        int points = calculateDesignTokenPoints(designLoc[0], designLoc[1]);
+        int points = (int) calculateDesignTokenPoints(designLoc[0], designLoc[1], 0.0);
         if (points == designGoalTile.getGoalOne()) return new String[] {designGoalTile.name(), "1"};
         else if (points == designGoalTile.getGoalTwo()) return new String[] {designGoalTile.name(), "2"};
         return new String[] {designGoalTile.name(), "0"};

@@ -123,25 +123,20 @@ public class CalicoGameState extends AbstractGameState {
 
     /*
      * return estimate of how well a player is doing in range [-1, +1]
-     * How can I do this for calico?
-     * Not part of implementation - is for rule based player
-     * //TODO need to update the countPoints to be within range - what if a move is good but doesnt impact score?
      */
     @Override
     protected double _getHeuristicScore(int playerId) {
-        return evaluateBoardV1(playerId);
+        return evaluateBoard(playerId);
         //return countPoints(playerId);
     }
 
 
-    //TODO: DesignTiles aren't being prioritised more - needs more testing?
-    //TODO: Check if a cat can be built in a location - if its blocked etc etc
     //Evaluate how good the board is for the player
-    public double evaluateBoardV1(int playerId) {
+    public double evaluateBoard(int playerId) {
         CalicoBoard board = playerBoards[playerId];
         CalicoGameParameters params = (CalicoGameParameters) gameParameters;
-        float totalScore = 0;
-        float maxPossibleScore = 0;  // Used for normalization 
+        double totalScore = 0;
+        double maxPossibleScore = 0;  // Used for normalization 
 
         //calcuate how useful a Tile is on the board for each type of Tile
         //ignore designTiles?
@@ -154,20 +149,18 @@ public class CalicoGameState extends AbstractGameState {
 
                         //buttons
                         if (tile.hasButton()){
-                            tileScore+=1.5;
-                            //System.out.println("button added: " + 1.5);
+                            tileScore+=params.fullButtonModifier;
                         } //+1
                         else {
                             if (board.lookForButton(x, y) > 1){
-                                tileScore++;
-                                //System.out.println("part button added: " + 1);
+                                tileScore+=params.partButtonModifier;
                             }
                         }
-                        maxPossibleScore+=1.5;
+                        maxPossibleScore+=params.fullButtonModifier;
                         //cats
                         if (tile.hasCat()) {
                             Cat cat = findCatForPattern(tile.getTilePattern());
-                            float addScore = (cat.getPoints()/cat.getSize()) * (float) Math.pow(cat.getSize(), 1.6);
+                            double addScore = (cat.getPoints()/cat.getSize()) * (double) Math.pow(cat.getSize(), params.catModifier);
                             tileScore+= addScore;
                             maxPossibleScore+=addScore;
                             //System.out.println("cat score added: " + addScore);
@@ -176,28 +169,28 @@ public class CalicoGameState extends AbstractGameState {
                             CalicoLookForCatReturn lookReturn = board.lookForCat(x, y, activeCats);
                             if (lookReturn.getsizeFound() > 1){
                                 Cat cat = lookReturn.getCatCard().getCat();
-                                float addScore = (cat.getPoints() / cat.getSize()) * (float) Math.pow(lookReturn.getsizeFound(), 1.6);
+                                double addScore = (cat.getPoints() / cat.getSize()) * (double) Math.pow(lookReturn.getsizeFound(), params.catModifier);
                                 //System.out.println("maxPossibleScore and tileScore added with > ONE matches: " + addScore);
                                 tileScore +=addScore;
                                 maxPossibleScore+=addScore;
                             }
                             else if (lookReturn.getsizeFound() == 1){
                                 Cat cat = lookReturn.getCatCard().getCat();
-                                float addScore = cat.getPoints()/cat.getSize();
+                                double addScore = cat.getPoints()/cat.getSize();
                                 //System.out.println("maxPossibleScore added with NO matches: " + addScore);
                                 maxPossibleScore+=addScore;
                             }
                             //if there is a cat for the pattern and there is no valid arrangement on the board, discourage from placing tile there
                             if (lookReturn.getCatCard() != null && !lookReturn.getvalidArrangement()){
                                 Cat cat = lookReturn.getCatCard().getCat();
-                                float removeScore = cat.getPoints()/(cat.getSize() / 2);
+                                double removeScore = cat.getPoints()/(cat.getSize() / 2);
                                 tileScore -=removeScore;
                             }
                         }
                     }   //use calculateDesignTokenPoints for evaluating these?
                     else {
                         int maxDesignScore = board.getElement(x, y).getDesignGoal().getGoalTwo();
-                        int designScore = board.calculateDesignTokenPoints(x,y);
+                        double designScore = board.calculateDesignTokenPoints(x, y, params.designTokenMultiplier);
                         //System.out.println("designScore is: " + designScore);
                         //System.out.println("maxDesignScore is: " + maxDesignScore);
                         tileScore += designScore;

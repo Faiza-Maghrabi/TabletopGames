@@ -25,6 +25,12 @@ public class CalicoGameParameters extends AbstractParameters {
 
     int boardSize = 7;
 
+    double fullButtonModifier = 1.5;
+    double partButtonModifier = 1.0;
+    double catModifier = 1.6;
+    double designTokenMultiplier = 0.6;
+
+
     //given a colour and a board, set up the board according to the json 
     public CalicoBoard setupBoard(CalicoBoard board, BoardTypes type){
         //design tiles to be used in playerBoard
@@ -150,7 +156,6 @@ public class CalicoGameParameters extends AbstractParameters {
     }
 
 
-    //TODO THIS NEEDS WORK - does this already work?
     @Override
     protected AbstractParameters _copy() {
         return new CalicoGameParameters();
