@@ -157,6 +157,9 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         // System.out.println("colourMatchCount: "+ colourMatchCount);
         // System.out.println("patternMatchCount: "+ patternMatchCount);
         // System.out.println("orderLength : "+ designGoalOrder.length);
+        //Step 4: compare calculated unique matches against the matches required as seen in designGoalOrder
+        //Bonus: if designTokenMultiplier != 0.0 then score returned will be updated slightly
+        //to influence AI Players to try and complete design goal tiles
         double score = 0;
         if (colourMatchCount == designGoalOrder.length) score = designGoalTile.getGoalOne();
         if (patternMatchCount == designGoalOrder.length) {
