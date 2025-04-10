@@ -355,11 +355,8 @@ public class CalicoGameState extends AbstractGameState {
     /*
     * count up all points for a player and returns the sum 
     * includes butons, cats, and design tiles
-    * this is running all the time for everyone, is that normal?
     */
     public int countPoints(int player) {
-        //System.out.println("PLAYER: " +player);
-        //System.out.println("------------------");
         int points = 0;
         // Add button points
         points += countButtons(player);
@@ -367,23 +364,19 @@ public class CalicoGameState extends AbstractGameState {
         points += countCats(player);
         // Add design points
         points += countDesign(player);
-        //System.out.println(points);
     
         return points;
     }
 
-    private int countButtons(int player) {
-        //System.out.println("countButtons");
+    public int countButtons(int player) {
         int buttonPoints = 0;
         for (Button b : Button.values()){
-            //System.out.println(b);
-            //System.out.println(playerButtonScore[player].get(b).getValueIdx());
             buttonPoints += playerButtonScore[player].get(b).getValueIdx() * 3;
         }
         return buttonPoints;
     }
 
-    private int countCats(int player) {
+    public int countCats(int player) {
         int catPoints = 0;
         for (int j = 0; j < activeCats.length; j++) {
             Cat c = activeCats[j].getCat();
@@ -393,7 +386,7 @@ public class CalicoGameState extends AbstractGameState {
     }
 
     //calculate design points in a player's board
-    private int countDesign(int player) {
+    public int countDesign(int player) {
         return playerBoards[player].getDesignPoints(CalicoTypes.designLoc);
     }
 

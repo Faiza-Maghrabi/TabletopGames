@@ -1,6 +1,7 @@
 {
     "class": "evaluation.listeners.MetricsGameListener",
     "args": [
+      {"enum" : "evaluation.metrics.IDataLogger$ReportDestination", "value" : "ToFile"},[  {"enum" : "evaluation.metrics.IDataLogger$ReportType", "value" : "RawDataPerEvent"}],
       [
         {"class": "evaluation.metrics.GameMetrics$GameScore" },
         {"class": "evaluation.metrics.GameMetrics$FinalScore" },
@@ -10,7 +11,8 @@
         {"class": "evaluation.metrics.GameMetrics$Actions" },
         {"class": "games.calico.metrics.CalicoMetrics$CatsAchievedCount"},
         {"class": "games.calico.metrics.CalicoMetrics$ButtonsAchievedCount"},
-        {"class": "games.calico.metrics.CalicoMetrics$DesignTokensAchievedLevel"}
+        {"class": "games.calico.metrics.CalicoMetrics$DesignTokensAchievedLevel"},
+        {"class": "games.calico.metrics.CalicoMetrics$TypePointsTotal"}
       ]
     ]
   }

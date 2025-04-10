@@ -1,7 +1,9 @@
 package games.calico.metrics;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,7 +41,6 @@ public class CalicoMetrics implements IMetricsCollection {
                     records.put("Player " + i + ": " +c.toString(), catCount);
                 }
             }
-            //System.out.println("--------------------------------------------------------");
             return true;
         }
 
@@ -53,7 +54,6 @@ public class CalicoMetrics implements IMetricsCollection {
                     columns.put("Player " + i + ": " +c.toString(), Integer.class);
                 }
             }
-            System.out.println("--------------------------------------------------------");
             return columns;
         }
 
@@ -136,4 +136,42 @@ public class CalicoMetrics implements IMetricsCollection {
         }
 
     }
+
+    /**
+     * How many points were obtained from cats, buttons and design tokens 
+     * collected at the end of the game and at the end of each turn
+     */
+    public static class TypePointsTotal extends AbstractMetric {
+
+        @Override
+        protected boolean _run(MetricsGameListener listener, Event e, Map<String, Object> records) {
+            CalicoGameState gs = (CalicoGameState) e.state;
+
+            for (int i = 0; i < gs.getNPlayers(); i++) {
+                records.put("Player " + i + ": Cat Points", gs.countCats(i));
+                records.put("Player " + i + ": Button Points", gs.countButtons(i));
+                records.put("Player " + i + ": Design Token Points", gs.countDesign(i));
+            }
+            return true;
+        }
+
+        @Override
+        public Map<String, Class<?>> getColumns(int nPlayersPerGame, Set<String> playerNames) {
+            Map<String, Class<?>> columns = new HashMap<>();
+            for (int i = 0; i < nPlayersPerGame; i++){
+                columns.put("Player " + i + ": Cat Points", Integer.class);
+                columns.put("Player " + i + ": Button Points", Integer.class);
+                columns.put("Player " + i + ": Design Token Points", Integer.class);
+            }
+            return columns;
+        }
+
+        @Override
+        public Set<IGameEvent> getDefaultEventTypes() {
+            return new HashSet<>(Arrays.asList(Event.GameEvent.TURN_OVER, Event.GameEvent.GAME_OVER));
+        }
+
+    }
+
+
 }
