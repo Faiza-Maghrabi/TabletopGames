@@ -127,7 +127,6 @@ public class CalicoGameState extends AbstractGameState {
     @Override
     protected double _getHeuristicScore(int playerId) {
         return evaluateBoard(playerId);
-        //return countPoints(playerId);
     }
 
 
@@ -139,7 +138,6 @@ public class CalicoGameState extends AbstractGameState {
         double maxPossibleScore = 0;  // Used for normalization 
 
         //calcuate how useful a Tile is on the board for each type of Tile
-        //ignore designTiles?
         for (int x = 1; x < params.boardSize - 1; x++) {
             for (int y = 1; y < params.boardSize -1; y++) {
                 CalicoBoardTile tile = board.getElement(x, y);
@@ -150,7 +148,7 @@ public class CalicoGameState extends AbstractGameState {
                         //buttons
                         if (tile.hasButton()){
                             tileScore+=params.fullButtonModifier;
-                        } //+1
+                        }
                         else {
                             if (board.lookForButton(x, y) > 1){
                                 tileScore+=params.partButtonModifier;
@@ -163,21 +161,18 @@ public class CalicoGameState extends AbstractGameState {
                             double addScore = (cat.getPoints()/cat.getSize()) * (double) Math.pow(cat.getSize(), params.catModifier);
                             tileScore+= addScore;
                             maxPossibleScore+=addScore;
-                            //System.out.println("cat score added: " + addScore);
                         }
                         else {
                             CalicoLookForCatReturn lookReturn = board.lookForCat(x, y, activeCats);
                             if (lookReturn.getsizeFound() > 1){
                                 Cat cat = lookReturn.getCatCard().getCat();
                                 double addScore = (cat.getPoints() / cat.getSize()) * (double) Math.pow(lookReturn.getsizeFound(), params.catModifier);
-                                //System.out.println("maxPossibleScore and tileScore added with > ONE matches: " + addScore);
                                 tileScore +=addScore;
                                 maxPossibleScore+=addScore;
                             }
                             else if (lookReturn.getsizeFound() == 1){
                                 Cat cat = lookReturn.getCatCard().getCat();
                                 double addScore = cat.getPoints()/cat.getSize();
-                                //System.out.println("maxPossibleScore added with NO matches: " + addScore);
                                 maxPossibleScore+=addScore;
                             }
                             //if there is a cat for the pattern and there is no valid arrangement on the board, discourage from placing tile there
@@ -187,14 +182,12 @@ public class CalicoGameState extends AbstractGameState {
                                 tileScore -=removeScore;
                             }
                         }
-                    }   //use calculateDesignTokenPoints for evaluating these?
+                    }   //use calculateDesignTokenPoints for evaluating these
                     else {
                         int maxDesignScore = board.getElement(x, y).getDesignGoal().getGoalTwo();
                         double designScore = board.calculateDesignTokenPoints(x, y, params.designTokenMultiplier);
-                        //System.out.println("designScore is: " + designScore);
-                        //System.out.println("maxDesignScore is: " + maxDesignScore);
                         tileScore += designScore;
-                        maxPossibleScore += maxDesignScore;
+                        maxPossibleScore += maxDesignScore * (2.0 - params.designTokenMultiplier);
                     }
                     totalScore +=tileScore;
                 }
@@ -203,7 +196,6 @@ public class CalicoGameState extends AbstractGameState {
 
         //add in points for rainbow buttons - increase to total is same as maxPossibleScore
         int rainbowNum = playerButtonScore[playerId].get(Button.Rainbow).getValueIdx();
-        //System.out.println("rainbowNum is: " + rainbowNum);
         totalScore += (rainbowNum * 3);
         maxPossibleScore += (rainbowNum * 3);
 
@@ -363,11 +355,8 @@ public class CalicoGameState extends AbstractGameState {
     /*
     * count up all points for a player and returns the sum 
     * includes butons, cats, and design tiles
-    * this is running all the time for everyone, is that normal?
     */
     public int countPoints(int player) {
-        //System.out.println("PLAYER: " +player);
-        //System.out.println("------------------");
         int points = 0;
         // Add button points
         points += countButtons(player);
@@ -375,23 +364,19 @@ public class CalicoGameState extends AbstractGameState {
         points += countCats(player);
         // Add design points
         points += countDesign(player);
-        //System.out.println(points);
     
         return points;
     }
 
-    private int countButtons(int player) {
-        //System.out.println("countButtons");
+    public int countButtons(int player) {
         int buttonPoints = 0;
         for (Button b : Button.values()){
-            //System.out.println(b);
-            //System.out.println(playerButtonScore[player].get(b).getValueIdx());
             buttonPoints += playerButtonScore[player].get(b).getValueIdx() * 3;
         }
         return buttonPoints;
     }
 
-    private int countCats(int player) {
+    public int countCats(int player) {
         int catPoints = 0;
         for (int j = 0; j < activeCats.length; j++) {
             Cat c = activeCats[j].getCat();
@@ -401,7 +386,7 @@ public class CalicoGameState extends AbstractGameState {
     }
 
     //calculate design points in a player's board
-    private int countDesign(int player) {
+    public int countDesign(int player) {
         return playerBoards[player].getDesignPoints(CalicoTypes.designLoc);
     }
 

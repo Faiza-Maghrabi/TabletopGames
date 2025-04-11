@@ -11,7 +11,8 @@
         {"class": "evaluation.metrics.GameMetrics$Actions" },
         {"class": "games.calico.metrics.CalicoMetrics$CatsAchievedCount"},
         {"class": "games.calico.metrics.CalicoMetrics$ButtonsAchievedCount"},
-        {"class": "games.calico.metrics.CalicoMetrics$DesignTokensAchievedLevel"}
+        {"class": "games.calico.metrics.CalicoMetrics$DesignTokensAchievedLevel"},
+        {"class": "games.calico.metrics.CalicoMetrics$TypePointsTotal"}
       ]
     ]
   }

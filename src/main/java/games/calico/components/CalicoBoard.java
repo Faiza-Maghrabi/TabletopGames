@@ -56,13 +56,11 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
 
     //get the locations of the neighbouring tiles
     public CalicoBoardTile[] getNeighbouringTiles(int x, int y) {
-        // int parity;
         if (x >= 0 && x < getWidth() && y >= 0 && y < getHeight()){
             int parity = y & 1;
             CalicoBoardTile[] tileArr = new CalicoBoardTile[6];
             for(int j = 0; j < 6; j++) {
                 var direction = CalicoTypes.neighbor_directions[parity][j];
-                //System.out.println(new Vector2D(direction.getX() + x, direction.getY() + y));
                 tileArr[j] = this.getElement(direction.getX() + x, direction.getY() + y);
             }
             return tileArr;
@@ -157,6 +155,9 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
         // System.out.println("colourMatchCount: "+ colourMatchCount);
         // System.out.println("patternMatchCount: "+ patternMatchCount);
         // System.out.println("orderLength : "+ designGoalOrder.length);
+        //Step 4: compare calculated unique matches against the matches required as seen in designGoalOrder
+        //Bonus: if designTokenMultiplier != 0.0 then score returned will be updated slightly
+        //to influence AI Players to try and complete design goal tiles
         double score = 0;
         if (colourMatchCount == designGoalOrder.length) score = designGoalTile.getGoalOne();
         if (patternMatchCount == designGoalOrder.length) {
@@ -321,7 +322,7 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
     }
 
 
-    /*  look through a given pattern and return if a match is found
+    /* look through a given pattern and return if a match is found
      * 
      * returns max size of arrangement found for heuristics
      * the old version returned false when a match wasn't found for a location, less computation
@@ -397,12 +398,12 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
      * 
      * Returns the largest valid patch size found, for use in heuristic calculations, if counter = patchSize then the patch is valid
      */
-    private int lookForPatches(CalicoBoardTile searchTile, CalicoBoardTile[] patchTiles, int counter, Set<Integer> visitedPatches, TileColour findColour, TilePattern findPattern, int patchSize){
+    private int lookForPatches(CalicoBoardTile searchTile, CalicoBoardTile[] patchTiles, int counter, Set<Integer> visitedTiles, TileColour findColour, TilePattern findPattern, int patchSize){
         CalicoBoardTile[] surroundingTiles = getNeighbouringTiles(searchTile.getX(), searchTile.getY());
         for (int i = 0; i< surroundingTiles.length; i++) {
             if (surroundingTiles[i] != null) {
                 if (findColour != null) {
-                    if (surroundingTiles[i].getTileColour() == findColour && !surroundingTiles[i].hasButton() && !visitedPatches.contains(surroundingTiles[i].getComponentID())) {
+                    if (surroundingTiles[i].getTileColour() == findColour && !surroundingTiles[i].hasButton() && !visitedTiles.contains(surroundingTiles[i].getComponentID())) {
                         patchTiles[counter] = surroundingTiles[i];
                         counter++;
                         if (counter == patchSize){
@@ -411,12 +412,12 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
 
                             return counter;
                         }
-                        visitedPatches.add(searchTile.getComponentID());
-                        if (lookForPatches(surroundingTiles[i], patchTiles, counter, visitedPatches, findColour, findPattern, patchSize) == patchSize) return patchSize;
+                        visitedTiles.add(searchTile.getComponentID());
+                        if (lookForPatches(surroundingTiles[i], patchTiles, counter, visitedTiles, findColour, findPattern, patchSize) == patchSize) return patchSize;
                     }
                 }
                 else {
-                    if (surroundingTiles[i].getTilePattern() == findPattern && !surroundingTiles[i].hasCat() && !visitedPatches.contains(surroundingTiles[i].getComponentID())) {
+                    if (surroundingTiles[i].getTilePattern() == findPattern && !surroundingTiles[i].hasCat() && !visitedTiles.contains(surroundingTiles[i].getComponentID())) {
                         patchTiles[counter] = surroundingTiles[i];
                         counter++;
                         if (counter == patchSize){
@@ -424,8 +425,8 @@ public class CalicoBoard extends GridBoard<CalicoBoardTile> {
                             applyCats(patchTiles);
                             return counter;
                         }
-                        visitedPatches.add(searchTile.getComponentID());
-                        if (lookForPatches(surroundingTiles[i], patchTiles, counter, visitedPatches, findColour, findPattern, patchSize) == patchSize) return patchSize;
+                        visitedTiles.add(searchTile.getComponentID());
+                        if (lookForPatches(surroundingTiles[i], patchTiles, counter, visitedTiles, findColour, findPattern, patchSize) == patchSize) return patchSize;
                     }
                 }
                 

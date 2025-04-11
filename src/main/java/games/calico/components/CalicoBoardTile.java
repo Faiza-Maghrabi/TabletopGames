@@ -2,7 +2,6 @@ package games.calico.components;
 
 import core.components.Component;
 import games.calico.CalicoTypes;
-import games.calico.CalicoTypes.Cat;
 import games.calico.CalicoTypes.TileColour;
 import games.calico.CalicoTypes.TilePattern;
 
@@ -153,22 +152,17 @@ public class CalicoBoardTile extends Component {
 
     //tile functions - based off catanTile's
     public Point getCentreCoords(double radius) {
-        // offset used in the even-r representation
-        double offset_y = 0;
-        double offset_x = 0;
-
         // width and height of a hexagon in pointy rotation
         double width = Math.sqrt(3) * radius;
         double height = 2 * radius;
 
-        if (y % 2 == 1) {
-            // odd rows
-            offset_x = width;
-            offset_y = height * 0.5;
-        } else {
+        // offset used in the even-r representation
+        double offset_y = height * 0.5;
+        double offset_x = width;
+
+        if (y % 2 == 0) {
             // even rows
             offset_x = width * 0.5;
-            offset_y = height * 0.5;
         }
 
         if (x % 2 == 1){
