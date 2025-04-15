@@ -77,7 +77,6 @@ public class CalicoForwardModel extends StandardForwardModel {
             gs.playerTiles[i] = new Deck<CalicoTile>("player" + i +"'s tiles on hand", i, CoreConstants.VisibilityMode.VISIBLE_TO_OWNER);
             gs.playerTiles[i].add(gs.tileBag.draw());
             gs.playerTiles[i].add(gs.tileBag.draw());
-            gs.playerTiles[i].add(gs.tileBag.draw());
 
             gs.playerFinalPoints[i] = new Counter(100, "point counter for player " + i);
 
