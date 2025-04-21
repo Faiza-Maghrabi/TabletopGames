@@ -86,7 +86,7 @@ public class RunGames implements IGameRunner {
        //     agents.add(new MCTSPlayer());
             agents.add(new BasicMCTSPlayer());
             agents.add(new RandomPlayer());
-            agents.add(new RandomPlayer());
+            //agents.add(new RandomPlayer());
             //agents.add(new RMHCPlayer());
             agents.add(new OSLAPlayer());
         }
