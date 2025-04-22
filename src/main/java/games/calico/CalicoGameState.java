@@ -84,6 +84,7 @@ public class CalicoGameState extends AbstractGameState {
     @Override
     protected AbstractGameState _copy(int playerId) {
         CalicoGameState copy = new CalicoGameState(gameParameters.copy(), getNPlayers());
+        CalicoGameParameters params = (CalicoGameParameters) copy.getGameParameters();
 
         // General public info
         copy.turn = turn;
@@ -94,6 +95,8 @@ public class CalicoGameState extends AbstractGameState {
         }
 
         copy.tileBag = tileBag.copy();
+        //shuffle hidden information
+        copy.tileBag.shuffle(new Random(params.getRandomSeed()));
         copy.tileMarket = tileMarket.copy();
         copy.selectedTile = selectedTile.copy();
         copy.playerBoards = new CalicoBoard[getNPlayers()];

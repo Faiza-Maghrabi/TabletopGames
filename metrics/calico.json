@@ -9,6 +9,7 @@
         {"class": "evaluation.metrics.GameMetrics$ComputationTimes" },
         {"class": "evaluation.metrics.GameMetrics$Decisions" },
         {"class": "evaluation.metrics.GameMetrics$Actions" },
+        {"class": "games.calico.metrics.CalicoMetrics$PlayerType"},
         {"class": "games.calico.metrics.CalicoMetrics$CatsAchievedCount"},
         {"class": "games.calico.metrics.CalicoMetrics$ButtonsAchievedCount"},
         {"class": "games.calico.metrics.CalicoMetrics$DesignTokensAchievedLevel"},
