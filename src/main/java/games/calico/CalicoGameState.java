@@ -16,7 +16,7 @@ import games.calico.types.CalicoLookForCatReturn;
 
 import java.util.*;
 
-//changed from AbstractGameStateWithTurnOrder due to deprecation
+
 public class CalicoGameState extends AbstractGameState {
 
     // General state info

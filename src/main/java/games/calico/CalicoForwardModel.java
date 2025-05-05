@@ -20,7 +20,7 @@ import games.calico.components.CalicoTile;
 
 import java.util.*;
 
-//changed from StandardForwardModelWithTurnOrder due to deprecated?
+
 public class CalicoForwardModel extends StandardForwardModel {
 
     //set up begining game state

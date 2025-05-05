@@ -1,7 +1,7 @@
 {
   "game": "Calico",
   "selfPlay": false,
-  "nPlayers": 3,
+  "nPlayers": 4,
   "matchups": 400,
   "listener": "metrics/calico.json",
   "reportPeriod": 100
