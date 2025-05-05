@@ -210,7 +210,7 @@ public class CalicoGameState extends AbstractGameState {
     }
 
     /*
-     * return player's scare for current game state
+     * return player's score for current game state
      */
     @Override
     public double getGameScore(int playerId) {
